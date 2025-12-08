@@ -54,30 +54,33 @@ public:
     public:
         QString shortcutSetting;
         QString prefixSetting;
-        QVariant value;
+        QVariant settingVariant;
         NeroSetting(){}
-        NeroSetting (QString &settingName, NeroRunner &parent) {
-            value = parent.settings->value(settingName);
-            QString hash = parent.GetHash();
-            this->shortcutSetting =  shortcuts.replace("%s", hash) + settingName;
-            this->prefixSetting = prefixSetting + settingName;
+        static NeroSetting init(QString &settingName, NeroRunner &parent) {
+            NeroSetting currentSetting(settingName, parent);
+            QString val = currentSetting.DetermineValue(parent);
+            currentSetting.SetSettingValue(val);
+            return currentSetting;
         }
 
-        QStringList GetSetingList() {
-            return value.toStringList();
-        }
-        QVariant GetValue() {return value;}
-        QString GetSetting() {
-            if (value == QVariant()) {
+        QStringList GetSetingList() {return settingVariant.toStringList();}
+        void setValue() {}
+        QVariant GetSettingVariant() {return settingVariant;}
+
+        QString DetermineValue(NeroRunner &parent) {
+            QString query = hasShortcutSetting() ? shortcutSetting : prefixSetting;
+            settingVariant = parent.settings->value(query);
+            // TODO: Change to switch
+            if (settingVariant == QVariant()) {
                 return "";
-            } else if (value.canConvert<QString>()) {
-                return value.toString();
-            } else if (value.canConvert<QStringList>()) {
-                return value.toStringList().join(";");
-            } else if (value.canConvert<bool>()) {
-                return QString::number(value.toBool());
+            } else if (settingVariant.canConvert<QString>()) {
+                return settingVariant.toString();
+            } else if (settingVariant.canConvert<QStringList>()) {
+                return settingVariant.toStringList().join(";");
+            } else if (settingVariant.canConvert<bool>()) {
+                return QString::number(settingVariant.toBool());
             }
-            return value.toString();
+            return settingVariant.toString();
         }
 
         bool hasShortcutSetting() {
@@ -89,9 +92,18 @@ public:
         }
 
         bool CheckSetting(QString setting) {
-            return value != QVariant(); //check if its a default variant for missing property
+            return settingVariant != QVariant(); //check if its a default variant for missing property
         }
+        void SetSettingValue(QString settingValue) {this->settingValue = settingValue;}
+        QString GetSettingValue() {return settingValue;}
+
     private:
+        NeroSetting (QString &settingName, NeroRunner &parent) {
+            QString hash = parent.GetHash();
+            this->shortcutSetting =  shortcuts.replace("%s", hash) + settingName;
+            this->prefixSetting = prefixSettings + settingName;
+        }
+        QString settingValue;
         QString shortcuts = "Shortcuts--%s/";
         QString prefixSettings = "PrefixSettings/";
     };
@@ -215,10 +227,9 @@ private:
 
     QString sdlUseButtonLabels = "SDL_GAMECONTROLLER_USE_BUTTON_LABELS";
 
-    QString dllOverride = "DLLoverrides";
+    QString dllOverrideStr = "DLLoverrides";
     QString ignoreGlobalDlls = "IgnoreGlobalDLLs";
     QString wineDllOverrides = "WINEDLLOVERRIDES";
-    QString dllOverridePrefix = prefixSettings + dllOverride;
 
     QString forceWineD3D = "ForceWineD3D";
     QString protonUseWineD3D = "PROTON_USE_WINED3D";
