@@ -107,7 +107,6 @@ public:
         QString shortcuts = "Shortcuts--%s/";
         QString prefixSettings = "PrefixSettings/";
     };
-
 private:
     // TODO: All Structs are TBD, im just fuckin around with what these could be
     // enum {
@@ -133,69 +132,18 @@ private:
     };
 
     //TODO: Fix all of the struct stuff.
-    struct ProtonSettings {
-        inline static const QString dlssUpgrade = "PROTON_DLSS_UPGRADE"; //(Upgrade DLSS to latest version) (cachyos)
-        inline static const QString dlssIndicator = "PROTON_DLSS_INDICATOR"; //Show watermark when DLSS is working) (cachyos)
-        inline static const QString nvidiaLibs = "PROTON_NVIDIA_LIBS"; //(Enables NVIDIA libraries (PhysX, CUDA)) (cachyos)
-        inline static const QString fsr4Upgrade = "PROTON_FSR4_UPGRADE"; //(Enable FSR4 for RDNA4 cards) (GE, cachyos, EM)
-        inline static const QString fsr4Rdna3 = "PROTON_FSR_RDNA3_UPGRADE"; //(Enable FSR4 for RDNA3 cards) (GE, cachyos, EM)
-        inline static const QString fsr4Indicator = "PROTON_FSR4_INDICATOR"; //(Show watermark when FSR4 is working) (cachyos, EM)
-        inline static const QString xessUpgrade = "PROTON_XESS_UPGRADE"; //(Upgrade XeSS to latest version) (cachyos)
-        inline static const QString noWindowDecoration = "PROTON_NO_WM_DECORATION"; //(Disable window decorations) (GE, cachyos)
-        inline static const QString localShaderCache = "PROTON_LOCAL_SHADER_CACHE"; //(Disable per-game shader cache) (cachyos)
-        inline static const QString noSteamInput = "PROTON_NO_STEAMINPUT"; //(Disable Steam Input) (GE, cachyos)
-        inline static const QString wineCpuTopology = "WINE_CPU_TOPOLOGY"; //(Set process affinity. If umu-protonfixes support is implemented in Nero, probably irrelevant)
-        
-        inline static const QString useWineD3D = "PROTON_USE_WINED3D";
-        inline static const QString dxvkD3D8 = "PROTON_DXVK_D3D8";
-        inline static const QString useHdr = "PROTON_ENABLE_HDR";
-        inline static const QString oldGl = "PROTON_OLD_GL_STRING";
-        inline static const QString forceNvapi = "PROTON_FORCE_NVAPI";
-        inline static const QString umuRuntimeUpdate = "UMU_RUNTIME_UPDATE";
-        inline static const QString sdlUseButtonLabels = "SDL_GAMECONTROLLER_USE_BUTTON_LABELS";
-        inline static const QString wineDllOverrides = "WINEDLLOVERRIDES";
-        inline static const QString intScaling = "WINE_FULLSCREEN_INTEGER_SCALING";
-        inline static const QString fsrScaling = "WINE_FULLSCREEN_FSR";
-        inline static const QString fsrStrength = "WINE_FULLSCREEN_FSR_STRENGTH";
-        inline static const QString fsrCustom = "WINE_FULLSCREEN_FSR_CUSTOM_MODE";
-        inline static const QString preferSdl = "PROTON_PREFER_SDL";
-        inline static const QString hiDraw = "PROTON_ENABLE_HIDRAW";
-        inline static const QString useXalia = "PROTON_USE_XALIA";
-        inline static const QString waylandDisplay = "WAYLAND_DISPLAY";
-        inline static const QString useNtSync = "PROTON_USE_NTSYNC";
-        inline static const QString useWow64 = "PROTON_USE_WOW64";
-        inline static const QString noNtSync = "PROTON_NO_NTSYNC";
-        inline static const QString noEsync = "PROTON_NO_ESYNC";
-        inline static const QString noFsync = "PROTON_NO_FSYNC";
-        inline static const QString verb = "PROTON_VERB";
-        inline static const QString dxvkFrameRate = "DXVK_FRAME_RATE";
-        //TODO: Use enum names
-        enum {
-            PROTON_USE_NSYNC,
-            PROTON_NO_NTSYNC,
-            PROTON_NO_ESYNC,
-            PROTON_NO_FSYNC
-        }Sync_e;
-        enum {
-            WINE_FULLSCREEN_INTEGER_SCALING,
-            WINE_FULLSCREEN_FSR,
-            WINE_FULLSCREEN_FSR_STRENGTH,
-            WINE_FULLSCREEN_FSR_CUSTOM_MODE
-        }WineScaling_e;
-    };
     struct NeroConfig {
-        static inline const QString dlssUpgrade = "DlssUpgrade";
-        static inline const QString dlssIndicator = "DlssIndicator";
-        static inline const QString nvidiaLibs = "NvidiaLibs";
-        static inline const QString fsr4 = "Fsr4";
-        static inline const QString fsr4Rdna3 = "Fsr4Rdna3";
-        static inline const QString xessUpgrade = "XessUpgrade";
-        static inline const QString disableWindowDeclartion = "NoDecoration";
-        static inline const QString noSteamInput = "NoSteamInput";
-        static inline const QString wineCpuTopology = "WineCpuTopology";
+        const QString dlssUpgrade = "DlssUpgrade";
+        const QString dlssIndicator = "DlssIndicator";
+        const QString nvidiaLibs = "NvidiaLibs";
+        const QString fsr4 = "Fsr4";
+        const QString fsr4Rdna3 = "Fsr4Rdna3";
+        const QString xessUpgrade = "XessUpgrade";
+        const QString disableWindowDeclartion = "NoDecoration";
+        const QString noSteamInput = "NoSteamInput";
+        const QString wineCpuTopology = "WineCpuTopology";
 
     };
-    QString dlssUpgrade = "DlssUpgrade";
     QString dlssIndicator = "DlssIndicator";
     QString nvidiaLibs = "NvidiaLibs";
     QString fsr4 = "Fsr4";
@@ -301,44 +249,61 @@ private:
 
     QString postRunScriptStr = "PostRunScript";
 
-
-
     void InitDebugProperties(QString property);
-
-    bool HasSetting(QString setting) {
-        //setting.toStringList.isEmpty() -- false
-        //non empty list returned as true
-        return !settings->value(setting).toStringList().isEmpty() || !settings->value(setting).toString().isEmpty();
-    }
-
-    QString GetProperty(QString& setting) {
-        QVariant v = settings->value(setting);
-        if (v.canConvert<QString>()) {
-            return v.toString();
-        } else if (v.canConvert<QStringList>()) {
-            return v.toStringList().join(";");
-        } else if (v.canConvert<bool>()) {
-            return QString::number(settings->value(setting).toBool());
-        }
-        return settings->value(setting).toString();
-    }
-
-    // TODO: Rename to be more informative.
-    bool IsMissingSetting(QString setting) {
-        return !settings->value(setting).toBool();
-    }
-
-    void addProperty(QString field, QString property) {
-        QString shortcut = shortcuts + field;
-        QString prefix = prefixSettings + field;
-        if ((HasSetting(shortcut) && !IsMissingSetting(shortcut)) || !IsMissingSetting(prefix)) {
-            env.insert(property, TRUE);
-        }
-    }
     QString hashVal;
-    NeroSetting setting(QString property);
 signals:
     void StatusUpdate(int);
 };
+namespace {
+    namespace ProtonSettings {
+        const QString dlssUpgrade = "PROTON_DLSS_UPGRADE"; //(Upgrade DLSS to latest version) (cachyos)
+        const QString dlssIndicator = "PROTON_DLSS_INDICATOR"; //Show watermark when DLSS is working) (cachyos)
+        const QString nvidiaLibs = "PROTON_NVIDIA_LIBS"; //(Enables NVIDIA libraries (PhysX, CUDA)) (cachyos)
+        const QString fsr4Upgrade = "PROTON_FSR4_UPGRADE"; //(Enable FSR4 for RDNA4 cards) (GE, cachyos, EM)
+        const QString fsr4Rdna3 = "PROTON_FSR_RDNA3_UPGRADE"; //(Enable FSR4 for RDNA3 cards) (GE, cachyos, EM)
+        const QString fsr4Indicator = "PROTON_FSR4_INDICATOR"; //(Show watermark when FSR4 is working) (cachyos, EM)
+        const QString xessUpgrade = "PROTON_XESS_UPGRADE"; //(Upgrade XeSS to latest version) (cachyos)
+        const QString noWindowDecoration = "PROTON_NO_WM_DECORATION"; //(Disable window decorations) (GE, cachyos)
+        const QString localShaderCache = "PROTON_LOCAL_SHADER_CACHE"; //(Disable per-game shader cache) (cachyos)
+        const QString noSteamInput = "PROTON_NO_STEAMINPUT"; //(Disable Steam Input) (GE, cachyos)
+        const QString wineCpuTopology = "WINE_CPU_TOPOLOGY"; //(Set process affinity. If umu-protonfixes support is implemented in Nero, probably irrelevant)
 
+        const QString useWineD3D = "PROTON_USE_WINED3D";
+        const QString dxvkD3D8 = "PROTON_DXVK_D3D8";
+        const QString useHdr = "PROTON_ENABLE_HDR";
+        const QString oldGl = "PROTON_OLD_GL_STRING";
+        const QString forceNvapi = "PROTON_FORCE_NVAPI";
+        const QString umuRuntimeUpdate = "UMU_RUNTIME_UPDATE";
+        const QString sdlUseButtonLabels = "SDL_GAMECONTROLLER_USE_BUTTON_LABELS";
+        const QString wineDllOverrides = "WINEDLLOVERRIDES";
+        const QString intScaling = "WINE_FULLSCREEN_INTEGER_SCALING";
+        const QString fsrScaling = "WINE_FULLSCREEN_FSR";
+        const QString fsrStrength = "WINE_FULLSCREEN_FSR_STRENGTH";
+        const QString fsrCustom = "WINE_FULLSCREEN_FSR_CUSTOM_MODE";
+        const QString preferSdl = "PROTON_PREFER_SDL";
+        const QString hiDraw = "PROTON_ENABLE_HIDRAW";
+        const QString useXalia = "PROTON_USE_XALIA";
+        const QString waylandDisplay = "WAYLAND_DISPLAY";
+        const QString useNtSync = "PROTON_USE_NTSYNC";
+        const QString useWow64 = "PROTON_USE_WOW64";
+        const QString noNtSync = "PROTON_NO_NTSYNC";
+        const QString noEsync = "PROTON_NO_ESYNC";
+        const QString noFsync = "PROTON_NO_FSYNC";
+        const QString verb = "PROTON_VERB";
+        const QString dxvkFrameRate = "DXVK_FRAME_RATE";
+        //TODO: Use enum names
+        enum {
+            PROTON_USE_NSYNC,
+            PROTON_NO_NTSYNC,
+            PROTON_NO_ESYNC,
+            PROTON_NO_FSYNC
+        }Sync_e;
+        enum {
+            WINE_FULLSCREEN_INTEGER_SCALING,
+            WINE_FULLSCREEN_FSR,
+            WINE_FULLSCREEN_FSR_STRENGTH,
+            WINE_FULLSCREEN_FSR_CUSTOM_MODE
+        }WineScaling_e;
+        }
+}
 #endif // NERORUNNER_H

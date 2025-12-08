@@ -31,20 +31,20 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     // failsafe for cli runs
     if(NeroFS::GetUmU().isEmpty()) return -1;
     hashVal = hash;
-    auto pathSetting = NeroSetting::init(path, *this);
+    NeroSetting pathSetting = NeroSetting::init(path, *this);
     QString shortcutPath = pathSetting.shortcutSetting;
     QFileInfo fileToRun(pathSetting.shortcutSetting);
 
-    if(pathSetting.SettingValue().startsWith("C:/") && !fileToRun.exists()) {
+    if(pathSetting.GetSettingValue().startsWith("C:/") && !fileToRun.exists()) {
         return -1;
     }
 
     QProcess runner;
 
     // TODO: this is ass for prerun scripts that should be running persistently.
-    QString prerun = shortcuts + prerunScript;
-    if(HasSetting(prerun)) {
-        runner.start(settings->value(prerun).toString(), (QStringList){});
+    NeroSetting prerun = NeroSetting::init(prerunScript, *this);
+    if(prerun.HasSetting()) {
+        runner.start(prerun.GetSettingValue(), (QStringList){});
 
         while(runner.state() != QProcess::NotRunning) {
             runner.waitForReadyRead(-1);
@@ -84,7 +84,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
 
     prefixAlreadyRunning
         ? env.insert(ProtonSettings::verb, run)
-        : env.insert(ProtonSettings::verb, waitForExitRun);
+        : env.insert(ProtonSettings().verb, waitForExitRun);
 
     // WAS added here to unrotate Switch controllers,
     // but may not actually be necessary on newer versions based on SDL3? iunno
@@ -116,7 +116,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     NeroSetting forceWine = NeroSetting::init(forceWineD3D, *this);
     NeroSetting d8vk = NeroSetting::init(noD8VK, *this);
     if(forceWine.HasSetting() || !d8vk.HasSetting()) {
-        env.insert(ProtonSettings::useWineD3D, forceWine.Setting());
+        env.insert(ProtonSettings::useWineD3D, forceWine.GetSettingValue());
     }
     else if((d8vk.HasSetting())) {
         env.insert(protonDxvkD3D8, TRUE);
@@ -132,12 +132,11 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     addProperty(vkCapture, obsVkCapture);
     addProperty(forceIGpu, forceDefaultDevice);
     NeroSetting limitFrames = NeroSetting::init(limitFps, *this);
-    QString fpsShortcut = shortcuts + limitFps;
-    int fpsLimit = limitFrame.SettingValue().toInt();
+    int fpsLimit = limitFrames.GetSettingValue().toInt();
     if(fpsLimit) {
         env.insert(ProtonSettings::dxvkFrameRate, QString::number(fpsLimit));
     }
-    NeroSetting fileSync(fileSyncMode, *this);
+    NeroSetting fileSync = NeroSetting::init(fileSyncMode, *this);
     // TODO: Probably make this a method
     int syncType = fileSync.hasShortcutSetting()
                     ? settings->value(fileSync.shortcutSetting).toInt()
@@ -165,7 +164,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         default: 
             break;
     }
-    NeroSetting debug(debugOutput, *this);
+    NeroSetting debug = NeroSetting::init(debugOutput, *this);
     if(debug.HasSetting()) {
         InitDebugProperties(debug.shortcutSetting);
         InitDebugProperties(debug.prefixSetting);
@@ -173,22 +172,22 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     // TODO: ideally, we should set this as a colon-separated list of whitelisted "0xVID/0xPID" pairs
     //       but I guess this'll do for now.
     NeroSetting hiDraw = NeroSetting::init(allowHidraw, *this);
-    hiDraw.HasSetting() && hiDraw.GetSetting().toBool()
+    hiDraw.HasSetting() && hiDraw.GetSettingVariant().toBool()
             ? env.insert(protonHiDraw, TRUE) 
             : env.insert(ProtonSettings::preferSdl, TRUE);
 
-    NeroSetting xalia(useXalia, *this);
-    xalia.HasSetting() && xalia.GetValue().toBool()
+    NeroSetting xalia = NeroSetting::init(useXalia, *this);
+    xalia.HasSetting() && xalia.GetSettingVariant().toBool()
             ? env.insert(ProtonSettings::useXalia, TRUE) 
             : env.insert(ProtonSettings::useXalia, FALSE);
 
-    NeroSetting wayland(useWayland, *this);
+    NeroSetting wayland = NeroSetting::init(useWayland, *this);
     bool isWayland = env.contains(wayland.shortcutSetting)
             ? !env.value(wayland.shortcutSetting).isEmpty()
             : false;
     if (isWayland && wayland.HasSetting()) {
         env.insert(protonEnableWayland, TRUE);
-        NeroSetting hdr(useHdr, *this);
+        NeroSetting hdr = NeroSetting::init(useHdr, *this);
         if (hdr.HasSetting()) {
             env.insert(protonUseHdr, TRUE);
         }
@@ -197,7 +196,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     QStringList arguments = {NeroFS::GetUmU(), GetProperty(shortcutPath)};
     // some arguments are parsed as stringlists and others as string, so check which first.
     QString argsStr = "Args";
-    NeroSetting args(argsStr, *this);
+    NeroSetting args = NeroSetting::init(argsStr, *this);
 
     // TODO: Add get for explicitly list to replicate this functionality
     QVariant argsVar =  settings->value(args.shortcutSetting);
@@ -228,14 +227,14 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         arguments.append(args);
     }
 
-    NeroSetting game(gamemode, *this);
+    NeroSetting game = NeroSetting::init(gamemode, *this);
 
     if(game.HasSetting()) {
         arguments.prepend(gamemoderun);
     }
 
-    NeroSetting scale(scalingMode, *this);
-    int scalingMode = scale.GetSetting().toInt();
+    NeroSetting scale = NeroSetting::init(scalingMode, *this);
+    int scalingMode = scale.GetSettingVariant().toInt();
     
     switch(scalingMode) {
     // TODO: redo like all of this
@@ -355,12 +354,12 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         break;
     }
 
-    NeroSetting mangohud(mangohudStr, *this);
-    bool mangohudSetting = mangohud.HasSetting();
-    if(mangohud.HasSetting() && mangohud.GetValue().toBool()) {
+    NeroSetting mangohud = NeroSetting::init(mangohudStr, *this);
+    if(mangohud.HasSetting() && mangohud.GetSettingVariant().toBool()) {
+        bool isMangoEnv = env.contains(mangohudStr.toUpper());
         if(arguments.contains(gamescope)) {
             arguments.insert(1, mangoappArg);
-        } else if (!env.contains(mangohudStr.toUpper())) {
+        } else if (isMangoEnv) {
             arguments.prepend(mangohudStr.toLower());
         }
     }
@@ -368,10 +367,10 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     runner.setProcessEnvironment(env);
     // some apps requires working directory to be in the right location
     // (corrected if path starts with Windows drive letter prefix)
-    QString pathValue = pathSetting.GetSetting();
+    QString pathValue = pathSetting.GetSettingValue();
     // settings->value("Shortcuts--"+hash+"/Path").toString();
     QString cPath = NeroFS::GetPrefixesPath()->path()+'/'+NeroFS::GetCurrentPrefix()+"/drive_c/";
-    QString pathDir = pathSetting.GetSetting();
+    QString pathDir = pathSetting.GetSettingValue();
     QString workingDir = pathDir.left(pathDir.lastIndexOf("/")).replace("C:", cPath );
     runner.setWorkingDirectory(workingDir);
     QString command = arguments.takeFirst();
@@ -383,7 +382,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         logsDir.mkdir(".logs");
     logsDir.cd(".logs");
     QString nameStr = "/Name";
-    NeroSetting name(nameStr, *this);
+    NeroSetting name = NeroSetting::init(nameStr, *this);
     QFile log(logsDir.path() + '/' + name.shortcutSetting + '-'+ hash + ".txt");
     if(loggingEnabled) {
         log.open(QIODevice::WriteOnly);
@@ -393,8 +392,10 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         log.write("\n\nRunning command:\n" + command.toLocal8Bit() + ' ' + arguments.join(' ').toLocal8Bit() + '\n');
         log.write("==============================================\n");
     }
-    QString launch = "command: " + command + " arguments: " + arguments.join(' ');
-    printf("%s", launch);
+
+    const char* launch = ("command: " + command + " arguments: " + arguments.join(' ')).toLocal8Bit().constData();
+    const char* environmentalProps = env.toStringList().join(';').toLocal8Bit().constData();
+    printf("%s, environmental properties: %s", launch, environmentalProps);
     runner.start(command, arguments);
     runner.waitForStarted(-1);
 
@@ -403,9 +404,9 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     // in case settings changed from manager
     settings = NeroFS::GetCurrentPrefixCfg();
 
-    NeroSetting postrunScript (postRunScriptStr, *this);
+    NeroSetting postrunScript = NeroSetting::init(postRunScriptStr, *this);
     if(postrunScript.hasShortcutSetting()) {
-        runner.start(postrunScript.GetSetting(), (QStringList){});
+        runner.start(postrunScript.GetSettingValue(), (QStringList){});
 
         while(runner.state() != QProcess::NotRunning) {
             runner.waitForReadyRead(-1);
@@ -669,7 +670,7 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
         log.write("\n\nRunning command:\n" + command.toLocal8Bit() + ' ' + arguments.join(' ').toLocal8Bit() + '\n');
         log.write("==============================================\n");
     }
-    printf("command: %s, arguments:%s", command, arguments.join(' '));
+    // printf("command: %s, arguments:%s", command.toLocal, arguments.join(' '));
     runner.start(command, arguments);
     runner.waitForStarted(-1);
 
