@@ -31,11 +31,11 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     // failsafe for cli runs
     if(NeroFS::GetUmU().isEmpty()) return -1;
     hashVal = hash;
-    NeroRunner::NeroSetting pathSetting(path, *this);
+    auto pathSetting = NeroSetting::init(path, *this);
     QString shortcutPath = pathSetting.shortcutSetting;
     QFileInfo fileToRun(pathSetting.shortcutSetting);
 
-    if(pathSetting.GetSetting().startsWith("C:/") && !fileToRun.exists()) {
+    if(pathSetting.SettingValue().startsWith("C:/") && !fileToRun.exists()) {
         return -1;
     }
 
@@ -100,9 +100,9 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     //if(!settings->value("Shortcuts--"+hash+"/CustomEnvVars").toString().isEmpty()) {
     //   qDebug() << settings->value("Shortcuts--"+hash+"/CustomEnvVars").toStringList();
     //}
-    NeroSetting dllOverride(dllOverride);
+    NeroSetting dllOverride = NeroSetting::init(dllOverrideStr, *this);
     if(dllOverride.hasShortcutSetting()) {
-        NeroSetting ignoreGlobalDll(ignoreGlobalDlls, *this);
+        NeroSetting ignoreGlobalDll = NeroSetting::init(ignoreGlobalDlls, *this);
         QStringList dllShortcutOverrides = dllOverride.GetSetingList() << env.value(wineDllOverrides);
         if(ignoreGlobalDll.HasSetting() && !dllOverride.HasSetting()) {
             // if overrides are duplicated, last overrides take priority over first overrides
@@ -113,16 +113,16 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     }
 
     // D8VK is dependent on DXVK's existence, so forcing WineD3D overrides D8VK.
-    NeroSetting forceWine(forceWineD3D, *this);
-    NeroSetting d8vk(noD8VK, *this);
+    NeroSetting forceWine = NeroSetting::init(forceWineD3D, *this);
+    NeroSetting d8vk = NeroSetting::init(noD8VK, *this);
     if(forceWine.HasSetting() || !d8vk.HasSetting()) {
-        env.insert(ProtonSettings::useWineD3D, forceWine.GetSetting());
+        env.insert(ProtonSettings::useWineD3D, forceWine.Setting());
     }
     else if((d8vk.HasSetting())) {
         env.insert(protonDxvkD3D8, TRUE);
     }
 
-    NeroSetting nvApi(enableNvApi, *this);
+    NeroSetting nvApi = NeroSetting::init(enableNvApi, *this);
     // For what it's worth, there's also _DISABLE_NVAPI, but not sure if that's more/less useful.
     if(nvApi.HasSetting()) {
         env.insert(ProtonSettings::forceNvapi, TRUE);
@@ -131,9 +131,9 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     addProperty(limitGlExtensions, protonOldGl);
     addProperty(vkCapture, obsVkCapture);
     addProperty(forceIGpu, forceDefaultDevice);
-    NeroSetting limitFrames(limitFps, *this);
+    NeroSetting limitFrames = NeroSetting::init(limitFps, *this);
     QString fpsShortcut = shortcuts + limitFps;
-    int fpsLimit = limitFrames.GetSetting().toInt();
+    int fpsLimit = limitFrame.SettingValue().toInt();
     if(fpsLimit) {
         env.insert(ProtonSettings::dxvkFrameRate, QString::number(fpsLimit));
     }
@@ -172,8 +172,8 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     }
     // TODO: ideally, we should set this as a colon-separated list of whitelisted "0xVID/0xPID" pairs
     //       but I guess this'll do for now.
-    NeroSetting hiDraw(allowHidraw, *this);
-    hiDraw.HasSetting() && hiDraw.GetValue().toBool()
+    NeroSetting hiDraw = NeroSetting::init(allowHidraw, *this);
+    hiDraw.HasSetting() && hiDraw.GetSetting().toBool()
             ? env.insert(protonHiDraw, TRUE) 
             : env.insert(ProtonSettings::preferSdl, TRUE);
 
@@ -355,8 +355,8 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         break;
     }
 
-    NeroRunner::NeroSetting mangohud(mangohudStr, *this);
-    QString mangoHudSetting = mangohud.GetSetting();
+    NeroSetting mangohud(mangohudStr, *this);
+    bool mangohudSetting = mangohud.HasSetting();
     if(mangohud.HasSetting() && mangohud.GetValue().toBool()) {
         if(arguments.contains(gamescope)) {
             arguments.insert(1, mangoappArg);
@@ -669,7 +669,7 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
         log.write("\n\nRunning command:\n" + command.toLocal8Bit() + ' ' + arguments.join(' ').toLocal8Bit() + '\n');
         log.write("==============================================\n");
     }
-
+    printf("command: %s, arguments:%s", command, arguments.join(' '));
     runner.start(command, arguments);
     runner.waitForStarted(-1);
 
