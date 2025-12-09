@@ -33,9 +33,10 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     if(NeroFS::GetUmU().isEmpty()) return -1;
     hashVal = hash;
     NeroSetting pathSetting = NeroSetting::init(NeroConfig::path, *this);
-    QFileInfo fileToRun(pathSetting.GetSettingValue());
-    QString val = settings->value("Shortcuts--"+hash+"/Path").toString();
+    QString prefixPath(NeroFS::GetPrefixesPath()->path() % '/' % NeroFS::GetCurrentPrefix());
+    QFileInfo fileToRun(prefixPath % "/" % pathSetting.GetSettingValue());
     if(pathSetting.GetSettingValue().startsWith(cPath) && !fileToRun.exists()) {
+        // TODO: We should probably do something more
         return -1;
     }
 
@@ -58,7 +59,6 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     runner.setReadChannel(QProcess::StandardError);
 
     env = QProcessEnvironment::systemEnvironment();
-    QString prefixPath = NeroFS::GetPrefixesPath()->path() % '/' % NeroFS::GetCurrentPrefix();
     env.insert(ProtonArgs::wineprefix, prefixPath);
 
     // Only explicit set GAMEID when not already declared by user
