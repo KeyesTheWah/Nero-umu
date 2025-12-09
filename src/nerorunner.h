@@ -57,7 +57,6 @@ public:
         QString shortcutSetting;
         QString prefixSetting;
         QVariant settingVariant;
-
         NeroSetting(){}
 
         static NeroSetting init(QString settingName, NeroRunner &parent) {
@@ -71,8 +70,14 @@ public:
         QVariant GetSettingVariant() {return settingVariant;}
 
         QString DetermineValue(NeroRunner &parent) {
-            QString query = hasShortcutSetting() ? shortcutSetting : prefixSetting;
-            settingVariant = parent.settings->value(query);
+            QVariant shortcut = parent.settings->value(shortcutSetting);
+            QVariant prefix = parent.settings->value(prefixSetting);
+            if (CheckSetting(shortcut)) {
+                settingVariant = shortcut;
+            } else {
+                settingVariant = prefix;
+                this->hasShortcut = true;
+            }
             // TODO: Change to switch
             if (settingVariant == QVariant()) {
                 return "";
@@ -95,15 +100,15 @@ public:
         }
 
         bool hasShortcutSetting() {
-            return CheckSetting(shortcutSetting);
+            return hasShortcut;
         }
 
         bool HasSetting() {
             return CheckSetting(shortcutSetting) || CheckSetting(prefixSetting);
         }
 
-        bool CheckSetting(QString setting) {
-            return settingVariant != QVariant(); //check if its a default variant for missing property
+        bool CheckSetting(QVariant v) {
+            return v!= QVariant(); //check if its a default variant for missing property
         }
 
         void SetSettingValue(QString settingValue) {this->settingValue = settingValue;}
@@ -116,6 +121,7 @@ public:
             this->prefixSetting = prefixSettings % settingName;
         }
         QString settingValue;
+        bool hasShortcut = false;
         QString shortcuts = "Shortcuts--";
         QString prefixSettings = "PrefixSettings/";
     };

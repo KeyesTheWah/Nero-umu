@@ -33,8 +33,8 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     if(NeroFS::GetUmU().isEmpty()) return -1;
     hashVal = hash;
     NeroSetting pathSetting = NeroSetting::init(NeroConfig::path, *this);
-    QFileInfo fileToRun(pathSetting.shortcutSetting);
-
+    QFileInfo fileToRun(pathSetting.GetSettingValue());
+    QString val = settings->value("Shortcuts--"+hash+"/Path").toString();
     if(pathSetting.GetSettingValue().startsWith(cPath) && !fileToRun.exists()) {
         return -1;
     }
@@ -365,7 +365,6 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     runner.setProcessEnvironment(env);
     // some apps requires working directory to be in the right location
     // (corrected if path starts with Windows drive letter prefix)
-    QString pathValue = pathSetting.GetSettingValue();
     // settings->value("Shortcuts--"+hash+"/Path").toString();
     QString cPath = NeroFS::GetPrefixesPath()->path()+'/'+NeroFS::GetCurrentPrefix()+"/drive_c/";
     QString pathDir = pathSetting.GetSettingValue();
@@ -389,6 +388,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         log.write("\n\nRunning command:\n" + command.toLocal8Bit() + ' ' + arguments.join(' ').toLocal8Bit() + '\n');
         log.write("==============================================\n");
     }
+    printf("command: %s, arguments:%s", command.toLocal8Bit(), arguments.join(' ').toLocal8Bit());
 
     runner.start(command, arguments);
     runner.waitForStarted(-1);
@@ -664,7 +664,6 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
         log.write("\n\nRunning command:\n" + command.toLocal8Bit() + ' ' + arguments.join(' ').toLocal8Bit() + '\n');
         log.write("==============================================\n");
     }
-    // printf("command: %s, arguments:%s", command.toLocal, arguments.join(' '));
     runner.start(command, arguments);
     runner.waitForStarted(-1);
 
@@ -744,8 +743,6 @@ void NeroRunner::StopProcess()
     wineStopper.start(NeroFS::GetUmU(), { NeroFS::GetProtonsPath()->path()+'/'+NeroFS::GetCurrentRunner()+'/'+"proton", "runinprefix", "wineboot", "-e" });
     wineStopper.waitForFinished();
 }
-
-
 
 void NeroRunner::InitCache()
 {
