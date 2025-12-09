@@ -112,11 +112,11 @@ public:
     private:
         NeroSetting (QString &settingName, NeroRunner &parent) {
             QString hash = parent.GetHash();
-            this->shortcutSetting =  shortcuts.replace("%s", hash) % settingName;
+            this->shortcutSetting =  shortcuts % hash % '/' % settingName;
             this->prefixSetting = prefixSettings % settingName;
         }
         QString settingValue;
-        QString shortcuts = "Shortcuts--%s/";
+        QString shortcuts = "Shortcuts--";
         QString prefixSettings = "PrefixSettings/";
     };
 private:
