@@ -83,7 +83,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         printf("using %s instead\n", protonRunner.toLocal8Bit().constData());
     }
     env.insert(ProtonArgs::protonPath, runnerPath);
-    bool isRuntimeUpdate = settings->value(NeroConfig::runtimeUpdate).toBool();
+    bool isRuntimeUpdate = settings->value("PrefixSettings/" % NeroConfig::runtimeUpdate).toBool();
     if(isRuntimeUpdate && !env.contains(ProtonArgs::umuRuntimeUpdate)){
         env.insert(ProtonArgs::umuRuntimeUpdate, TRUE);
     }
@@ -115,22 +115,25 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
             QStringList prefixArgs = dllOverride.GetSetingList();
             dllShortcutOverrides = prefixArgs << dllShortcutOverrides;
         }
-        env.insert(ProtonArgs::wineDllOverrides, dllShortcutOverrides.join(';') % ";");
+        env.insert(ProtonArgs::wineDllOverrides,  dllShortcutOverrides.join(';'));
     }
 
     // D8VK is dependent on DXVK's existence, so forcing WineD3D overrides D8VK.
     NeroSetting forceWine = NeroSetting::init(NeroConfig::forceWineD3D, *this);
-    NeroSetting d8vk = NeroSetting::init(NeroConfig::noD8VK, *this);
-    if(forceWine.HasSetting() || !d8vk.HasSetting()) {
-        env.insert(ProtonArgs::useWineD3D, forceWine.GetSettingValue());
+    NeroSetting noD8vk = NeroSetting::init(NeroConfig::noD8VK, *this);
+    bool hasD8vkProperty = noD8vk.HasSetting();
+    bool isD8vkDisabled = noD8vk.GetSettingVariant().toBool();
+    if(forceWine.HasSetting() && (!hasD8vkProperty || isD8vkDisabled)) {
+        env.insert(ProtonArgs::useWineD3D, forceWine.convertBoolToIntString());
+    } else {
+        env.insert(ProtonArgs::useWineD3D, FALSE);
+        hasD8vkProperty && isD8vkDisabled
+            ? env.insert(ProtonArgs::dxvkD3D8, FALSE)
+            : env.insert(ProtonArgs::dxvkD3D8, TRUE);
     }
-    else if((d8vk.HasSetting())) {
-        env.insert(ProtonArgs::dxvkD3D8, TRUE);
-    }
-
     NeroSetting nvApi = NeroSetting::init(NeroConfig::enableNvApi, *this);
     // For what it's worth, there's also _DISABLE_NVAPI, but not sure if that's more/less useful.
-    if(nvApi.HasSetting()) {
+    if(nvApi.HasSetting() && nvApi.GetSettingVariant().toBool()) {
         env.insert(ProtonArgs::forceNvapi, TRUE);
     }
     // TODO: do this better
@@ -187,8 +190,9 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
             : env.insert(ProtonArgs::useXalia, FALSE);
 
     NeroSetting wayland = NeroSetting::init(NeroConfig::useWayland, *this);
-    bool isWayland = env.contains(wayland.shortcutSetting)
-            ? !env.value(wayland.shortcutSetting).isEmpty()
+    // TODO: These aren't proton args change the damn name
+    bool isWayland = env.contains(ProtonArgs::waylandDisplay)
+            ? !env.value(ProtonArgs::waylandDisplay).isEmpty()
             : false;
 
     if (isWayland && wayland.HasSetting()) {
@@ -363,7 +367,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         bool isMangoEnv = env.contains(mangoStr.toUpper());
         if(arguments.contains(ProtonArgs::gamescope)) {
             arguments.insert(1, ProtonArgs::mangoapp);
-        } else if (isMangoEnv) {
+        } else if (!isMangoEnv) {
             arguments.prepend(mangoStr.toLower());
         }
     }
@@ -390,7 +394,6 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         log.write("\n\nRunning command:\n" + command.toLocal8Bit() + ' ' + arguments.join(' ').toLocal8Bit() + '\n');
         log.write("==============================================\n");
     }
-    printf("command: %s, arguments:%s", command.toLocal8Bit(), arguments.join(' ').toLocal8Bit());
 
     runner.start(command, arguments);
     runner.waitForStarted(-1);

@@ -61,15 +61,11 @@ public:
 
         static NeroSetting init(QString settingName, NeroRunner &parent) {
             NeroSetting currentSetting(settingName, parent);
-            QString val = currentSetting.DetermineValue(parent);
-            currentSetting.SetSettingValue(val);
+            currentSetting.setVariant(parent);
             return currentSetting;
         }
-        QStringList toList() {return settingVariant.toStringList();}
-        QStringList GetSetingList() {return settingVariant.toStringList();}
-        QVariant GetSettingVariant() {return settingVariant;}
 
-        QString DetermineValue(NeroRunner &parent) {
+        void setVariant(NeroRunner &parent) {
             QVariant shortcut = parent.settings->value(shortcutSetting);
             QVariant prefix = parent.settings->value(prefixSetting);
             if (CheckSetting(shortcut)) {
@@ -78,17 +74,6 @@ public:
                 settingVariant = prefix;
                 this->hasShortcut = true;
             }
-            // TODO: Change to switch
-            if (settingVariant == QVariant()) {
-                return "";
-            } else if (settingVariant.canConvert<QString>()) {
-                return settingVariant.toString();
-            } else if (settingVariant.canConvert<QStringList>()) {
-                return settingVariant.toStringList().join(";");
-            } else if (settingVariant.canConvert<bool>()) {
-                return QString::number(settingVariant.toBool());
-            }
-            return settingVariant.toString();
         }
 
         int toInt() {
@@ -111,19 +96,20 @@ public:
             return v!= QVariant(); //check if its a default variant for missing property
         }
 
-        void SetSettingValue(QString settingValue) {this->settingValue = settingValue;}
-        QString GetSettingValue() {return settingValue;}
-
+        QStringList toList() {return settingVariant.toStringList();}
+        QStringList GetSetingList() {return settingVariant.toStringList();}
+        QVariant GetSettingVariant() {return settingVariant;}
+        QString GetSettingValue() {return settingVariant.toString();}
+        QString convertBoolToIntString() {return QString::number(settingVariant.toBool());}
     private:
         NeroSetting (QString &settingName, NeroRunner &parent) {
             QString hash = parent.GetHash();
             this->shortcutSetting =  shortcuts % hash % '/' % settingName;
-            this->prefixSetting = prefixSettings % settingName;
+            this->prefixSetting = prefixSettings % '/' % settingName;
         }
-        QString settingValue;
         bool hasShortcut = false;
-        QString shortcuts = "Shortcuts--";
-        QString prefixSettings = "PrefixSettings/";
+        const QString shortcuts = "Shortcuts--";
+        const QString prefixSettings = "PrefixSettings";
     };
 private:
     // TODO: All Structs are TBD, im just fuckin around with what these could be
@@ -167,7 +153,7 @@ private:
 
     void addProperty(QString field, QString property) {
         NeroSetting setting = NeroSetting::init(field, *this);
-        if (setting.HasSetting()) {
+        if (setting.HasSetting() && setting.GetSettingVariant().toBool()) {
             env.insert(property, TRUE);
         }
     }
