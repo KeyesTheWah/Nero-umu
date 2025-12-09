@@ -25,6 +25,7 @@
 #include <QProcess>
 #include <QDir>
 #include <QDebug>
+#include <QStringBuilder>
 
 int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunning)
 {
@@ -32,10 +33,9 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     if(NeroFS::GetUmU().isEmpty()) return -1;
     hashVal = hash;
     NeroSetting pathSetting = NeroSetting::init(NeroConfig::path, *this);
-    QString shortcutPath = pathSetting.shortcutSetting;
     QFileInfo fileToRun(pathSetting.shortcutSetting);
 
-    if(pathSetting.GetSettingValue().startsWith("C:/") && !fileToRun.exists()) {
+    if(pathSetting.GetSettingValue().startsWith(cPath) && !fileToRun.exists()) {
         return -1;
     }
 
@@ -58,7 +58,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     runner.setReadChannel(QProcess::StandardError);
 
     env = QProcessEnvironment::systemEnvironment();
-    QString prefixPath = NeroFS::GetPrefixesPath()->path()+'/'+NeroFS::GetCurrentPrefix();
+    QString prefixPath = NeroFS::GetPrefixesPath()->path() % '/' % NeroFS::GetCurrentPrefix();
     env.insert(ProtonArgs::wineprefix, prefixPath);
 
     // Only explicit set GAMEID when not already declared by user
@@ -68,7 +68,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     }
     NeroSetting currentRunner = NeroSetting::init(NeroConfig::currentRunner, *this);
     QString protonRunner = currentRunner.GetSettingValue();
-    QString runnerPath = NeroFS::GetProtonsPath()->path()+'/'+protonRunner;
+    QString runnerPath = NeroFS::GetProtonsPath()->path() % '/' % protonRunner;
     if(!QFile::exists(runnerPath)) {
         printf("Could not find %s in '%s', ", protonRunner.toLocal8Bit().constData(), NeroFS::GetProtonsPath()->absolutePath().toLocal8Bit().constData());
         if(!NeroFS::GetAvailableProtons()->isEmpty()) {
@@ -204,7 +204,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         arguments.append(argsVar.toStringList());
     } else if (argsVar.canConvert<QString>() && !argsVar.toString().isEmpty()) {
         // SUPER UNGA BUNGA: manually split string into a list
-        QString buf = settings->value("Shortcuts--"+hash+"/Args").toString();
+        QString buf = settings->value("Shortcuts--" % hash % "/Args").toString();
         QStringList args;
         args.append("");
         bool quotation = false;
@@ -324,11 +324,11 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
             arguments.prepend(settings->value("Shortcuts--"+hash+"/GamescopeOutResH").toString());
             arguments.prepend("-h");
         }
-        if(settings->value("Shortcuts--"+hash+"/GamescopeOutResW").toInt()) {
+        if(settings->value("Shortcuts--" % hash %"/GamescopeOutResW").toInt()) {
             arguments.prepend(settings->value("Shortcuts--"+hash+"/GamescopeOutResW").toString());
             arguments.prepend("-w");
         }
-        if(settings->value("Shortcuts--"+hash+"/GamescopeFilter").toInt()) {
+        if(settings->value("Shortcuts--" % hash %"/GamescopeFilter").toInt()) {
             switch(settings->value("Shortcuts--"+hash+"/GamescopeFilter").toInt()) {
             case NeroConstant::GSfilterNearest:
                 arguments.prepend("nearest"); break;

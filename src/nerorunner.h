@@ -25,6 +25,7 @@
 #include <QString>
 #include <QProcessEnvironment>
 #include <QFile>
+#include <QStringBuilder>
 
 class NeroRunner : public QObject
 {
@@ -36,7 +37,7 @@ public:
     int StartOnetime(const QString &, const bool & = false, const QStringList & = {});
     QString GetHash() {return hashVal;}
     void WaitLoop(QProcess &, QFile &);
-    void writeToLog(QString... lines);
+    void writeToLog(QStringList lines);
     void StopProcess();
     void InitCache();
     QSettings *settings = NeroFS::GetCurrentPrefixCfg();
@@ -111,8 +112,8 @@ public:
     private:
         NeroSetting (QString &settingName, NeroRunner &parent) {
             QString hash = parent.GetHash();
-            this->shortcutSetting =  shortcuts.replace("%s", hash) + settingName;
-            this->prefixSetting = prefixSettings + settingName;
+            this->shortcutSetting =  shortcuts.replace("%s", hash) % settingName;
+            this->prefixSetting = prefixSettings % settingName;
         }
         QString settingValue;
         QString shortcuts = "Shortcuts--%s/";
@@ -133,7 +134,7 @@ private:
         NeroSetting setting;
         QString width;
         QString height;
-    }
+    };
     struct GamescopeFilter {
         QString scalingType;
         int scalingValue;
@@ -143,12 +144,12 @@ private:
         NeroSetting property;
 
     };
-    QString FALSE = "0";
-    QString TRUE = "1";
+    const QString FALSE = "0";
+    const QString TRUE = "1";
 
-    QString cPath = "C:/";
+    const QString cPath = "C:/";
 
-    QString ge109 = "GE-Proton10-9";
+    const QString ge109 = "GE-Proton10-9";
 
     void InitDebugProperties(QString property);
     QString hashVal;
@@ -255,8 +256,6 @@ namespace {
             WINE_FULLSCREEN_FSR_CUSTOM_MODE
         }WineScaling_e;
     }
-}
-namespace {
     namespace NeroConfig {
         const QString name = "Name";
         const QString currentRunner = "CurrentRunner";
@@ -310,6 +309,7 @@ namespace {
         const QString prerunScript = "PreRunScript";
         const QString postRunScript = "PostRunScript";
         const QString mangohud = "Mangohud";
-    }
+        }
+
 }
 #endif // NERORUNNER_H
