@@ -131,8 +131,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     addProperty(NeroConfig::limitGlExtensions, ProtonArgs::oldGl);
     addProperty(NeroConfig::vkCapture, ProtonArgs::obsVkCapture);
     addProperty(NeroConfig::forceIGpu, ProtonArgs::forceDefaultDevice);
-    NeroSetting limitFrames = NeroSetting::init(NeroConfig::limitFps, *this);
-    int fpsLimit = limitFrames.GetSettingValue().toInt();
+    int fpsLimit = NeroSetting::init(NeroConfig::limitFps, *this).toInt();
     if(fpsLimit) {
         env.insert(ProtonArgs::dxvkFrameRate, QString::number(fpsLimit));
     }
@@ -380,9 +379,8 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     if(!logsDir.exists(".logs"))
         logsDir.mkdir(".logs");
     logsDir.cd(".logs");
-    QString nameStr = "/Name";
-    NeroSetting name = NeroSetting::init(nameStr, *this);
-    QFile log(logsDir.path() + '/' + name.shortcutSetting + '-'+ hash + ".txt");
+    NeroSetting name = NeroSetting::init(NeroConfig::name, *this);
+    QFile log(logsDir.path() + '/' + name.GetSettingValue() + '-'+ hash + ".txt");
     if(loggingEnabled) {
         log.open(QIODevice::WriteOnly);
         log.resize(0);
@@ -392,9 +390,6 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         log.write("==============================================\n");
     }
 
-    const char* launch = ("command: " + command + " arguments: " + arguments.join(' ')).toLocal8Bit().constData();
-    const char* environmentalProps = env.toStringList().join(';').toLocal8Bit().constData();
-    printf("%s, environmental properties: %s", launch, environmentalProps);
     runner.start(command, arguments);
     runner.waitForStarted(-1);
 
@@ -677,6 +672,8 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
 
     return runner.exitCode();
 }
+
+
 
 void NeroRunner::WaitLoop(QProcess &runner, QFile &log)
 {

@@ -36,6 +36,7 @@ public:
     int StartOnetime(const QString &, const bool & = false, const QStringList & = {});
     QString GetHash() {return hashVal;}
     void WaitLoop(QProcess &, QFile &);
+    void writeToLog(QString... lines);
     void StopProcess();
     void InitCache();
     QSettings *settings = NeroFS::GetCurrentPrefixCfg();
@@ -64,9 +65,8 @@ public:
             currentSetting.SetSettingValue(val);
             return currentSetting;
         }
-
+        QStringList toList() {return settingVariant.toStringList();}
         QStringList GetSetingList() {return settingVariant.toStringList();}
-        void setValue() {}
         QVariant GetSettingVariant() {return settingVariant;}
 
         QString DetermineValue(NeroRunner &parent) {
@@ -85,6 +85,14 @@ public:
             return settingVariant.toString();
         }
 
+        int toInt() {
+            return settingVariant.toInt();
+        }
+
+        QString toString() {
+            return settingVariant.toString();
+        }
+
         bool hasShortcutSetting() {
             return CheckSetting(shortcutSetting);
         }
@@ -96,6 +104,7 @@ public:
         bool CheckSetting(QString setting) {
             return settingVariant != QVariant(); //check if its a default variant for missing property
         }
+
         void SetSettingValue(QString settingValue) {this->settingValue = settingValue;}
         QString GetSettingValue() {return settingValue;}
 
@@ -120,7 +129,11 @@ private:
     //     PrefixSetting_e settingLocation;
     //     QString command;
     // };
-
+    struct FilterResolution {
+        NeroSetting setting;
+        QString width;
+        QString height;
+    }
     struct GamescopeFilter {
         QString scalingType;
         int scalingValue;
@@ -128,8 +141,7 @@ private:
 
     struct Resolution {
         NeroSetting property;
-        QString width;
-        QString height;
+
     };
     QString FALSE = "0";
     QString TRUE = "1";
@@ -246,7 +258,7 @@ namespace {
 }
 namespace {
     namespace NeroConfig {
-
+        const QString name = "Name";
         const QString currentRunner = "CurrentRunner";
         const QString runtimeUpdate = "RuntimeUpdateOnLaunch";
         const QString dlssIndicator = "DlssIndicator";
@@ -272,10 +284,10 @@ namespace {
         const QString scalingMode = "Scaling Mode";
 
         // TODO: Standardize
+        const QString gamescopeFilter = "GamescopeFilter";
         const QString gamescopeOutResH = "GamescopeOutResH";
         const QString gamescopeOutResW = "GamescopeOutResW";
 
-        const QString gamescopeFilter = "GamescopeFilter";
         const QString debugOutput = "DebugOutput";
         const QString enableNvApi = "EnableNVAPI";
 
