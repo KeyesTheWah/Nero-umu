@@ -34,8 +34,14 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     hashVal = hash;
     NeroSetting pathSetting = NeroSetting::init(NeroConfig::path, *this);
     QString prefixPath(NeroFS::GetPrefixesPath()->path() % '/' % NeroFS::GetCurrentPrefix());
-    QFileInfo fileToRun(prefixPath % "/" % pathSetting.GetSettingValue());
-    if(pathSetting.GetSettingValue().startsWith(cPath) && !fileToRun.exists()) {
+    QString filePath = QString(prefixPath % "/" % pathSetting.GetSettingValue()).replace(cDrive, drive_c);
+    QString pathDir(pathSetting.GetSettingValue());
+    QString cPath = prefixPath % '/' % drive_c;
+    QString workingDir = pathDir.left(pathDir.lastIndexOf("/")).replace(cDrive, cPath);
+
+    bool startsWith = pathDir.startsWith(cDrive);
+    bool fileExists = QFileInfo::exists(workingDir); //faster than declaring obj
+    if(!startsWith && !fileExists) {
         // TODO: We should probably do something more
         return -1;
     }
@@ -109,7 +115,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
             QStringList prefixArgs = dllOverride.GetSetingList();
             dllShortcutOverrides = prefixArgs << dllShortcutOverrides;
         }
-        env.insert(ProtonArgs::wineDllOverrides, dllShortcutOverrides.join(';')+";");
+        env.insert(ProtonArgs::wineDllOverrides, dllShortcutOverrides.join(';') % ";");
     }
 
     // D8VK is dependent on DXVK's existence, so forcing WineD3D overrides D8VK.
@@ -160,7 +166,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
             env.insert(ProtonArgs::noNtSync, TRUE);
             env.insert(ProtonArgs::noFsync, TRUE);
             break;
-        default: 
+        default:
             break;
     }
     NeroSetting debug = NeroSetting::init(NeroConfig::debugOutput, *this);
@@ -192,7 +198,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
             env.insert(ProtonArgs::useHdr, TRUE);
         }
     }
-    // TODO: Iterate through NeroConfig properties and loop on each. 
+    // TODO: Iterate through NeroConfig properties and loop on each.
     QStringList arguments = {NeroFS::GetUmU(), pathSetting.GetSettingValue()};
     // some arguments are parsed as stringlists and others as string, so check which first.
     NeroSetting args = NeroSetting::init(NeroConfig::args, *this);
@@ -240,7 +246,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         break;
     case NeroConstant::ScalingIntegerScale:
         env.insert(ProtonArgs::fsrScaling, TRUE);
-        env.insert("WINE_FULLSCREEN_INTEGER_SCALING", TRUE); 
+        env.insert("WINE_FULLSCREEN_INTEGER_SCALING", TRUE);
         break;
     case NeroConstant::ScalingFSRperformance:
         env.insert(ProtonArgs::fsrScaling, TRUE);
@@ -366,20 +372,16 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     // some apps requires working directory to be in the right location
     // (corrected if path starts with Windows drive letter prefix)
     // settings->value("Shortcuts--"+hash+"/Path").toString();
-    QString cPath = NeroFS::GetPrefixesPath()->path()+'/'+NeroFS::GetCurrentPrefix()+"/drive_c/";
-    QString pathDir = pathSetting.GetSettingValue();
-    QString workingDir = pathDir.left(pathDir.lastIndexOf("/")).replace("C:", cPath );
+
     runner.setWorkingDirectory(workingDir);
     QString command = arguments.takeFirst();
 
-    QString logDir = NeroFS::GetPrefixesPath()->path()+'/'+NeroFS::GetCurrentPrefix();
-
-    QDir logsDir(logDir);
+    QDir logsDir(prefixPath);
     if(!logsDir.exists(".logs"))
         logsDir.mkdir(".logs");
     logsDir.cd(".logs");
     NeroSetting name = NeroSetting::init(NeroConfig::name, *this);
-    QFile log(logsDir.path() + '/' + name.GetSettingValue() + '-'+ hash + ".txt");
+    QFile log(logsDir.path() % '/' + name.GetSettingValue() % '-' % hash % ".txt");
     if(loggingEnabled) {
         log.open(QIODevice::WriteOnly);
         log.resize(0);
@@ -709,7 +711,7 @@ void NeroRunner::WaitLoop(QProcess &runner, QFile &log)
             log.write(stdout);
     }
 
-    if(loggingEnabled)
+    if(loggingEnabled && log.isOpen())
         log.close();
 }
 

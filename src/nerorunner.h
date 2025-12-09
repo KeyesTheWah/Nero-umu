@@ -153,7 +153,8 @@ private:
     const QString FALSE = "0";
     const QString TRUE = "1";
 
-    const QString cPath = "C:/";
+    const QString cDrive = "C:/";
+    const QString drive_c = "drive_c/";
 
     const QString ge109 = "GE-Proton10-9";
 
