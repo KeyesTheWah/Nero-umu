@@ -54,8 +54,6 @@ public:
 
     struct NeroSetting {
     public:
-        QString shortcutSetting;
-        QString prefixSetting;
         QVariant settingVariant;
         NeroSetting(){}
 
@@ -74,6 +72,10 @@ public:
                 settingVariant = prefix;
                 this->hasShortcut = true;
             }
+        }
+
+        QList<QVariant> getBothSettings() {
+            return QList({shortcut, prefix});
         }
 
         int toInt() {
@@ -108,6 +110,10 @@ public:
             this->prefixSetting = prefixSettings % '/' % settingName;
         }
         bool hasShortcut = false;
+        QString shortcutSetting;
+        QString prefixSetting;
+        QVariant shortcut;
+        QVariant prefix;
         const QString shortcuts = "Shortcuts--";
         const QString prefixSettings = "PrefixSettings";
     };
@@ -144,19 +150,19 @@ private:
 
     const QString ge109 = "GE-Proton10-9";
 
-    void InitDebugProperties(QString property);
+    void InitDebugProperties(int value);
     QString hashVal;
     bool HasSetting(QString setting) {
         return !settings->value(setting).toStringList().isEmpty()
                || !settings->value(setting).toString().isEmpty();
     }
-
     void addProperty(QString field, QString property) {
         NeroSetting setting = NeroSetting::init(field, *this);
         if (setting.HasSetting() && setting.GetSettingVariant().toBool()) {
             env.insert(property, TRUE);
         }
     }
+    
 signals:
     void StatusUpdate(int);
 };
@@ -177,7 +183,7 @@ namespace {
         //XESS Launch Arguments
         const QString xessUpgrade = "PROTON_XESS_UPGRADE"; //(Upgrade XeSS to latest version) (cachyos)
 
-        const QString localShaderCache = "PROTON_LOCAL_SHADER_CACHE"; //(Disable per-game shader cache) (cachyos)
+        const QString localShaderCache = "PROTON_LOCAL_SHADER_CACHE"; //(Enable per-game shader cache even if "Shader Pre-caching is disabled) (cachyos)
         const QString noSteamInput = "PROTON_NO_STEAMINPUT"; //(Disable Steam Input) (GE, cachyos)
         const QString wineCpuTopology = "WINE_CPU_TOPOLOGY"; //(Set process affinity. If umu-protonfixes support is implemented in Nero, probably irrelevant)
 
@@ -222,7 +228,7 @@ namespace {
         const QString obsVkCapture = "OBS_VKCAPTURE";
         const QString protonPath = "PROTONPATH";
         const QString mangoapp = "--mangoapp"; // technically not a proton launch arg but w/e
-        const QString forceDefaultDevice = "MESA_VK_DEVICE_SELECT_FORCE_DEFAULT_DEVICE";
+        const QString forceIgpu = "MESA_VK_DEVICE_SELECT_FORCE_DEFAULT_DEVICE";
         const QString umuRuntimeUpdate = "UMU_RUNTIME_UPDATE";
         const QString gamemoderun = "gamemoderun";
         const QString gameId = "GAMEID";
@@ -293,16 +299,18 @@ namespace {
 
         //TBD
         const QString nvidiaLibs = "NvidiaLibs";
-        const QString fsr4 = "Fsr4";
+        const QString fsr4Upgrade = "Fsr4Upgrade";
+        const QString fsr4Indicator = "Fsr4Indicator";
         const QString fsr4Rdna3 = "Fsr4Rdna3";
         const QString xessUpgrade = "XessUpgrade";
-        const QString disableWindowDeclartion = "NoDecoration";
+        const QString noWindowDecoration = "NoDecoration";
         const QString noSteamInput = "NoSteamInput";
         const QString wineCpuTopology = "WineCpuTopology";
+        const QString localShaderCache = "LocalShaderCache";
         const QString prerunScript = "PreRunScript";
         const QString postRunScript = "PostRunScript";
         const QString mangohud = "Mangohud";
-        }
+    }
 
 }
 #endif // NERORUNNER_H

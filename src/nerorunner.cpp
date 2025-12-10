@@ -136,19 +136,21 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     if(nvApi.HasSetting() && nvApi.GetSettingVariant().toBool()) {
         env.insert(ProtonArgs::forceNvapi, TRUE);
     }
-    // TODO: do this better
-    addProperty(NeroConfig::limitGlExtensions, ProtonArgs::oldGl);
-    addProperty(NeroConfig::vkCapture, ProtonArgs::obsVkCapture);
-    addProperty(NeroConfig::forceIGpu, ProtonArgs::forceDefaultDevice);
+    QMap<QString, QString> boolOptions{
+        {NeroConfig::limitGlExtensions, ProtonArgs::oldGl},
+        {NeroConfig::vkCapture, ProtonArgs::obsVkCapture},
+        {NeroConfig::forceIGpu, ProtonArgs::forceIgpu},
+    };
+    for (auto [key, value] : boolOptions.asKeyValueRange()) {
+        addProperty(key, value);
+    }
     int fpsLimit = NeroSetting::init(NeroConfig::limitFps, *this).toInt();
     if(fpsLimit) {
         env.insert(ProtonArgs::dxvkFrameRate, QString::number(fpsLimit));
     }
     NeroSetting fileSync = NeroSetting::init(NeroConfig::fileSyncMode, *this);
     // TODO: Probably make this a method
-    int syncType = fileSync.hasShortcutSetting()
-                    ? settings->value(fileSync.shortcutSetting).toInt()
-                    : settings->value(fileSync.prefixSetting).toInt();
+    int syncType = fileSync.toInt();;
     switch(syncType) {
         // ntsync SHOULD be better in all scenarios compared to other sync options, but requires kernel 6.14+ and GE-Proton10-9+
         // For older Protons, they should be safely ignoring this and fallback to fsync anyways.
@@ -174,8 +176,9 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     }
     NeroSetting debug = NeroSetting::init(NeroConfig::debugOutput, *this);
     if(debug.HasSetting()) {
-        InitDebugProperties(debug.shortcutSetting);
-        InitDebugProperties(debug.prefixSetting);
+        for (const auto &setting : debug.getBothSettings()) {
+            InitDebugProperties(setting.toInt());
+        }
     }
     // TODO: ideally, we should set this as a colon-separated list of whitelisted "0xVID/0xPID" pairs
     //       but I guess this'll do for now.
@@ -207,7 +210,6 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     // some arguments are parsed as stringlists and others as string, so check which first.
     NeroSetting args = NeroSetting::init(NeroConfig::args, *this);
 
-    // TODO: Add get for explicitly list to replicate this functionality
     QVariant argsVar =  args.GetSettingVariant();
 
     if (argsVar.canConvert<QStringList>() && !argsVar.toStringList().isEmpty()) {
@@ -718,8 +720,7 @@ void NeroRunner::WaitLoop(QProcess &runner, QFile &log)
         log.close();
 }
 
-void NeroRunner::InitDebugProperties(QString property) {
-    int value = settings->value(property).toInt();
+void NeroRunner::InitDebugProperties(int value) {
     switch (value) {
         case NeroConstant::DebugDisabled:
             break;
