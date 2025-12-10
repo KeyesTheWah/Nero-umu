@@ -140,9 +140,23 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         {NeroConfig::limitGlExtensions, ProtonArgs::oldGl},
         {NeroConfig::vkCapture, ProtonArgs::obsVkCapture},
         {NeroConfig::forceIGpu, ProtonArgs::forceIgpu},
+        {NeroConfig::dlssIndicator, ProtonArgs::dlssIndicator},
+        {NeroConfig::nvidiaLibs, ProtonArgs::nvidiaLibs},
+        {NeroConfig::fsr4Upgrade, ProtonArgs::fsr4Upgrade},
+        {NeroConfig::fsr4Rdna3, ProtonArgs::fsr4Rdna3},
+        {NeroConfig::fsr4Indicator, ProtonArgs::fsr4Indicator},
+        {NeroConfig::xessUpgrade, ProtonArgs::xessUpgrade},
+        {NeroConfig::localShaderCache, ProtonArgs::localShaderCache},
+        {NeroConfig::noWindowDecoration, ProtonArgs::noWindowDecoration},
+        {NeroConfig::noSteamInput, ProtonArgs::noSteamInput}
+        // {NeroConfig::}
     };
     for (auto [key, value] : boolOptions.asKeyValueRange()) {
         addProperty(key, value);
+    }
+    NeroSetting cpuTopology = NeroSetting::init(NeroConfig::wineCpuTopology, *this);
+    if (cpuTopology.HasSetting()) {
+        env.insert(ProtonArgs::wineCpuTopology, cpuTopology.GetSettingValue());
     }
     int fpsLimit = NeroSetting::init(NeroConfig::limitFps, *this).toInt();
     if(fpsLimit) {
