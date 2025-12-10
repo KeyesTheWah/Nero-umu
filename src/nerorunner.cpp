@@ -150,7 +150,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     }
     NeroSetting fileSync = NeroSetting::init(NeroConfig::fileSyncMode, *this);
     // TODO: Probably make this a method
-    int syncType = fileSync.toInt();;
+    int syncType = fileSync.toInt();
     switch(syncType) {
         // ntsync SHOULD be better in all scenarios compared to other sync options, but requires kernel 6.14+ and GE-Proton10-9+
         // For older Protons, they should be safely ignoring this and fallback to fsync anyways.
