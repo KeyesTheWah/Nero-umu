@@ -74,10 +74,6 @@ public:
             }
         }
 
-        QList<QVariant> getBothSettings() {
-            return QList({shortcut, prefix});
-        }
-
         int toInt() {
             return settingVariant.toInt();
         }

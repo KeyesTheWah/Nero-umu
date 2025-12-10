@@ -34,7 +34,6 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     hashVal = hash;
     NeroSetting pathSetting = NeroSetting::init(NeroConfig::path, *this);
     QString prefixPath(NeroFS::GetPrefixesPath()->path() % '/' % NeroFS::GetCurrentPrefix());
-    QString filePath = QString(prefixPath % "/" % pathSetting.GetSettingValue()).replace(cDrive, drive_c);
     QString pathDir(pathSetting.GetSettingValue());
     QString cPath = prefixPath % '/' % drive_c;
     QString workingDir = pathDir.left(pathDir.lastIndexOf("/")).replace(cDrive, cPath);
@@ -121,13 +120,11 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     // D8VK is dependent on DXVK's existence, so forcing WineD3D overrides D8VK.
     NeroSetting forceWine = NeroSetting::init(NeroConfig::forceWineD3D, *this);
     NeroSetting noD8vk = NeroSetting::init(NeroConfig::noD8VK, *this);
-    bool hasD8vkProperty = noD8vk.HasSetting();
-    bool isD8vkDisabled = noD8vk.GetSettingVariant().toBool();
-    if(forceWine.HasSetting() && (!hasD8vkProperty || isD8vkDisabled)) {
+    bool disableD8vk = noD8vk.GetSettingVariant().toBool();
+    if(forceWine.HasSetting() && disableD8vk) {
         env.insert(ProtonArgs::useWineD3D, forceWine.convertBoolToIntString());
     } else {
-        env.insert(ProtonArgs::useWineD3D, FALSE);
-        hasD8vkProperty && isD8vkDisabled
+        disableD8vk
             ? env.insert(ProtonArgs::dxvkD3D8, FALSE)
             : env.insert(ProtonArgs::dxvkD3D8, TRUE);
     }
@@ -176,9 +173,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     }
     NeroSetting debug = NeroSetting::init(NeroConfig::debugOutput, *this);
     if(debug.HasSetting()) {
-        for (const auto &setting : debug.getBothSettings()) {
-            InitDebugProperties(setting.toInt());
-        }
+        InitDebugProperties(debug.toInt());
     }
     // TODO: ideally, we should set this as a colon-separated list of whitelisted "0xVID/0xPID" pairs
     //       but I guess this'll do for now.
@@ -205,7 +200,6 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
             env.insert(ProtonArgs::useHdr, TRUE);
         }
     }
-    // TODO: Iterate through NeroConfig properties and loop on each.
     QStringList arguments = {NeroFS::GetUmU(), pathSetting.GetSettingValue()};
     // some arguments are parsed as stringlists and others as string, so check which first.
     NeroSetting args = NeroSetting::init(NeroConfig::args, *this);
