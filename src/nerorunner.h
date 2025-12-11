@@ -142,57 +142,60 @@ signals:
 
 namespace CliArgs {
     const QString doubleDash = "--";
-    //Nvidia Launch Arguments
-    const QString forceNvapi = "PROTON_FORCE_NVAPI";
-    const QString dlssUpgrade = "PROTON_DLSS_UPGRADE"; //(Upgrade DLSS to latest version) (cachyos)
-    const QString nvidiaLibs = "PROTON_NVIDIA_LIBS"; //(Enables NVIDIA libraries (PhysX, CUDA)) (cachyos)
-    const QString dlssIndicator = "PROTON_DLSS_INDICATOR"; //Show watermark when DLSS is working) (cachyos)
 
-    //AMD Launch Arguments
-    const QString fsr4Upgrade = "PROTON_FSR4_UPGRADE"; //(Enable FSR4 for RDNA4 cards) (GE, cachyos, EM)
-    const QString fsr4Rdna3 = "PROTON_FSR_RDNA3_UPGRADE"; //(Enable FSR4 for RDNA3 cards) (GE, cachyos, EM)
-    const QString fsr4Indicator = "PROTON_FSR4_INDICATOR"; //(Show watermark when FSR4 is working) (cachyos, EM)
-
-    //XESS Launch Arguments
-    const QString xessUpgrade = "PROTON_XESS_UPGRADE"; //(Upgrade XeSS to latest version) (cachyos)
-
-    const QString localShaderCache = "PROTON_LOCAL_SHADER_CACHE"; //(Enable per-game shader cache even if "Shader Pre-caching is disabled) (cachyos)
-    const QString noSteamInput = "PROTON_NO_STEAMINPUT"; //(Disable Steam Input) (GE, cachyos)
-    const QString wineCpuTopology = "WINE_CPU_TOPOLOGY"; //(Set process affinity. If umu-protonfixes support is implemented in Nero, probably irrelevant)
 
     //Wine Compat Options
-    const QString useWineD3D = "PROTON_USE_WINED3D";
-    const QString dxvkD3D8 = "PROTON_DXVK_D3D8";
-    const QString oldGl = "PROTON_OLD_GL_STRING";
-    const QString wineprefix = "WINEPREFIX";
+    namespace Wine {
+        const QString prefix = "WINEPREFIX";
+        const QString dllOverrides = "WINEDLLOVERRIDES";
+        const QString cpuTopology = "WINE_CPU_TOPOLOGY"; //(Set process affinity. If umu-protonfixes support is implemented in Nero, probably irrelevant)
+    }
 
     //Wayland/HDR
-    const QString useHdr = "PROTON_ENABLE_HDR";
     const QString waylandDisplay = "WAYLAND_DISPLAY";
-    const QString enableWayland = "PROTON_ENABLE_WAYLAND";
-    const QString noWindowDecoration = "PROTON_NO_WM_DECORATION"; //(Disable window decorations, good for Wayland) (GE, cachyos)
-    const QString wineDllOverrides = "WINEDLLOVERRIDES";
-
-    //FSR & Gamescope
-    const QString gamescope = "gamescope";
-    const QString intScaling = "WINE_FULLSCREEN_INTEGER_SCALING"; //no fsr
-    const QString fsrScaling = "WINE_FULLSCREEN_FSR"; //enables/disables fsr
-    const QString fsrStrength = "WINE_FULLSCREEN_FSR_STRENGTH"; //strength; can be 1-5, enum?
-    const QString fsrCustom = "WINE_FULLSCREEN_FSR_CUSTOM_MODE"; //manaully set FSR width/height.
-    //Gamescope Args
 
     //Controller Stuff
-    const QString preferSdl = "PROTON_PREFER_SDL";
-    const QString hiDraw = "PROTON_ENABLE_HIDRAW";
-    const QString useXalia = "PROTON_USE_XALIA";
     const QString sdlUseButtonLabels = "SDL_GAMECONTROLLER_USE_BUTTON_LABELS";
 
     // Sync Options
-    const QString useNtSync = "PROTON_USE_NTSYNC";
-    const QString noNtSync = "PROTON_NO_NTSYNC";
-    const QString noEsync = "PROTON_NO_ESYNC";
-    const QString noFsync = "PROTON_NO_FSYNC";
+    namespace Proton {
+        const QString localShaderCache = "PROTON_LOCAL_SHADER_CACHE"; //(Enable per-game shader cache even if "Shader Pre-caching is disabled) (cachyos)
+        const QString noSteamInput = "PROTON_NO_STEAMINPUT"; //(Disable Steam Input) (GE, cachyos)
+        const QString useWineD3D = "PROTON_USE_WINED3D";
+        const QString dxvkD3D8 = "PROTON_DXVK_D3D8";
+        const QString oldGl = "PROTON_OLD_GL_STRING";
 
+        //Wayland/HDR
+        const QString enableWayland = "PROTON_ENABLE_WAYLAND";
+        const QString useHdr = "PROTON_ENABLE_HDR";
+        const QString noWindowDecoration = "PROTON_NO_WM_DECORATION"; //(Disable window decorations, good for Wayland) (GE, cachyos)
+        const QString preferSdl = "PROTON_PREFER_SDL";
+        const QString hiDraw = "PROTON_ENABLE_HIDRAW";
+        const QString useXalia = "PROTON_USE_XALIA";
+        namespace Sync {
+            const QString ntSync = "PROTON_USE_NTSYNC";
+            const QString noNtSync = "PROTON_NO_NTSYNC";
+            const QString noEsync = "PROTON_NO_ESYNC";
+            const QString noFsync = "PROTON_NO_FSYNC";
+        }
+        namespace Nvidia {
+            //Nvidia Launch Arguments
+            const QString forceNvapi = "PROTON_FORCE_NVAPI";
+            const QString dlssUpgrade = "PROTON_DLSS_UPGRADE"; //(Upgrade DLSS to latest version) (cachyos)
+            const QString libs = "PROTON_NVIDIA_LIBS"; //(Enables NVIDIA libraries (PhysX, CUDA)) (cachyos)
+            const QString dlssIndicator = "PROTON_DLSS_INDICATOR"; //Show watermark when DLSS is working) (cachyos)
+        }
+        namespace Amd {
+            //AMD Launch Arguments
+                const QString fsr4Upgrade = "PROTON_FSR4_UPGRADE"; //(Enable FSR4 for RDNA4 cards) (GE, cachyos, EM)
+                const QString fsr4Rdna3 = "PROTON_FSR_RDNA3_UPGRADE"; //(Enable FSR4 for RDNA3 cards) (GE, cachyos, EM)
+                const QString fsr4Indicator = "PROTON_FSR4_INDICATOR"; //(Show watermark when FSR4 is working) (cachyos, EM)
+        }
+        namespace Intel {
+            //XESS Launch Arguments
+            const QString xessUpgrade = "PROTON_XESS_UPGRADE"; //(Upgrade XeSS to latest version) (cachyos)
+        }
+    }
     // Misc
     const QString obsVkCapture = "OBS_VKCAPTURE";
     const QString protonPath = "PROTONPATH";
@@ -211,7 +214,12 @@ namespace CliArgs {
     const QString dxvkFrameRate = "DXVK_FRAME_RATE";
 
     namespace Gamescope {
-        const QString fullscreenArg = "-f";
+        const QString name = "gamescope";
+        const QString intScaling = "WINE_FULLSCREEN_INTEGER_SCALING"; //no fsr
+        const QString fsrScaling = "WINE_FULLSCREEN_FSR"; //enables/disables fsr
+        const QString fsrStrength = "WINE_FULLSCREEN_FSR_STRENGTH"; //strength; can be 1-5, enum?
+        const QString fsrCustom = "WINE_FULLSCREEN_FSR_CUSTOM_MODE"; //manaully set FSR width/height.
+        const QString fullscreen = "-f";
         const QString height = "-h";
         const QString width = "-w";
         namespace Upscaler {
@@ -221,7 +229,7 @@ namespace CliArgs {
             const QString pixel = "pixel";
         }
 
-        const QString fullscreen = "-F";
+        const QString filter = "-F";
         const QString fpsLimit = "-r";
         const QString unfocusedFpsLimit = "-o";
         const QString borderless = "-b";
@@ -248,29 +256,32 @@ namespace NeroConfig {
     const QString currentRunner = "CurrentRunner";
     const QString runtimeUpdate = "RuntimeUpdateOnLaunch";
     const QString dlssIndicator = "DlssIndicator";
-    const QString forceWineD3D = "ForceWineD3D";
-    const QString allowHidraw = "AllowHidraw";
-    const QString useXalia = "UseXalia";
-    const QString noD8VK = "NoD8VK";
-    const QString useWayland = "UseWayland";
-    const QString useHdr = "UseHdr";
+
+
     const QString path = "Path";
-    const QString limitGlExtensions = "LimitGLextensions";
-
-    //FSR Custom Resolutions
-    const QString fsrCustomW = "FSRcustomResW";
-    const QString fsrCustomH = "FSRcustomResH";
-
     //OBS
     const QString vkCapture = "VKcapture";
 
     //Force Integrated GPU
     const QString forceIGpu = "ForceiGPU";
 
-    const QString scalingMode = "Scaling Mode";
 
-    // TODO: Standardize
+    namespace Proton {
+        const QString forceWineD3D = "ForceWineD3D";
+        const QString allowHidraw = "AllowHidraw";
+        const QString useXalia = "UseXalia";
+        const QString noD8VK = "NoD8VK";
+        const QString useWayland = "UseWayland";
+        const QString useHdr = "UseHdr";
+        const QString limitGlExtensions = "LimitGLextensions";
+    }
+
+    // TODO: Standardize Resolutions
     namespace Gamescope{
+        //FSR Custom Resolutions
+        const QString scalingMode = "ScalingMode";
+        const QString fsrCustomW = "FSRcustomResW";
+        const QString fsrCustomH = "FSRcustomResH";
         const QString filter = "GamescopeFilter";
         const QString outputResH = "GamescopeOutResH";
         const QString outputResW = "GamescopeOutResW";
