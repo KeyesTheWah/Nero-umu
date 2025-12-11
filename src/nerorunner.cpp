@@ -187,7 +187,6 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
             ? env.insert(CliArgs::Proton::useXalia, TRUE)
             : env.insert(CliArgs::Proton::useXalia, FALSE);
 
-    // TODO: These aren't proton args change the damn name
     bool isWaylandEnv = env.contains(CliArgs::waylandDisplay)
             ? !env.value(CliArgs::waylandDisplay).isEmpty()
             : false;

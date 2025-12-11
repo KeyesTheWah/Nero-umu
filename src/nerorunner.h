@@ -63,7 +63,7 @@ public:
             this->prefixSetting = prefixSettings % '/' % settingName;
             shortcut = parent.settings->value(shortcutSetting);
             prefix = parent.settings->value(prefixSetting);
-            if (shortcut != QVariant()) {
+            if (shortcut != QVariant()) { //blank QVariant means its default and has no value
                 settingVariant = shortcut;
                 this->hasShortcut = true;
             } else {
@@ -83,10 +83,10 @@ public:
 
         bool hasSettingAndToBool() { return hasSetting() && settingVariant.toBool(); }
 
-        //check if its a default variant for missing property
-
         QStringList toStringList() { return settingVariant.toStringList(); }
+        
         QVariant getSettingVariant() { return settingVariant; }
+        
         QString convertBoolToIntString() { return QString::number(settingVariant.toBool()); }
     private:
         bool hasShortcut = false;
