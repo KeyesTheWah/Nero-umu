@@ -660,20 +660,18 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
 
 // This is really REALLY jank but i dont want to fuck with anything outside this class.
 int NeroRunner::ConvertScaling(int scalingMode) {
-    int convertedScalingNormal = -1;
     int convertedIntegerScaling = 7;
     switch(scalingMode) {
-        case NeroConstant::ScalingNormal:
-            return convertedScalingNormal; 
         case NeroConstant::ScalingIntegerScale:
             return convertedIntegerScaling;
+        case NeroConstant::ScalingNormal:
         case NeroConstant::ScalingFSRperformance:
         case NeroConstant::ScalingFSRbalanced:
         case NeroConstant::ScalingFSRquality:
         case NeroConstant::ScalingFSRhighquality:
         case NeroConstant::ScalingFSRhigherquality:
         case NeroConstant::ScalingFSRhighestquality:
-            return scalingMode--; //decrement all FSR
+            return scalingMode--; //decrement all FSR Scaling & Normal Scaling
         default:
             return scalingMode;
     }
