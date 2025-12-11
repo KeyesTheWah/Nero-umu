@@ -238,27 +238,27 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     scalingMode = ConvertScaling(scalingMode); //convert to more sensible ints for this method
     switch(scalingMode) {
     // TODO: redo like all of this
-    case NeroConstant::ScalingIntegerScale:
+    case NeroConfig::Gamescope::Scaling::IntegerScale:
         env.insert(CliArgs::Gamescope::fsrScaling, TRUE);
         env.insert(CliArgs::Gamescope::intScaling, TRUE);
         break;
-    case NeroConstant::ScalingFSRperformance:
-    case NeroConstant::ScalingFSRbalanced:
-    case NeroConstant::ScalingFSRquality:
-    case NeroConstant::ScalingFSRhighquality:
-    case NeroConstant::ScalingFSRhigherquality:
-    case NeroConstant::ScalingFSRhighestquality:
+    case NeroConfig::Gamescope::Scaling::FsrPerformance:
+    case NeroConfig::Gamescope::Scaling::FsrBalanced:
+    case NeroConfig::Gamescope::Scaling::FsrQuality:
+    case NeroConfig::Gamescope::Scaling::FsrHighQuality:
+    case NeroConfig::Gamescope::Scaling::FsrHigherQuality:
+    case NeroConfig::Gamescope::Scaling::FsrHighestQuality:
         env.insert(CliArgs::Gamescope::fsrScaling, TRUE);
         env.insert(CliArgs::Gamescope::fsrStrength, QString::number(scalingMode));
         break;
-    case NeroConstant::ScalingFSRcustom: {
+    case NeroConfig::Scaling::FsrCustom: {
         env.insert(CliArgs::Gamescope::fsrScaling, TRUE);
         QString fsrHeight = NeroSetting(NeroConfig::Gamescope::fsrCustomH, *this).toString();
         QString fsrWidth = NeroSetting(NeroConfig::Gamescope::fsrCustomW, *this).toString();
         env.insert(CliArgs::Gamescope::fsrCustom, fsrWidth % 'x' % fsrHeight);
         break;
     }
-    case NeroConstant::ScalingGamescopeFullscreen: {
+    case NeroConstant::Scaling::GamescopeFullscreen: {
         arguments.prepend(CliArgs::doubleDash);
         arguments.prepend(CliArgs::Gamescope::fullscreen);
         QMap<QString, QString> resMap{
@@ -288,10 +288,10 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         arguments.prepend(CliArgs::Gamescope::name);
         break;
     }
-    case NeroConstant::ScalingGamescopeBorderless:
+    case NeroConstant::Scaling::GamescopeBorderless:
         arguments.prepend(CliArgs::doubleDash);
         arguments.prepend(CliArgs::Gamescope::borderless);
-    case NeroConstant::ScalingGamescopeWindowed: {
+    case NeroConstant::Scaling::GamescopeWindowed: {
         if(!arguments.contains(CliArgs::doubleDash)) {
             arguments.prepend(CliArgs::doubleDash);
         }
@@ -324,7 +324,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         arguments.prepend(CliArgs::Gamescope::name);
         break;
     }
-    case NeroConstant::ScalingNormal:
+    case NeroConfig::Gamescope::Scaling::Normal:
         break;
     }
     bool mangoHudEnabled = NeroSetting(NeroConfig::mangohud, *this).hasSettingAndToBool();
