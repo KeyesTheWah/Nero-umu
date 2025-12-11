@@ -52,8 +52,7 @@ public:
     } WinVers_e;
 
     static enum {
-        ScalingNormal = 0,
-        ScalingIntegerScale,
+        ScalingNormal = -1,
         ScalingFSRperformance,
         ScalingFSRbalanced,
         ScalingFSRquality,
@@ -61,6 +60,7 @@ public:
         ScalingFSRhigherquality,
         ScalingFSRhighestquality,
         ScalingFSRcustom,
+        ScalingIntegerScale,
         ScalingGamescopeWindowed,
         ScalingGamescopeBorderless,
         ScalingGamescopeFullscreen
