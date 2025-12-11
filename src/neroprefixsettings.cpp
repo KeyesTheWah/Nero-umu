@@ -102,7 +102,6 @@ NeroPrefixSettingsWindow::NeroPrefixSettingsWindow(QWidget *parent, const QStrin
             winVersionListBackwards.append(ui->winVerBox->itemText(i-1));
     }
 
-    // TODO: Double check this is all okay
     // FSR scalers are only implem'd in GE-Proton
     if(!ui->prefixRunner->currentText().startsWith("GE-Proton")) {
         SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRperformance, false);
