@@ -26,6 +26,7 @@
 #include <QProcessEnvironment>
 #include <QFile>
 #include <QStringBuilder>
+#include <qvariant.h>
 
 class NeroRunner : public QObject
 {
@@ -54,62 +55,51 @@ public:
 
     struct NeroSetting {
     public:
-        QVariant settingVariant;
         NeroSetting(){}
 
-        static NeroSetting init(QString settingName, NeroRunner &parent) {
-            NeroSetting currentSetting(settingName, parent);
-            currentSetting.setVariant(parent);
-            return currentSetting;
-        }
-
-        void setVariant(NeroRunner &parent) {
-            QVariant shortcut = parent.settings->value(shortcutSetting);
-            QVariant prefix = parent.settings->value(prefixSetting);
-            if (CheckSetting(shortcut)) {
-                settingVariant = shortcut;
-            } else {
-                settingVariant = prefix;
-                this->hasShortcut = true;
-            }
-        }
-
-        QString toString() {
-            return settingVariant.toString();
-        }
-
-        bool hasShortcutSetting() {
-            return hasShortcut;
-        }
-
-        bool HasSetting() {
-            return CheckSetting(shortcutSetting) || CheckSetting(prefixSetting);
-        }
-
-        bool CheckSetting(QVariant v) {
-            return v!= QVariant(); //check if its a default variant for missing property
-        }
-
-        QStringList toList() {return settingVariant.toStringList();}
-        QStringList GetSetingList() {return settingVariant.toStringList();}
-        QVariant GetSettingVariant() {return settingVariant;}
-        QString GetSettingValue() {return settingVariant.toString();}
-        QString convertBoolToIntString() {return QString::number(settingVariant.toBool());}
-    private:
-        NeroSetting (QString &settingName, NeroRunner &parent) {
+        NeroSetting (const QString settingName, NeroRunner &parent) {
             QString hash = parent.GetHash();
             this->shortcutSetting =  shortcuts % hash % '/' % settingName;
             this->prefixSetting = prefixSettings % '/' % settingName;
+            shortcut = parent.settings->value(shortcutSetting);
+            prefix = parent.settings->value(prefixSetting);
+            if (shortcut != QVariant()) {
+                settingVariant = shortcut;
+                this->hasShortcut = true;
+            } else {
+                settingVariant = prefix;
+            }
         }
+
+        int toInt() { return settingVariant.toInt(); }
+
+        bool toBool() { return settingVariant.toBool(); }
+
+        QString toString() { return settingVariant.toString(); }
+
+        bool hasShortcutSetting() { return hasShortcut; }
+
+        bool hasSetting() { return shortcutSetting != QVariant() || prefixSetting != QVariant(); }
+
+        bool hasSettingAndToBool() { return hasSetting() && settingVariant.toBool(); }
+
+        //check if its a default variant for missing property
+
+        QStringList toStringList() { return settingVariant.toStringList(); }
+        QVariant getSettingVariant() { return settingVariant; }
+        QString convertBoolToIntString() { return QString::number(settingVariant.toBool()); }
+    private:
         bool hasShortcut = false;
         QString shortcutSetting;
         QString prefixSetting;
         QVariant shortcut;
         QVariant prefix;
+        QVariant settingVariant;
         const QString shortcuts = "Shortcuts--";
         const QString prefixSettings = "PrefixSettings";
     };
 private:
+    QString GamescopeFilterType(int filterVal);
     // TODO: All Structs are TBD, im just fuckin around with what these could be
     // enum {
     //     SHORTCUTS = 0,
@@ -141,25 +131,17 @@ private:
     const QString drive_c = "drive_c/";
 
     const QString ge109 = "GE-Proton10-9";
-
+    void InitSimpleBoolSettings();
     void InitDebugProperties(int value);
     QString hashVal;
-    bool HasSetting(QString setting) {
-        return !settings->value(setting).toStringList().isEmpty()
-               || !settings->value(setting).toString().isEmpty();
-    }
-    void addProperty(QString field, QString property) {
-        NeroSetting setting = NeroSetting::init(field, *this);
-        if (setting.HasSetting() && setting.GetSettingVariant().toBool()) {
-            env.insert(property, TRUE);
-        }
-    }
+
     
 signals:
     void StatusUpdate(int);
 };
 
-namespace ProtonArgs {
+namespace CliArgs {
+    const QString doubleDash = "--";
     //Nvidia Launch Arguments
     const QString forceNvapi = "PROTON_FORCE_NVAPI";
     const QString dlssUpgrade = "PROTON_DLSS_UPGRADE"; //(Upgrade DLSS to latest version) (cachyos)
@@ -198,10 +180,6 @@ namespace ProtonArgs {
     const QString fsrStrength = "WINE_FULLSCREEN_FSR_STRENGTH"; //strength; can be 1-5, enum?
     const QString fsrCustom = "WINE_FULLSCREEN_FSR_CUSTOM_MODE"; //manaully set FSR width/height.
     //Gamescope Args
-    const QString fsrArg = "-F";
-    const QString fullscreenArg = "-f";
-    const QString widthArg = "-w";
-    const QString heightArg = "-h";
 
     //Controller Stuff
     const QString preferSdl = "PROTON_PREFER_SDL";
@@ -218,7 +196,7 @@ namespace ProtonArgs {
     // Misc
     const QString obsVkCapture = "OBS_VKCAPTURE";
     const QString protonPath = "PROTONPATH";
-    const QString mangoapp = "--mangoapp"; // technically not a proton launch arg but w/e
+    const QString mangoapp = "--mangoapp";
     const QString forceIgpu = "MESA_VK_DEVICE_SELECT_FORCE_DEFAULT_DEVICE";
     const QString umuRuntimeUpdate = "UMU_RUNTIME_UPDATE";
     const QString gamemoderun = "gamemoderun";
@@ -231,6 +209,25 @@ namespace ProtonArgs {
 
     // TODO: Remove
     const QString dxvkFrameRate = "DXVK_FRAME_RATE";
+
+    namespace Gamescope {
+        const QString fullscreenArg = "-f";
+        const QString height = "-h";
+        const QString width = "-w";
+        namespace Upscaler {
+            const QString nearest = "nearest";
+            const QString fsr = "fsr";
+            const QString nvidiaImageSharpening = "nis";
+            const QString pixel = "pixel";
+        }
+
+        const QString fullscreen = "-F";
+        const QString fpsLimit = "-r";
+        const QString unfocusedFpsLimit = "-o";
+        const QString borderless = "-b";
+        const QString windowedWidth = "-W";
+        const QString windowedHeight = "-H";
+    }
 
         // // TODO: Use enum names somehow
         // enum {
@@ -245,7 +242,7 @@ namespace ProtonArgs {
         //     WINE_FULLSCREEN_FSR_STRENGTH,
         //     WINE_FULLSCREEN_FSR_CUSTOM_MODE
         // }WineScaling_e;
-    }
+}
 namespace NeroConfig {
     const QString name = "Name";
     const QString currentRunner = "CurrentRunner";
@@ -273,10 +270,13 @@ namespace NeroConfig {
     const QString scalingMode = "Scaling Mode";
 
     // TODO: Standardize
-    const QString gamescopeFilter = "GamescopeFilter";
-    const QString gamescopeOutResH = "GamescopeOutResH";
-    const QString gamescopeOutResW = "GamescopeOutResW";
-
+    namespace Gamescope{
+        const QString filter = "GamescopeFilter";
+        const QString outputResH = "GamescopeOutResH";
+        const QString outputResW = "GamescopeOutResW";
+        const QString windowedResH = "GamescopeWinResH";
+        const QString windowedResW = "GamescopeWinResW";
+    }
     const QString debugOutput = "DebugOutput";
     const QString enableNvApi = "EnableNVAPI";
 
