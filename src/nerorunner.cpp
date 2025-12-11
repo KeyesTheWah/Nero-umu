@@ -235,6 +235,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     }
 
     int scalingMode = NeroSetting(NeroConfig::Gamescope::scalingMode, *this).toInt();
+    scalingMode = ConvertScaling(scalingMode); //convert to more sensible ints for this method
     switch(scalingMode) {
     // TODO: redo like all of this
     case NeroConstant::ScalingIntegerScale:
@@ -657,7 +658,26 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
     return runner.exitCode();
 }
 
-
+// This is really REALLY jank but i dont want to fuck with anything outside this class.
+int NeroRunner::ConvertScaling(int scalingMode) {
+    int convertedScalingNormal = -1;
+    int convertedIntegerScaling = 7;
+    switch(scalingMode) {
+        case NeroConstant::ScalingNormal:
+            return convertedScalingNormal; 
+        case NeroConstant::ScalingIntegerScale:
+            return convertedIntegerScaling;
+        case NeroConstant::ScalingFSRperformance:
+        case NeroConstant::ScalingFSRbalanced:
+        case NeroConstant::ScalingFSRquality:
+        case NeroConstant::ScalingFSRhighquality:
+        case NeroConstant::ScalingFSRhigherquality:
+        case NeroConstant::ScalingFSRhighestquality:
+            return scalingMode--; //decrement all FSR
+        default:
+            return scalingMode;
+    }
+}
 
 void NeroRunner::WaitLoop(QProcess &runner, QFile &log)
 {

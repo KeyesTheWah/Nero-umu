@@ -99,6 +99,7 @@ public:
         const QString prefixSettings = "PrefixSettings";
     };
 private:
+    int ConvertScaling(int scalingVal);
     QString GamescopeFilterType(int filterVal);
     // TODO: All Structs are TBD, im just fuckin around with what these could be
     // enum {
