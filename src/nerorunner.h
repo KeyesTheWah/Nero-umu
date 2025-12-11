@@ -279,6 +279,20 @@ namespace NeroConfig {
 
     // TODO: Standardize Resolutions
     namespace Gamescope{
+        enum Scaling {
+            Normal = -1,
+            FsrPerformance,
+            FsrBalanced,
+            FsrQuality,
+            FsrHighQuality,
+            FsrHigherQuality,
+            FsrHighestQuality,
+            FsrCustom,
+            IntegerScale,
+            GamescopeWindowed,
+            GamescopeBorderless,
+            GamescopeFullscreen
+        };
         //FSR Custom Resolutions
         const QString scalingMode = "ScalingMode";
         const QString fsrCustomW = "FSRcustomResW";
