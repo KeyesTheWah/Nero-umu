@@ -251,77 +251,36 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         env.insert(CliArgs::Gamescope::fsrScaling, TRUE);
         env.insert(CliArgs::Gamescope::fsrStrength, QString::number(scalingMode));
         break;
-    case NeroConfig::Scaling::FsrCustom: {
+    case NeroConfig::Gamescope::Scaling::FsrCustom: {
         env.insert(CliArgs::Gamescope::fsrScaling, TRUE);
         QString fsrHeight = NeroSetting(NeroConfig::Gamescope::fsrCustomH, *this).toString();
         QString fsrWidth = NeroSetting(NeroConfig::Gamescope::fsrCustomW, *this).toString();
         env.insert(CliArgs::Gamescope::fsrCustom, fsrWidth % 'x' % fsrHeight);
         break;
     }
-    case NeroConstant::Scaling::GamescopeFullscreen: {
+    case NeroConfig::Gamescope::Scaling::Fullscreen: {
         arguments.prepend(CliArgs::doubleDash);
         arguments.prepend(CliArgs::Gamescope::fullscreen);
-        QMap<QString, QString> resMap{
+        QMap<QString, QString> resMap {
             {CliArgs::Gamescope::height, NeroConfig::Gamescope::outputResH},
             {CliArgs::Gamescope::width, NeroConfig::Gamescope::outputResW}
         };
-        for(auto [arg, setting] : resMap.asKeyValueRange()) {
-            NeroSetting s (setting, *this);
-            if (s.toInt()) {
-                arguments.prepend(s.toString());
-                arguments.prepend(arg);
-            }
-        }
-        int filterVal = NeroSetting(NeroConfig::Gamescope::filter, *this).toInt();
-        if(filterVal) {
-            arguments.prepend(GamescopeFilterType(filterVal));
-            arguments.prepend(CliArgs::Gamescope::filter);
-        }
-        if(fpsLimit) {
-            QByteArray a = QByteArray::number(fpsLimit);
-            arguments.prepend(a);
-            arguments.prepend(CliArgs::Gamescope::fpsLimit);
-            arguments.prepend(a);
-            arguments.prepend(CliArgs::Gamescope::unfocusedFpsLimit);
-        }
-        //arguments.prepend("--adaptive-sync");
-        arguments.prepend(CliArgs::Gamescope::name);
-        break;
+        arguments = SetGamescopeArgs(resMap, arguments, fpsLimit);
     }
-    case NeroConstant::Scaling::GamescopeBorderless:
+    case NeroConfig::Gamescope::Scaling::Borderless:
         arguments.prepend(CliArgs::doubleDash);
         arguments.prepend(CliArgs::Gamescope::borderless);
-    case NeroConstant::Scaling::GamescopeWindowed: {
+    case NeroConfig::Gamescope::Scaling::Windowed: {
         if(!arguments.contains(CliArgs::doubleDash)) {
             arguments.prepend(CliArgs::doubleDash);
         }
-        QMap<QString, QString> resMap{
+        QMap<QString, QString> resMap {
             {CliArgs::Gamescope::windowedHeight, NeroConfig::Gamescope::windowedResH},
             {CliArgs::Gamescope::windowedWidth, NeroConfig::Gamescope::windowedResW},
             {CliArgs::Gamescope::height, NeroConfig::Gamescope::outputResH},
             {CliArgs::Gamescope::width, NeroConfig::Gamescope::outputResW}
         };
-        for(auto [arg, setting] : resMap.asKeyValueRange()) {
-            NeroSetting s (setting, *this);
-            if (s.toInt()) {
-                arguments.prepend(s.toString());
-                arguments.prepend(arg);
-            }
-        }
-        int filterVal = NeroSetting(NeroConfig::Gamescope::filter, *this).toInt();
-        if(filterVal) {
-            arguments.prepend(GamescopeFilterType(filterVal));
-            arguments.prepend(CliArgs::Gamescope::filter);
-        }
-        if(fpsLimit) {
-            QByteArray a = QByteArray::number(fpsLimit);
-            arguments.prepend(a);
-            arguments.prepend(CliArgs::Gamescope::fpsLimit);
-            arguments.prepend(a);
-            arguments.prepend(CliArgs::Gamescope::unfocusedFpsLimit);
-        }
-        //arguments.prepend("--adaptive-sync");
-        arguments.prepend(CliArgs::Gamescope::name);
+        arguments = SetGamescopeArgs(resMap, arguments, fpsLimit);
         break;
     }
     case NeroConfig::Gamescope::Scaling::Normal:
@@ -343,24 +302,24 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     // settings->value("Shortcuts--"+hash+"/Path").toString();
 
     runner.setWorkingDirectory(workingDir);
-    QString command = arguments.takeFirst();
 
     QDir logsDir(prefixPath);
-    if(!logsDir.exists(".logs"))
-        logsDir.mkdir(".logs");
-    logsDir.cd(".logs");
+    if(!logsDir.exists())
+        logsDir.mkdir(logDirName);
+    logsDir.cd(logDirName);
     QString name = NeroSetting(NeroConfig::name, *this).toString();
-    QFile log(logsDir.path() % '/' % name % '-' % hash % ".txt");
+    QFile log(logsDir.path() % '/' % name % '-' % hash % txtExtension);
+    QString command = arguments.takeFirst();
     if(loggingEnabled) {
         log.open(QIODevice::WriteOnly);
         log.resize(0);
-        log.write("Current running environment:\n");
+        log.write(Logs::currentlyRunning.toLocal8Bit());
         log.write(runner.environment().join('\n').toLocal8Bit());
-        log.write("\n\nRunning command:\n" + command.toLocal8Bit() + ' ' + arguments.join(' ').toLocal8Bit() + '\n');
-        log.write("==============================================\n");
+        log.write(Logs::runningCommand.toLocal8Bit() % command.toLocal8Bit() + ' ' % arguments.join(' ').toLocal8Bit() % '\n');
+        log.write(Logs::blankLine.toLocal8Bit());
     }
 
-    // runner.start(command, arguments);
+    runner.start(command, arguments);
     runner.waitForStarted(-1);
 
     WaitLoop(runner, log);
@@ -383,19 +342,43 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     return runner.exitCode();
 }
 
+QStringList NeroRunner::SetGamescopeArgs(QMap<QString, QString> resMap, QStringList arguments, int fpsLimit) {
+    for(auto [arg, setting] : resMap.asKeyValueRange()) {
+        NeroSetting s (setting, *this);
+        if (s.toInt()) {
+            arguments.prepend(s.toString());
+            arguments.prepend(arg);
+        }
+    }
+    int filterVal = NeroSetting(NeroConfig::Gamescope::filter, *this).toInt();
+    if(filterVal) {
+        arguments.prepend(GamescopeFilterType(filterVal));
+        arguments.prepend(CliArgs::Gamescope::filter);
+    }
+    if(fpsLimit) {
+        QByteArray a = QByteArray::number(fpsLimit);
+        arguments.prepend(a);
+        arguments.prepend(CliArgs::Gamescope::fpsLimit);
+        arguments.prepend(a);
+        arguments.prepend(CliArgs::Gamescope::unfocusedFpsLimit);
+    }
+    arguments.prepend(CliArgs::Gamescope::name);
+    return arguments;
+}
+
 QString NeroRunner::GamescopeFilterType(int filterVal) {
     switch(filterVal) {
-    case NeroConstant::GSfilterNearest:
-        return CliArgs::Gamescope::Upscaler::nearest;
-    case NeroConstant::GSfilterFSR:
-        return CliArgs::Gamescope::Upscaler::fsr;
-    case NeroConstant::GSfilterNLS:
-        return CliArgs::Gamescope::Upscaler::nvidiaImageSharpening;
-    case NeroConstant::GSfilterPixel:
-        return CliArgs::Gamescope::Upscaler::pixel;
-    // Need to confirm on this or if we should just return blank
-    default:
-        return CliArgs::Gamescope::Upscaler::pixel;
+        case NeroConstant::GSfilterNearest:
+            return CliArgs::Gamescope::Upscaler::nearest;
+        case NeroConstant::GSfilterFSR:
+            return CliArgs::Gamescope::Upscaler::fsr;
+        case NeroConstant::GSfilterNLS:
+            return CliArgs::Gamescope::Upscaler::nvidiaImageSharpening;
+        case NeroConstant::GSfilterPixel:
+            return CliArgs::Gamescope::Upscaler::pixel;
+        // Need to confirm on this or if we should just return blank
+        default:
+            return CliArgs::Gamescope::Upscaler::pixel;
     }
 }
 
@@ -660,20 +643,18 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
 
 // This is really REALLY jank but i dont want to fuck with anything outside this class.
 int NeroRunner::ConvertScaling(int scalingMode) {
-    int convertedScalingNormal = -1;
     int convertedIntegerScaling = 7;
     switch(scalingMode) {
-        case NeroConstant::ScalingNormal:
-            return convertedScalingNormal; 
         case NeroConstant::ScalingIntegerScale:
             return convertedIntegerScaling;
+        case NeroConstant::ScalingNormal:
         case NeroConstant::ScalingFSRperformance:
         case NeroConstant::ScalingFSRbalanced:
         case NeroConstant::ScalingFSRquality:
         case NeroConstant::ScalingFSRhighquality:
         case NeroConstant::ScalingFSRhigherquality:
         case NeroConstant::ScalingFSRhighestquality:
-            return scalingMode--; //decrement all FSR
+            return scalingMode--; //decrement all FSR Scaling & Normal Scaling
         default:
             return scalingMode;
     }

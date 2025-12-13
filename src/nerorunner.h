@@ -52,7 +52,8 @@ public:
         RunnerProtonStopping,
         RunnerProtonStopped
     } RunnerStatus_e;
-
+    const QString logDirName = ".logs";
+    const QString txtExtension = ".txt";
     struct NeroSetting {
     public:
         NeroSetting(){}
@@ -134,6 +135,7 @@ private:
     const QString ge109 = "GE-Proton10-9";
     void InitSimpleBoolSettings();
     void InitDebugProperties(int value);
+    QStringList SetGamescopeArgs(QMap<QString, QString> resMap, QStringList arguments, int fpsLimit);
     QString hashVal;
 
     
@@ -141,9 +143,16 @@ signals:
     void StatusUpdate(int);
 };
 
-namespace CliArgs {
-    const QString doubleDash = "--";
+namespace Logs {
+    const QString newLine = "\n";
+    const QString currentlyRunning = "Current running environment:" % newLine;
+    const QString runningCommand = newLine % newLine % "Running command:" % newLine;
+    const QString blankLine = "==============================================" % newLine;
+}
 
+namespace CliArgs {
+    const QString dash = "-";
+    const QString doubleDash = dash % dash;
 
     //Wine Compat Options
     namespace Wine {
@@ -289,9 +298,9 @@ namespace NeroConfig {
             FsrHighestQuality,
             FsrCustom,
             IntegerScale,
-            GamescopeWindowed,
-            GamescopeBorderless,
-            GamescopeFullscreen
+            Windowed,
+            Borderless,
+            Fullscreen
         };
         //FSR Custom Resolutions
         const QString scalingMode = "ScalingMode";
