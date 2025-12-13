@@ -52,8 +52,36 @@ public:
         RunnerProtonStopping,
         RunnerProtonStopped
     } RunnerStatus_e;
+    struct PrefixSetting {
+    public:
+        PrefixSetting(const QString settingName, NeroRunner &parent) {
+            QString hash = parent.GetHash();
+            this->prefixSetting = prefixSettings % '/' % settingName;
+            prefix = parent.settings->value(prefixSetting);
+        }
 
-    struct NeroSetting {
+    int toInt() { return settingVariant.toInt(); }
+
+    bool toBool() { return settingVariant.toBool(); }
+
+    QString toString() { return settingVariant.toString(); }
+
+    bool hasSetting() { return prefixSetting != QVariant(); }
+
+    bool hasSettingAndToBool() { return hasSetting() && settingVariant.toBool(); }
+
+    QStringList toStringList() { return settingVariant.toStringList(); }
+    
+    QVariant getSettingVariant() { return settingVariant; }
+    
+    QString convertBoolToIntString() { return QString::number(settingVariant.toBool()); }
+    private:
+        QString prefixSetting;
+        QVariant prefix;
+        QVariant settingVariant;
+        const QString prefixSettings = "PrefixSettings";
+    };
+    struct NeroSetting :  PrefixSetting {
     public:
         NeroSetting(){}
 
@@ -71,35 +99,22 @@ public:
             }
         }
 
-        int toInt() { return settingVariant.toInt(); }
-
-        bool toBool() { return settingVariant.toBool(); }
-
-        QString toString() { return settingVariant.toString(); }
-
         bool hasShortcutSetting() { return hasShortcut; }
 
         bool hasSetting() { return shortcutSetting != QVariant() || prefixSetting != QVariant(); }
-
-        bool hasSettingAndToBool() { return hasSetting() && settingVariant.toBool(); }
-
-        QStringList toStringList() { return settingVariant.toStringList(); }
         
-        QVariant getSettingVariant() { return settingVariant; }
-        
-        QString convertBoolToIntString() { return QString::number(settingVariant.toBool()); }
     private:
         bool hasShortcut = false;
         QString shortcutSetting;
-        QString prefixSetting;
         QVariant shortcut;
-        QVariant prefix;
         QVariant settingVariant;
         const QString shortcuts = "Shortcuts--";
-        const QString prefixSettings = "PrefixSettings";
     };
 private:
     int ConvertScaling(int scalingVal);
+    void SetSyncMode(QString protonRunner, int syncType);
+    void SetScalingMode(int scalingType);
+    QMap<QString, QString> InsertArgs(QMap<QString, QString> properties);
     QString GamescopeFilterType(int filterVal);
     // TODO: All Structs are TBD, im just fuckin around with what these could be
     // enum {
@@ -132,7 +147,6 @@ private:
     const QString drive_c = "drive_c/";
 
     const QString ge109 = "GE-Proton10-9";
-    void InitSimpleBoolSettings();
     void InitDebugProperties(int value);
     QString hashVal;
 
