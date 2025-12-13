@@ -54,44 +54,46 @@ public:
     } RunnerStatus_e;
     struct PrefixSetting {
     public:
+        PrefixSetting(){}
+
         PrefixSetting(const QString settingName, NeroRunner &parent) {
             QString hash = parent.GetHash();
-            this->prefixSetting = prefixSettings % '/' % settingName;
-            prefix = parent.settings->value(prefixSetting);
+            settingVariant = parent.settings->value(prefixSettings % '/' % settingName);
         }
-
-    int toInt() { return settingVariant.toInt(); }
-
-    bool toBool() { return settingVariant.toBool(); }
-
-    QString toString() { return settingVariant.toString(); }
-
-    bool hasSetting() { return prefixSetting != QVariant(); }
-
-    bool hasSettingAndToBool() { return hasSetting() && settingVariant.toBool(); }
-
-    QStringList toStringList() { return settingVariant.toStringList(); }
-    
-    QVariant getSettingVariant() { return settingVariant; }
-    
-    QString convertBoolToIntString() { return QString::number(settingVariant.toBool()); }
-    private:
-        QString prefixSetting;
-        QVariant prefix;
-        QVariant settingVariant;
         const QString prefixSettings = "PrefixSettings";
+
+        int toInt() { return settingVariant.toInt(); }
+
+        bool toBool() { return settingVariant.toBool(); }
+
+        QString toString() { return settingVariant.toString(); }
+
+        bool hasSetting() { return settingVariant != QVariant(); }
+
+        bool hasSettingAndToBool() { return hasSetting() && settingVariant.toBool(); }
+
+        QStringList toStringList() { return settingVariant.toStringList(); }
+
+        QVariant getSettingVariant() { return settingVariant; }
+
+        QString convertBoolToIntString() { return QString::number(settingVariant.toBool()); }
+
+    private:
+        QVariant settingVariant;
     };
-    struct NeroSetting :  PrefixSetting {
+    struct NeroSetting : PrefixSetting {
     public:
         NeroSetting(){}
 
         NeroSetting (const QString settingName, NeroRunner &parent) {
             QString hash = parent.GetHash();
-            this->shortcutSetting =  shortcuts % hash % '/' % settingName;
-            this->prefixSetting = prefixSettings % '/' % settingName;
-            shortcut = parent.settings->value(shortcutSetting);
-            prefix = parent.settings->value(prefixSetting);
-            if (shortcut != QVariant()) { //blank QVariant means its default and has no value
+            QString shortcutProperty =  shortcuts % hash % '/' % settingName;
+            QString prefixProperty = prefixProperty % '/' % settingName;
+            shortcut = parent.settings->value(shortcutProperty);
+            prefix = parent.settings->value(prefixProperty);
+            //blank QVariant means its default and is an invalid variant,
+            //same as if we pulled an invalid property.
+            if (shortcut != QVariant()) {
                 settingVariant = shortcut;
                 this->hasShortcut = true;
             } else {
@@ -101,45 +103,22 @@ public:
 
         bool hasShortcutSetting() { return hasShortcut; }
 
-        bool hasSetting() { return shortcutSetting != QVariant() || prefixSetting != QVariant(); }
+        bool hasSetting() { return shortcut != QVariant() || prefix != QVariant(); }
         
     private:
         bool hasShortcut = false;
-        QString shortcutSetting;
+        QVariant prefix;
         QVariant shortcut;
         QVariant settingVariant;
         const QString shortcuts = "Shortcuts--";
-    };
+};
 private:
     int ConvertScaling(int scalingVal);
     void SetSyncMode(QString protonRunner, int syncType);
-    void SetScalingMode(int scalingType);
-    QMap<QString, QString> InsertArgs(QMap<QString, QString> properties);
+    QStringList SetScalingMode(int scalingType, int fpsLimit, bool isPrefixOnly, QStringList arguments);
+    QMap<QString, QString> InsertArgs(QMap<QString, QString> properties, bool isPrefixOnly);
     QString GamescopeFilterType(int filterVal);
-    // TODO: All Structs are TBD, im just fuckin around with what these could be
-    // enum {
-    //     SHORTCUTS = 0,
-    //     PREFIX_SETTINGS
-    // } PrefixSetting_e;
 
-    // struct Command {
-    //     PrefixSetting_e settingLocation;
-    //     QString command;
-    // };
-    struct FilterResolution {
-        NeroSetting setting;
-        QString width;
-        QString height;
-    };
-    struct GamescopeFilter {
-        QString scalingType;
-        int scalingValue;
-    };
-
-    struct Resolution {
-        NeroSetting property;
-
-    };
     const QString FALSE = "0";
     const QString TRUE = "1";
 
@@ -156,7 +135,8 @@ signals:
 };
 
 namespace CliArgs {
-    const QString doubleDash = "--";
+    const QString dash = "-";
+    const QString doubleDash = dash % dash;
 
 
     //Wine Compat Options
@@ -225,7 +205,7 @@ namespace CliArgs {
     const QString run = "run";
     const QString waitForExitRun = "waitforexitandrun";
 
-    // TODO: Remove
+    // Remove at some point
     const QString dxvkFrameRate = "DXVK_FRAME_RATE";
 
     namespace Gamescope {
@@ -251,21 +231,8 @@ namespace CliArgs {
         const QString windowedWidth = "-W";
         const QString windowedHeight = "-H";
     }
-
-        // // TODO: Use enum names somehow
-        // enum {
-        //     PROTON_USE_NSYNC,
-        //     PROTON_NO_NTSYNC,
-        //     PROTON_NO_ESYNC,
-        //     PROTON_NO_FSYNC
-        // }Sync_e;
-        // enum {
-        //     WINE_FULLSCREEN_INTEGER_SCALING,
-        //     WINE_FULLSCREEN_FSR,
-        //     WINE_FULLSCREEN_FSR_STRENGTH,
-        //     WINE_FULLSCREEN_FSR_CUSTOM_MODE
-        // }WineScaling_e;
 }
+
 namespace NeroConfig {
     const QString name = "Name";
     const QString currentRunner = "CurrentRunner";
@@ -303,9 +270,9 @@ namespace NeroConfig {
             FsrHighestQuality,
             FsrCustom,
             IntegerScale,
-            GamescopeWindowed,
-            GamescopeBorderless,
-            GamescopeFullscreen
+            Windowed,
+            Borderless,
+            Fullscreen
         };
         //FSR Custom Resolutions
         const QString scalingMode = "ScalingMode";
