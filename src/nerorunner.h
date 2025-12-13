@@ -52,9 +52,42 @@ public:
         RunnerProtonStopping,
         RunnerProtonStopped
     } RunnerStatus_e;
+<<<<<<< HEAD
     const QString logDirName = ".logs";
     const QString txtExtension = ".txt";
     struct NeroSetting {
+=======
+    struct PrefixSetting {
+    public:
+        PrefixSetting(const QString settingName, NeroRunner &parent) {
+            QString hash = parent.GetHash();
+            this->prefixSetting = prefixSettings % '/' % settingName;
+            prefix = parent.settings->value(prefixSetting);
+        }
+
+    int toInt() { return settingVariant.toInt(); }
+
+    bool toBool() { return settingVariant.toBool(); }
+
+    QString toString() { return settingVariant.toString(); }
+
+    bool hasSetting() { return prefixSetting != QVariant(); }
+
+    bool hasSettingAndToBool() { return hasSetting() && settingVariant.toBool(); }
+
+    QStringList toStringList() { return settingVariant.toStringList(); }
+    
+    QVariant getSettingVariant() { return settingVariant; }
+    
+    QString convertBoolToIntString() { return QString::number(settingVariant.toBool()); }
+    private:
+        QString prefixSetting;
+        QVariant prefix;
+        QVariant settingVariant;
+        const QString prefixSettings = "PrefixSettings";
+    };
+    struct NeroSetting :  PrefixSetting {
+>>>>>>> cb1158812138da18bdaa3f15d3d668bf9accf7db
     public:
         NeroSetting(){}
 
@@ -72,6 +105,7 @@ public:
             }
         }
 
+<<<<<<< HEAD
         int toInt() { return settingVariant.toInt(); }
 
         bool toBool() { return settingVariant.toBool(); }
@@ -101,6 +135,24 @@ public:
     };
 private:
     int ConvertScaling(int scalingVal);
+=======
+        bool hasShortcutSetting() { return hasShortcut; }
+
+        bool hasSetting() { return shortcutSetting != QVariant() || prefixSetting != QVariant(); }
+        
+    private:
+        bool hasShortcut = false;
+        QString shortcutSetting;
+        QVariant shortcut;
+        QVariant settingVariant;
+        const QString shortcuts = "Shortcuts--";
+    };
+private:
+    int ConvertScaling(int scalingVal);
+    void SetSyncMode(QString protonRunner, int syncType);
+    void SetScalingMode(int scalingType);
+    QMap<QString, QString> InsertArgs(QMap<QString, QString> properties);
+>>>>>>> cb1158812138da18bdaa3f15d3d668bf9accf7db
     QString GamescopeFilterType(int filterVal);
     // TODO: All Structs are TBD, im just fuckin around with what these could be
     // enum {
@@ -133,9 +185,13 @@ private:
     const QString drive_c = "drive_c/";
 
     const QString ge109 = "GE-Proton10-9";
+<<<<<<< HEAD
     void InitSimpleBoolSettings();
     void InitDebugProperties(int value);
     QStringList SetGamescopeArgs(QMap<QString, QString> resMap, QStringList arguments, int fpsLimit);
+=======
+    void InitDebugProperties(int value);
+>>>>>>> cb1158812138da18bdaa3f15d3d668bf9accf7db
     QString hashVal;
 
     
@@ -143,6 +199,7 @@ signals:
     void StatusUpdate(int);
 };
 
+<<<<<<< HEAD
 namespace Logs {
     const QString newLine = "\n";
     const QString currentlyRunning = "Current running environment:" % newLine;
@@ -153,6 +210,11 @@ namespace Logs {
 namespace CliArgs {
     const QString dash = "-";
     const QString doubleDash = dash % dash;
+=======
+namespace CliArgs {
+    const QString doubleDash = "--";
+
+>>>>>>> cb1158812138da18bdaa3f15d3d668bf9accf7db
 
     //Wine Compat Options
     namespace Wine {
@@ -298,9 +360,15 @@ namespace NeroConfig {
             FsrHighestQuality,
             FsrCustom,
             IntegerScale,
+<<<<<<< HEAD
             Windowed,
             Borderless,
             Fullscreen
+=======
+            GamescopeWindowed,
+            GamescopeBorderless,
+            GamescopeFullscreen
+>>>>>>> cb1158812138da18bdaa3f15d3d668bf9accf7db
         };
         //FSR Custom Resolutions
         const QString scalingMode = "ScalingMode";
