@@ -42,6 +42,56 @@ private:
 
 public:
     NeroFS();
+    struct CustomRunner {
+        QStringList validOptions;
+        QStringList reconstructUpgrades;
+        bool isCustomProton = true;
+        bool isProton10OrLater = true;
+        bool isNtSync = true;
+        CustomRunner(QString runner) {
+            if (runner.contains("EM-")) {
+                int version = runner.mid(runner.lastIndexOf("EM-"), 2).toInt();
+                this->isProton10OrLater = version > 10;
+                this->validOptions = universalOptions << emOptions;
+                this->reconstructUpgrades = {"fsr4", "fsr4rdna3"};
+            } else if (runner.contains("GE-") || runner.contains("-GE")) {
+                int version = runner.mid(runner.lastIndexOf("GE-Proton"), 2).toInt();
+                int subVersion = runner.mid(runner.lastIndexOf("-"), 2).toInt();
+                this->isProton10OrLater = version > 10;
+                this->validOptions = universalOptions << geOptions;
+                this->reconstructUpgrades = {"fsr4", "fsr4rdna3"};
+                this->isNtSync = isProton10OrLater && subVersion > 9;
+            } else if (runner.contains("Cachy")) {
+                this->validOptions = universalOptions << cachyOsOptions;
+                this->reconstructUpgrades = {"dlss", "xess", "fsr4", "fsr4rdna3"};
+            } else {
+                this->isProton10OrLater = false;
+                this->isCustomProton = false;
+                this->isNtSync = false;
+            }
+        }
+    private:
+        QStringList universalOptions = {
+            "UseWayland",
+            "UseWaylandHdr",
+            "ImageReconstructionUpgrade",
+        };
+        QStringList geOptions = {
+            "DisableSteamInput",
+            "NoWindowDecorations",
+
+        };
+        //none atm but just in case?
+        QStringList emOptions = {
+        };
+        QStringList cachyOsOptions = {
+            "UseNvidiaLibs",
+            "ImageReconstructionIndicator",
+            "UseLocalShaderCache",
+            "DisableSteamInput",
+            "NoWindowDecorations",
+        };
+    };
 
     // METHODS
     static bool InitPaths();
@@ -65,7 +115,6 @@ public:
     static void DeleteShortcut(const QString &);
 
     static QSettings* GetCurrentPrefixCfg();
-
     static QString GetIcoextract();
     static QString GetIcoutils();
     static QString GetUmU();
