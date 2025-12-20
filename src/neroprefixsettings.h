@@ -28,6 +28,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QPushButton>
+#include <QStringView>
 #include <QStandardItemModel>
 #include <QDesktopServices>
 
@@ -51,6 +52,9 @@ public:
     QString appName;
 
     QPushButton *deleteShortcut = nullptr;
+
+    void displayError(QString error);
+    void SetWineTopology(QString setting);
 
 private slots:
     void on_shortcutIco_clicked();
@@ -96,20 +100,24 @@ private slots:
     void on_openToShortcutPath_clicked();
 
 private:
+    void SaveSettings();
     Ui::NeroPrefixSettingsWindow *ui;
-
     void LoadSettings();
     void AddDLL(const QString, const int);
     void StartUmu(const QString, QStringList = {});
-
+    /**
+     * The CustomRunner class is used to list the valid
+     * options for each popular custom Proton launcher:
+     * GE-Proton, EM-Proton, & CachyOS-Proton.
+     * It connects with the @enum customRunners
+     * and creates a QStringList with all valid options.
+     */
     void SetComboBoxItemEnabled(QComboBox * comboBox, const int index, const bool enabled) {
         auto * model = qobject_cast<QStandardItemModel*>(comboBox->model());
         auto * item = model->item(index);
         item->setEnabled(enabled);
     }
-
     void SetCheckboxState(const QString &, QCheckBox*);
-
     QString currentShortcutHash;
 
     QStringList existingShortcuts;
@@ -128,7 +136,7 @@ private:
     QList<QPushButton*> dllDelete;
 
     QList<QAction*> dllOptions;
-
+    void setFont(QWidget* w);
     QFont boldFont;
 
     bool umuRunning = false;

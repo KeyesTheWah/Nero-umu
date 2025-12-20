@@ -122,13 +122,23 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     } else {
         env.insert(CliArgs::Proton::dxvkD3D8, TRUE);
     }
-    QMap<QString, QString> boolOptions{
+    // {NeroConfig::dlssIndicator, CliArgs::Proton::Nvidia::dlssIndicator},
+    // {NeroConfig::fsr4Upgrade, CliArgs::Proton::Amd::fsr4Upgrade},
+    //     {NeroConfig::fsr4Rdna3, CliArgs::Proton::Amd::fsr4Rdna3},
+    //     {NeroConfig::fsr4Indicator, CliArgs::Proton::Amd::fsr4Indicator},
+    //     {NeroConfig::xessUpgrade, CliArgs::Proton::Intel::xessUpgrade},
+    QMap<QString, QString> boolOptions {
         {NeroConfig::enableNvApi,               CliArgs::Proton::Nvidia::forceNvapi},
         {NeroConfig::Proton::limitGlExtensions, CliArgs::Proton::oldGl},
         {NeroConfig::vkCapture,                 CliArgs::obsVkCapture},
         {NeroConfig::forceIGpu,                 CliArgs::forceIgpu},
+        {NeroConfig::nvidiaLibs,                CliArgs::Proton::Nvidia::libs},
+        {NeroConfig::localShaderCache,          CliArgs::Proton::localShaderCache},
+        {NeroConfig::noWindowDecoration,        CliArgs::Proton::noWindowDecoration},
+        {NeroConfig::noSteamInput,              CliArgs::Proton::noSteamInput}
     };
-    boolOptions = InsertArgs(boolOptions, false);
+    bool isPrefixOnly = false;
+    boolOptions = InsertArgs(boolOptions, isPrefixOnly);
     int fpsLimit = CombinedSetting(NeroConfig::limitFps, *this).toInt();
     if(fpsLimit)
         env.insert(CliArgs::dxvkFrameRate, QString::number(fpsLimit));
@@ -192,8 +202,13 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
 
     if(CombinedSetting(NeroConfig::gamemode, *this).toBool())
         arguments.prepend(CliArgs::gamemoderun);
+    QString topology = CombinedSetting(NeroConfig::wineCpuTopology, *this).toString();
+    if (!topology.isEmpty())
+        env.insert(CliArgs::Wine::cpuTopology, topology);
 
     int scalingMode = CombinedSetting(NeroConfig::Gamescope::scalingMode, *this).toInt();
+    InitImageReconstruction(isPrefixOnly);
+    
     QStringList gamescopeArgs = SetScalingMode(scalingMode, fpsLimit, false);
     arguments = SetMangohud(gamescopeArgs, arguments);
 
@@ -315,18 +330,24 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
     } else if(!disableD8Vk) {
         env.insert(CliArgs::Proton::dxvkD3D8, TRUE);
     }
-    QMap<QString, QString> simpleBoolSettings {
-        {NeroConfig::enableNvApi, CliArgs::Proton::Nvidia::forceNvapi},
+    QMap<QString, QString> boolOptions{
         {NeroConfig::Proton::limitGlExtensions, CliArgs::Proton::oldGl},
         {NeroConfig::vkCapture, CliArgs::obsVkCapture},
-        {NeroConfig::forceIGpu, CliArgs::forceIgpu}
+        {NeroConfig::forceIGpu, CliArgs::forceIgpu},
+        {NeroConfig::nvidiaLibs, CliArgs::Proton::Nvidia::libs},
+        {NeroConfig::localShaderCache, CliArgs::Proton::localShaderCache},
+        {NeroConfig::noWindowDecoration, CliArgs::Proton::noWindowDecoration},
+        {NeroConfig::noSteamInput, CliArgs::Proton::noSteamInput}
     };
     bool isPrefixOnly = true;
-    simpleBoolSettings = InsertArgs(simpleBoolSettings, isPrefixOnly);
+    boolOptions = InsertArgs(boolOptions, isPrefixOnly);
+
     int fileSyncMode = PrefixSetting(NeroConfig::fileSyncMode, *this).toInt();
     SetSyncMode(protonRunner, fileSyncMode);
+
     int debugVal = PrefixSetting(NeroConfig::debugOutput, *this).toInt();
     InitDebugProperties(debugVal);
+
     // Different logic for Prefix Launch of this versus shortcut; is that intentional?
     // shortcut launch doesn't check env for this or PROTON_USE_XALIA beforehand
     bool isHiDraw  = PrefixSetting(NeroConfig::Proton::allowHidraw, *this).toBool();
@@ -360,12 +381,13 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
             env.insert(CliArgs::Proton::useHdr, TRUE);
         }
     }
-
-    QStringList arguments = {NeroFS::GetUmU()};
+    QString topology = PrefixSetting(NeroConfig::wineCpuTopology, *this).toString();
+    if (!topology.isEmpty())
+        env.insert(CliArgs::Wine::cpuTopology, topology);
 
     // Proton/umu should be able to translate Windows-type paths on its own, no conversion needed
+    QStringList arguments(NeroFS::GetUmU());
     arguments.append(path);
-
     if(!args.isEmpty())
         arguments.append(args);
     bool gamemodeEnabled = PrefixSetting(NeroConfig::gamemode, *this).toBool();
@@ -374,6 +396,7 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
     }
     int scalingMode = PrefixSetting(NeroConfig::Gamescope::scalingMode, *this).toInt();
     int fpsLimit = PrefixSetting(NeroConfig::limitFps, *this).toInt();
+    InitImageReconstruction(isPrefixOnly);
     QStringList gamescopeArgs = SetScalingMode(scalingMode, fpsLimit, false);
     arguments = SetMangohud(gamescopeArgs, arguments);
 
@@ -439,8 +462,43 @@ QStringList NeroRunner::SetScalingMode(int scalingMode, int fpsLimit, bool isPre
     return QStringList();
 }
 
-QMap<QString, QString> NeroRunner::InsertArgs(QMap<QString, QString> properties, bool isPrefixOnly)
-{
+void NeroRunner::InitImageReconstruction(bool isPrefixOnly) {
+    int upgVal = isPrefixOnly
+        ? PrefixSetting(ImageReconstruct::Properties::upgrade, *this).toInt()
+        : CombinedSetting(ImageReconstruct::Properties::upgrade, *this).toInt();
+    switch (ImageReconstruct::Upgrade(upgVal)) {
+    case ImageReconstruct::Upgrade::Fsr4:
+        env.insert(CliArgs::Proton::Amd::fsr4Upgrade, TRUE);
+        break;
+    case ImageReconstruct::Upgrade::Fsr4Rdna3:
+        env.insert(CliArgs::Proton::Amd::fsr4Rdna3, TRUE);
+        break;
+    case ImageReconstruct::Upgrade::Dlss:
+        env.insert(CliArgs::Proton::Nvidia::dlssUpgrade, TRUE);
+        break;
+    case ImageReconstruct::Upgrade::Xess:
+        env.insert(CliArgs::Proton::Intel::xessUpgrade, TRUE);
+        break;
+    default:
+        break;
+    }
+
+    int ind = isPrefixOnly
+        ? PrefixSetting(ImageReconstruct::Properties::indicator, *this).toInt()
+        : CombinedSetting(ImageReconstruct::Properties::indicator, *this).toInt();
+    switch (ImageReconstruct::Indicator(ind)) {
+    case ImageReconstruct::Indicator::Fsr:
+        env.insert(CliArgs::Proton::Amd::fsr4Indicator, TRUE);
+        break;
+    case ImageReconstruct::Indicator::Dlss:
+        env.insert(CliArgs::Proton::Nvidia::dlssIndicator, TRUE);
+        break;
+    default:
+        break;
+    }
+}
+
+QMap<QString, QString> NeroRunner::InsertArgs(QMap<QString, QString> properties, bool isPrefixOnly) {
     for (auto i = properties.begin(), end = properties.end(); i != end; i++) {
         QString neroOption = i.key();
         bool isValid = isPrefixOnly
@@ -556,25 +614,26 @@ void NeroRunner::SetSyncMode(QString protonRunner, int syncType)
         // For older Protons, they should be safely ignoring this and fallback to fsync anyways.
         // Newer protons than GE10-9 should enable this automatically from its end, and doesn't require WOW64
         // (and currently, WOW64 seems problematic for some fringe cases, like TeknoParrot's BudgieLoader not spawning a window)
-
     switch(syncType) {
-        case NeroConstant::NTsync:
-            if(protonRunner == ge109) {
-                env.insert(CliArgs::Proton::Sync::ntSync, TRUE);
-                env.insert(CliArgs::useWow64, TRUE);
-            }
-            break;
-        case NeroConstant::Fsync:
-            env.insert(CliArgs::Proton::Sync::noNtSync, TRUE);
-            break;
-        case NeroConstant::NoSync:
-            env.insert(CliArgs::Proton::Sync::noEsync, TRUE);
-        case NeroConstant::Esync:
-            env.insert(CliArgs::Proton::Sync::noNtSync, TRUE);
-            env.insert(CliArgs::Proton::Sync::noFsync, TRUE);
-            break;
-        default:
-            break;
+    case NeroConstant::NTsync: {
+        NeroFS::CustomRunner run(protonRunner);
+        if(run.isNtSync) {
+            env.insert(CliArgs::Proton::Sync::ntSync, TRUE);
+            env.insert(CliArgs::useWow64, TRUE);
+        }
+        break;
+    }
+    case NeroConstant::Fsync:
+        env.insert(CliArgs::Proton::Sync::noNtSync, TRUE);
+        break;
+    case NeroConstant::NoSync:
+        env.insert(CliArgs::Proton::Sync::noEsync, TRUE);
+    case NeroConstant::Esync:
+        env.insert(CliArgs::Proton::Sync::noNtSync, TRUE);
+        env.insert(CliArgs::Proton::Sync::noFsync, TRUE);
+        break;
+    default:
+        break;
     }
 }
 

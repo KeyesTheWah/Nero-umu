@@ -118,6 +118,7 @@ public:
     }
 private:
     QStringList SetMangohud(QStringList gamescope, QStringList arguments);
+    void InitImageReconstruction(bool isPrefixOnly);
     int ConvertScaling(int scalingVal);
     void SetSyncMode(QString protonRunner, int syncType);
     QStringList SetScalingMode(int scalingType, int fpsLimit, bool isPrefixOnly);
@@ -144,7 +145,6 @@ signals:
 namespace CliArgs {
     const QString dash = "-";
     const QString doubleDash = dash % dash;
-
 
     //Wine Compat Options
     namespace Wine {
@@ -306,17 +306,31 @@ namespace NeroConfig {
     const QString args = "Args";
 
     //TBD
-    const QString nvidiaLibs = "NvidiaLibs";
-    const QString fsr4Upgrade = "Fsr4Upgrade";
-    const QString fsr4Indicator = "Fsr4Indicator";
-    const QString fsr4Rdna3 = "Fsr4Rdna3";
-    const QString xessUpgrade = "XessUpgrade";
-    const QString noWindowDecoration = "NoDecoration";
-    const QString noSteamInput = "NoSteamInput";
+    const QString nvidiaLibs = "UseNvidiaLibs";
+    const QString noWindowDecoration = "UseNoDecorations";
+    const QString noSteamInput = "SteamInputDisabled";
     const QString wineCpuTopology = "WineCpuTopology";
     const QString localShaderCache = "LocalShaderCache";
     const QString prerunScript = "PreRunScript";
     const QString postRunScript = "PostRunScript";
     const QString mangohud = "Mangohud";
+}
+namespace ImageReconstruct {
+    enum class Upgrade {
+        None = 0,
+        Fsr4,
+        Fsr4Rdna3,
+        Dlss,
+        Xess,
+    };
+    enum class Indicator {
+        None = 0,
+        Fsr,
+        Dlss,
+    };
+    namespace Properties {
+        const QString upgrade = "ImageReconstructionUpgrade";
+        const QString indicator = "ImageReconstructionIndicator";
+    }
 }
 #endif // NERORUNNER_H
