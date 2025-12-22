@@ -159,20 +159,24 @@ NeroPrefixSettingsWindow::NeroPrefixSettingsWindow(QWidget *parent, const QStrin
     // wine CPU topology UI setup
     // get number of threads on the system, then create
     // checkboxes of equivalent amount of cores
+    int currRow = 0;
     for (int i = 0; i < QThread::idealThreadCount(); i++) {
         QString iStr = QString::number(i);
         QString core = "core" % iStr;
         QCheckBox* box = new QCheckBox(ui->wineTopology);
         box->setObjectName(core);
-        QString description = "Enables CPU core" % QString::number(i) % "for use when Wine CPU Topology is enabled. This feature is experimental and should only be used if facing issues.";
+        QString description = "Enables CPU core #" % iStr % " for use when Wine CPU Topology is enabled. This feature is experimental and should only be used if facing issues.";
         box->setWhatsThis(description);
-        box->setAccessibleName("Wine Topology: Enable CPU Core #" % QString::number(i));
+        box->setAccessibleName("Wine Topology: Enable CPU Core #" % iStr);
         box->setAccessibleDescription(description);
         QString prop = "UseCore" % iStr;
         box->setProperty("core", i);
         box->setProperty("isFor", prop);
         box->setText("Core" % iStr);
-        ui->wineGrid->addWidget(box);
+        int currCol = i % 6;
+        if (currCol == 0 && i != 0)
+            currRow++;
+        ui->wineGrid->addWidget(box, currRow, currCol);
     }
 
     LoadSettings();

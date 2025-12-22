@@ -2080,7 +2080,7 @@ Zink can cause compatability problems, including severely lowered performance on
          </layout>
         </widget>
        </item>
-       <item row="6" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
+       <item row="6" column="0">
         <widget class="QGroupBox" name="wineTopology">
          <property name="title">
           <string>Wine CPU Toplogy</string>

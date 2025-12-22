@@ -118,13 +118,13 @@ public:
     }
 private:
     QStringList SetMangohud(QStringList gamescope, QStringList arguments);
+    void WineCpuTopology(bool isPrefixOnly);
     void InitImageReconstruction(bool isPrefixOnly);
-    int ConvertScaling(int scalingVal);
+    void InsertArgs(bool isPrefixOnly);
     void SetSyncMode(QString protonRunner, int syncType);
+    QStringList Zink(QStringList arguments, bool isPrefixOnly);
     QStringList SetScalingMode(int scalingType, int fpsLimit, bool isPrefixOnly);
     QStringList SetGamescopeArgs(int scalingMode, int fpsLimit, bool isPrefixOnly);
-    QStringList Gamescope(QMap<QString, QString> resMap, QStringList arguments);
-    QMap<QString, QString> InsertArgs(QMap<QString, QString> properties, bool isPrefixOnly);
     QString GamescopeFilterType(int filterVal);
 
     const QString FALSE = "0";
