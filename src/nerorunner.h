@@ -263,7 +263,6 @@ namespace NeroConfig {
     const QString runtimeUpdate = "RuntimeUpdateOnLaunch";
     const QString dlssIndicator = "DlssIndicator";
 
-
     const QString path = "Path";
     //OBS
     const QString vkCapture = "VKcapture";
@@ -307,6 +306,7 @@ namespace NeroConfig {
     const QString args = "Args";
 
     //TBD
+    const QString cpuTopologyEnabled = "CpuTopologyEnabled";
     const QString nvidiaLibs = "UseNvidiaLibs";
     const QString noWindowDecoration = "UseNoDecorations";
     const QString noSteamInput = "SteamInputDisabled";

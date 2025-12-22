@@ -169,6 +169,11 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
             env.insert(CliArgs::Proton::useHdr, TRUE);
         }
     }
+    QString topology = CombinedSetting(NeroConfig::wineCpuTopology, *this).toString();
+    bool isTopologyEnabled = CombinedSetting(NeroConfig::cpuTopologyEnabled, *this).toBool();
+    if (isTopologyEnabled && !topology.isEmpty())
+        env.insert(CliArgs::Wine::cpuTopology, topology);
+
     QStringList arguments = {NeroFS::GetUmU(), pathSetting.toString()};
     // some arguments are parsed as stringlists and others as string, so check which first.;
 
@@ -206,9 +211,6 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
 
     if(CombinedSetting(NeroConfig::gamemode, *this).toBool())
         arguments.prepend(CliArgs::gamemoderun);
-    QString topology = CombinedSetting(NeroConfig::wineCpuTopology, *this).toString();
-    if (!topology.isEmpty())
-        env.insert(CliArgs::Wine::cpuTopology, topology);
 
     int scalingMode = CombinedSetting(NeroConfig::Gamescope::scalingMode, *this).toInt();
     InitImageReconstruction(isPrefixOnly);
@@ -386,8 +388,9 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
             env.insert(CliArgs::Proton::useHdr, TRUE);
         }
     }
-    QString topology = PrefixSetting(NeroConfig::wineCpuTopology, *this).toString();
-    if (!topology.isEmpty())
+    QString topology = CombinedSetting(NeroConfig::wineCpuTopology, *this).toString();
+    bool isTopologyEnabled = CombinedSetting(NeroConfig::cpuTopologyEnabled, *this).toBool();
+    if (isTopologyEnabled && !topology.isEmpty())
         env.insert(CliArgs::Wine::cpuTopology, topology);
 
     // Proton/umu should be able to translate Windows-type paths on its own, no conversion needed
