@@ -20,6 +20,7 @@
 #include "nerofs.h"
 #include "neroconstants.h"
 
+#include <QDesktopServices>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QStandardPaths>
@@ -473,4 +474,14 @@ void NeroFS::DeleteShortcut(const QString &shortcutHash)
     } else {
         printf("THIS SHOULDN'T HAVE HAPPENED: GetCurrentPrefixCfg returned null in DeleteShortcut which EXPECTS a real pointer!\n");
     }
+}
+
+void NeroFS::openLogDirectory() {
+    if(GetCurrentPrefixCfg() == nullptr) {
+            printf("THIS SHOULDN'T HAVE HAPPENED: GetCurrentPrefixCfg returned null in openLogDirectory which EXPECTS a real pointer!\n");
+        return;
+    }
+    QString path = prefixesPath.path() % '/' % currentPrefix % "/" % ".logs";
+    QUrl url = QUrl::fromLocalFile(path);
+    QDesktopServices::openUrl(url);
 }
