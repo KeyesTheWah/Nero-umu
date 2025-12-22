@@ -366,6 +366,7 @@ void NeroFS::AddNewPrefix(const QString &newPrefix, const QString &runner)
         {"WineCpuTopology", ""},
         {"UseNvidiaLibs", false},
         {"DisableSteamInput", false},
+        {"UseZink", false}
     };
     prefixCfg->beginGroup("PrefixSettings");
     for (auto i = settingsMap.begin(), end = settingsMap.end(); i != end; i++) {

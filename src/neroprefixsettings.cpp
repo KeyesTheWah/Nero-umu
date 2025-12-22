@@ -349,6 +349,7 @@ void NeroPrefixSettingsWindow::LoadSettings()
         {"NoD8VK",             ui->toggleNoD8VK},
         {"ForceWineD3D",       ui->toggleWineD3D},
         //experimental
+        {"UseZink",            ui->toggleZink},
         {"UseWayland",         ui->toggleWayland},
         {"UseHDR",             ui->toggleWaylandHDR},
         {"AllowHidraw",        ui->toggleHidraw},

@@ -199,6 +199,10 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         if(args.last().isEmpty()) args.removeLast();
         arguments.append(args);
     }
+    bool isZink = CombinedSetting(NeroConfig::zink, *this).toBool();
+    if (isZink) {
+        arguments.prepend(CliArgs::zinkEnabled);
+    }
 
     if(CombinedSetting(NeroConfig::gamemode, *this).toBool())
         arguments.prepend(CliArgs::gamemoderun);
@@ -330,14 +334,15 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
     } else if(!disableD8Vk) {
         env.insert(CliArgs::Proton::dxvkD3D8, TRUE);
     }
-    QMap<QString, QString> boolOptions{
+    QMap<QString, QString> boolOptions {
+        {NeroConfig::enableNvApi,               CliArgs::Proton::Nvidia::forceNvapi},
         {NeroConfig::Proton::limitGlExtensions, CliArgs::Proton::oldGl},
-        {NeroConfig::vkCapture, CliArgs::obsVkCapture},
-        {NeroConfig::forceIGpu, CliArgs::forceIgpu},
-        {NeroConfig::nvidiaLibs, CliArgs::Proton::Nvidia::libs},
-        {NeroConfig::localShaderCache, CliArgs::Proton::localShaderCache},
-        {NeroConfig::noWindowDecoration, CliArgs::Proton::noWindowDecoration},
-        {NeroConfig::noSteamInput, CliArgs::Proton::noSteamInput}
+        {NeroConfig::vkCapture,                 CliArgs::obsVkCapture},
+        {NeroConfig::forceIGpu,                 CliArgs::forceIgpu},
+        {NeroConfig::nvidiaLibs,                CliArgs::Proton::Nvidia::libs},
+        {NeroConfig::localShaderCache,          CliArgs::Proton::localShaderCache},
+        {NeroConfig::noWindowDecoration,        CliArgs::Proton::noWindowDecoration},
+        {NeroConfig::noSteamInput,              CliArgs::Proton::noSteamInput},
     };
     bool isPrefixOnly = true;
     boolOptions = InsertArgs(boolOptions, isPrefixOnly);
@@ -390,6 +395,10 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
     arguments.append(path);
     if(!args.isEmpty())
         arguments.append(args);
+    bool isZink = PrefixSetting(NeroConfig::zink, *this).toBool();
+    if (isZink) {
+        arguments.prepend(CliArgs::zinkEnabled);
+    }
     bool gamemodeEnabled = PrefixSetting(NeroConfig::gamemode, *this).toBool();
     if(gamemodeEnabled) {
         arguments.prepend(CliArgs::gamemoderun);
