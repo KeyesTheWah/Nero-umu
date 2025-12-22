@@ -198,6 +198,7 @@ namespace CliArgs {
             const QString xessUpgrade = "PROTON_XESS_UPGRADE"; //(Upgrade XeSS to latest version) (cachyos)
         }
     }
+    const QString zinkEnabled = "MESA_LOADER_DRIVER_OVERRIDE=zink";
     // Misc
     const QString obsVkCapture = "OBS_VKCAPTURE";
     const QString protonPath = "PROTONPATH";
@@ -270,7 +271,7 @@ namespace NeroConfig {
     //Force Integrated GPU
     const QString forceIGpu = "ForceiGPU";
 
-
+    const QString zink = "UseZink";
     namespace Proton {
         const QString forceWineD3D = "ForceWineD3D";
         const QString allowHidraw = "AllowHidraw";
