@@ -1557,7 +1557,26 @@
               </widget>
              </item>
              <item>
-              <spacer name="horizontalSpacer_18">
+              <widget class="QPushButton" name="logFolderButton">
+               <property name="whatsThis">
+                <string>Opens the Log Directory for this prefix.</string>
+               </property>
+               <property name="accessibleName">
+                <string>Open Log Folder</string>
+               </property>
+               <property name="accessibleDescription">
+                <string>Opens the Log Directory for this prefix.</string>
+               </property>
+               <property name="text">
+                <string>Open Log Folder</string>
+               </property>
+               <property name="icon">
+                <iconset theme="QIcon::ThemeIcon::DocumentOpen"/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_29">
                <property name="orientation">
                 <enum>Qt::Orientation::Horizontal</enum>
                </property>

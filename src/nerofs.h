@@ -45,7 +45,6 @@ public:
 
     // METHODS
     static bool InitPaths();
-
     static QDir* GetPrefixesPath() { return &prefixesPath; }
     static QDir* GetProtonsPath() { return &protonsPath; }
     static QString GetCurrentPrefix() { return currentPrefix; }
@@ -58,6 +57,7 @@ public:
     static QMap<QString, QString> GetCurrentShortcutsMap();
     static QMap<QString, QVariant> GetShortcutSettings(const QString &);
     static QSettings* GetManagerCfg() { return &managerCfg; }
+    static void openLogDirectory();
     static void CreateUserLinks(const QString &);
     static void AddNewPrefix(const QString &, const QString &);
     static void AddNewShortcut(const QString &, const QString &, const QString &);

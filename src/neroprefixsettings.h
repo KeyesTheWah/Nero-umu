@@ -95,6 +95,8 @@ private slots:
 
     void on_openToShortcutPath_clicked();
 
+    void on_logFolderButton_clicked();
+
 private:
     Ui::NeroPrefixSettingsWindow *ui;
 
