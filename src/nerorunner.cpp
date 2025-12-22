@@ -122,23 +122,8 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     } else {
         env.insert(CliArgs::Proton::dxvkD3D8, TRUE);
     }
-    // {NeroConfig::dlssIndicator, CliArgs::Proton::Nvidia::dlssIndicator},
-    // {NeroConfig::fsr4Upgrade, CliArgs::Proton::Amd::fsr4Upgrade},
-    //     {NeroConfig::fsr4Rdna3, CliArgs::Proton::Amd::fsr4Rdna3},
-    //     {NeroConfig::fsr4Indicator, CliArgs::Proton::Amd::fsr4Indicator},
-    //     {NeroConfig::xessUpgrade, CliArgs::Proton::Intel::xessUpgrade},
-    QMap<QString, QString> boolOptions {
-        {NeroConfig::enableNvApi,               CliArgs::Proton::Nvidia::forceNvapi},
-        {NeroConfig::Proton::limitGlExtensions, CliArgs::Proton::oldGl},
-        {NeroConfig::vkCapture,                 CliArgs::obsVkCapture},
-        {NeroConfig::forceIGpu,                 CliArgs::forceIgpu},
-        {NeroConfig::nvidiaLibs,                CliArgs::Proton::Nvidia::libs},
-        {NeroConfig::localShaderCache,          CliArgs::Proton::localShaderCache},
-        {NeroConfig::noWindowDecoration,        CliArgs::Proton::noWindowDecoration},
-        {NeroConfig::noSteamInput,              CliArgs::Proton::noSteamInput}
-    };
     bool isPrefixOnly = false;
-    boolOptions = InsertArgs(boolOptions, isPrefixOnly);
+    InsertArgs(isPrefixOnly);
     int fpsLimit = CombinedSetting(NeroConfig::limitFps, *this).toInt();
     if(fpsLimit)
         env.insert(CliArgs::dxvkFrameRate, QString::number(fpsLimit));
@@ -169,10 +154,8 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
             env.insert(CliArgs::Proton::useHdr, TRUE);
         }
     }
-    QString topology = CombinedSetting(NeroConfig::wineCpuTopology, *this).toString();
-    bool isTopologyEnabled = CombinedSetting(NeroConfig::cpuTopologyEnabled, *this).toBool();
-    if (isTopologyEnabled && !topology.isEmpty())
-        env.insert(CliArgs::Wine::cpuTopology, topology);
+
+    WineCpuTopology(isPrefixOnly);
 
     QStringList arguments = {NeroFS::GetUmU(), pathSetting.toString()};
     // some arguments are parsed as stringlists and others as string, so check which first.;
@@ -204,10 +187,8 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
         if(args.last().isEmpty()) args.removeLast();
         arguments.append(args);
     }
-    bool isZink = CombinedSetting(NeroConfig::zink, *this).toBool();
-    if (isZink) {
-        arguments.prepend(CliArgs::zinkEnabled);
-    }
+
+    arguments = Zink(arguments, isPrefixOnly);
 
     if(CombinedSetting(NeroConfig::gamemode, *this).toBool())
         arguments.prepend(CliArgs::gamemoderun);
@@ -277,6 +258,7 @@ QString NeroRunner::GamescopeFilterType(int filterVal) {
     }
 }
 
+
 int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunning, const QStringList &args)
 {
     // failsafe for cli runs
@@ -336,18 +318,9 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
     } else if(!disableD8Vk) {
         env.insert(CliArgs::Proton::dxvkD3D8, TRUE);
     }
-    QMap<QString, QString> boolOptions {
-        {NeroConfig::enableNvApi,               CliArgs::Proton::Nvidia::forceNvapi},
-        {NeroConfig::Proton::limitGlExtensions, CliArgs::Proton::oldGl},
-        {NeroConfig::vkCapture,                 CliArgs::obsVkCapture},
-        {NeroConfig::forceIGpu,                 CliArgs::forceIgpu},
-        {NeroConfig::nvidiaLibs,                CliArgs::Proton::Nvidia::libs},
-        {NeroConfig::localShaderCache,          CliArgs::Proton::localShaderCache},
-        {NeroConfig::noWindowDecoration,        CliArgs::Proton::noWindowDecoration},
-        {NeroConfig::noSteamInput,              CliArgs::Proton::noSteamInput},
-    };
+
     bool isPrefixOnly = true;
-    boolOptions = InsertArgs(boolOptions, isPrefixOnly);
+    InsertArgs(isPrefixOnly);
 
     int fileSyncMode = PrefixSetting(NeroConfig::fileSyncMode, *this).toInt();
     SetSyncMode(protonRunner, fileSyncMode);
@@ -388,20 +361,14 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
             env.insert(CliArgs::Proton::useHdr, TRUE);
         }
     }
-    QString topology = CombinedSetting(NeroConfig::wineCpuTopology, *this).toString();
-    bool isTopologyEnabled = CombinedSetting(NeroConfig::cpuTopologyEnabled, *this).toBool();
-    if (isTopologyEnabled && !topology.isEmpty())
-        env.insert(CliArgs::Wine::cpuTopology, topology);
+    WineCpuTopology(isPrefixOnly);
 
     // Proton/umu should be able to translate Windows-type paths on its own, no conversion needed
     QStringList arguments(NeroFS::GetUmU());
     arguments.append(path);
     if(!args.isEmpty())
         arguments.append(args);
-    bool isZink = PrefixSetting(NeroConfig::zink, *this).toBool();
-    if (isZink) {
-        arguments.prepend(CliArgs::zinkEnabled);
-    }
+    arguments = Zink(arguments, isPrefixOnly);
     bool gamemodeEnabled = PrefixSetting(NeroConfig::gamemode, *this).toBool();
     if(gamemodeEnabled) {
         arguments.prepend(CliArgs::gamemoderun);
@@ -474,7 +441,8 @@ QStringList NeroRunner::SetScalingMode(int scalingMode, int fpsLimit, bool isPre
     return QStringList();
 }
 
-void NeroRunner::InitImageReconstruction(bool isPrefixOnly) {
+void NeroRunner::InitImageReconstruction(bool isPrefixOnly)
+{
     int upgVal = isPrefixOnly
         ? PrefixSetting(ImageReconstruct::Properties::upgrade, *this).toInt()
         : CombinedSetting(ImageReconstruct::Properties::upgrade, *this).toInt();
@@ -509,8 +477,38 @@ void NeroRunner::InitImageReconstruction(bool isPrefixOnly) {
         break;
     }
 }
+void NeroRunner::WineCpuTopology(bool isPrefixOnly)
+{
+    QString topology = isPrefixOnly
+        ? CombinedSetting(NeroConfig::wineCpuTopology, *this).toString()
+        : PrefixSetting(NeroConfig::wineCpuTopology, *this).toString();
+    bool isTopologyEnabled = isPrefixOnly
+        ? CombinedSetting(NeroConfig::cpuTopologyEnabled, *this).toBool()
+                                 : PrefixSetting(NeroConfig::cpuTopologyEnabled, *this).toBool();
+    if (isTopologyEnabled && !topology.isEmpty())
+        env.insert(CliArgs::Wine::cpuTopology, topology);
+}
 
-QMap<QString, QString> NeroRunner::InsertArgs(QMap<QString, QString> properties, bool isPrefixOnly) {
+QStringList NeroRunner::Zink(QStringList arguments, bool isPrefixOnly)
+{
+    bool isZink = CombinedSetting(NeroConfig::zink, *this).toBool();
+    if (isZink) {
+        arguments.prepend(CliArgs::zinkEnabled);
+    }
+    return arguments;
+}
+
+void NeroRunner::InsertArgs(bool isPrefixOnly) {
+    QMap<QString, QString> properties {
+       {NeroConfig::enableNvApi,               CliArgs::Proton::Nvidia::forceNvapi},
+       {NeroConfig::Proton::limitGlExtensions, CliArgs::Proton::oldGl},
+       {NeroConfig::vkCapture,                 CliArgs::obsVkCapture},
+       {NeroConfig::forceIGpu,                 CliArgs::forceIgpu},
+       {NeroConfig::nvidiaLibs,                CliArgs::Proton::Nvidia::libs},
+       {NeroConfig::localShaderCache,          CliArgs::Proton::localShaderCache},
+       {NeroConfig::noWindowDecoration,        CliArgs::Proton::noWindowDecoration},
+       {NeroConfig::noSteamInput,              CliArgs::Proton::noSteamInput},
+    };
     for (auto i = properties.begin(), end = properties.end(); i != end; i++) {
         QString neroOption = i.key();
         bool isValid = isPrefixOnly
@@ -522,7 +520,6 @@ QMap<QString, QString> NeroRunner::InsertArgs(QMap<QString, QString> properties,
         }
     }
     properties.clear();
-    return properties;
 }
 
 QStringList NeroRunner::SetMangohud(QStringList gamescopeArgs, QStringList arguments)
