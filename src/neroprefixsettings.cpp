@@ -486,7 +486,6 @@ void NeroPrefixSettingsWindow::LoadSettings()
                     break;
                 }
             }
-
         }
     }
 
@@ -1063,9 +1062,10 @@ void NeroPrefixSettingsWindow::SaveSettings() {
             enabledCpus.append(QString::number(core));
         }
     }
-    QString command = QString::number(enabledCpus.length()) % ':' % enabledCpus.join(',');
-
-    NeroFS::SetCurrentPrefixCfg(cfg, "WineCpuTopology", QVariant(command.trimmed()));
+    if (enabledCpus.length() > 0) {
+        QString command = QString::number(enabledCpus.length()) % ':' % enabledCpus.join(',');
+        NeroFS::SetCurrentPrefixCfg(cfg, "WineCpuTopology", QVariant(command.trimmed()));
+    }
     NeroFS::SetCurrentPrefixCfg(cfg, "CpuTopologyEnabled", ui->wineTopology->isChecked());
     // check if new ico was set.
     if(!newAppIcon.isEmpty() && isShortcut)
