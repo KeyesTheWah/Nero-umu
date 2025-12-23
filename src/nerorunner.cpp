@@ -142,20 +142,9 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     CombinedSetting(NeroConfig::Proton::useXalia, *this).hasSettingAndToBool()
             ? env.insert(CliArgs::Proton::useXalia, TRUE)
             : env.insert(CliArgs::Proton::useXalia, FALSE);
-
-    bool isWaylandEnv = env.contains(CliArgs::waylandDisplay)
-            ? !env.value(CliArgs::waylandDisplay).isEmpty()
-            : false;
-    CombinedSetting wayland(NeroConfig::Proton::useWayland, *this);
-    if (isWaylandEnv && wayland.hasSetting() && wayland.toBool()) {
-        env.insert(CliArgs::Proton::enableWayland, TRUE);
-        bool isHdrEnabled = CombinedSetting(NeroConfig::Proton::useHdr, *this).toBool();
-        if (isHdrEnabled) {
-            env.insert(CliArgs::Proton::useHdr, TRUE);
-        }
-    }
-
+    Wayland(isPrefixOnly);
     WineCpuTopology(isPrefixOnly);
+    InitImageReconstruction(isPrefixOnly);
 
     QStringList arguments = {NeroFS::GetUmU(), pathSetting.toString()};
     // some arguments are parsed as stringlists and others as string, so check which first.;
@@ -349,19 +338,9 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
             : env.insert(xalia, FALSE);
     }
 
-    bool isWaylandEnv = env.contains(CliArgs::waylandDisplay)
-            ? !env.value(CliArgs::waylandDisplay).isEmpty()
-            : false;
-
-    bool hasWayland = PrefixSetting(NeroConfig::Proton::useWayland, *this).hasSetting();
-    if (isWaylandEnv && hasWayland) {
-        env.insert(CliArgs::Proton::enableWayland, TRUE);
-        bool isHdrEnabled = PrefixSetting(NeroConfig::Proton::useHdr, *this).toBool();
-        if (isHdrEnabled) {
-            env.insert(CliArgs::Proton::useHdr, TRUE);
-        }
-    }
+    Wayland(isPrefixOnly);
     WineCpuTopology(isPrefixOnly);
+    InitImageReconstruction(isPrefixOnly);
 
     // Proton/umu should be able to translate Windows-type paths on its own, no conversion needed
     QStringList arguments(NeroFS::GetUmU());
@@ -375,7 +354,6 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
     }
     int scalingMode = PrefixSetting(NeroConfig::Gamescope::scalingMode, *this).toInt();
     int fpsLimit = PrefixSetting(NeroConfig::limitFps, *this).toInt();
-    InitImageReconstruction(isPrefixOnly);
     QStringList gamescopeArgs = SetScalingMode(scalingMode, fpsLimit, false);
     arguments = SetMangohud(gamescopeArgs, arguments);
 
@@ -477,21 +455,37 @@ void NeroRunner::InitImageReconstruction(bool isPrefixOnly)
         break;
     }
 }
+
+void NeroRunner::Wayland(bool isPrefixOnly)
+{
+    bool isWaylandEnv = env.contains(CliArgs::waylandDisplay)
+        ? !env.value(CliArgs::waylandDisplay).isEmpty()
+        : false;
+    PrefixSetting wayland = initSetting(isPrefixOnly, NeroConfig::Proton::useWayland);
+    if (isWaylandEnv && wayland.hasSetting() && wayland.toBool()) {
+        env.insert(CliArgs::Proton::enableWayland, TRUE);
+        bool isHdrEnabled = initSetting(isPrefixOnly, NeroConfig::Proton::useHdr).toBool();
+        if (isHdrEnabled) {
+            env.insert(CliArgs::Proton::useHdr, TRUE);
+        }
+        bool decorationsDisabled = initSetting(isPrefixOnly,  NeroConfig::noWindowDecoration).toBool();
+        if (decorationsDisabled) {
+            env.insert(CliArgs::Proton::noWindowDecoration, TRUE);
+        }
+    }
+}
+
 void NeroRunner::WineCpuTopology(bool isPrefixOnly)
 {
-    QString topology = isPrefixOnly
-        ? CombinedSetting(NeroConfig::wineCpuTopology, *this).toString()
-        : PrefixSetting(NeroConfig::wineCpuTopology, *this).toString();
-    bool isTopologyEnabled = isPrefixOnly
-        ? CombinedSetting(NeroConfig::cpuTopologyEnabled, *this).toBool()
-                                 : PrefixSetting(NeroConfig::cpuTopologyEnabled, *this).toBool();
+    QString topology = initSetting(isPrefixOnly, NeroConfig::wineCpuTopology).toString();
+    bool isTopologyEnabled = initSetting(isPrefixOnly, NeroConfig::cpuTopologyEnabled).toBool();
     if (isTopologyEnabled && !topology.isEmpty())
         env.insert(CliArgs::Wine::cpuTopology, topology);
 }
 
 QStringList NeroRunner::Zink(QStringList arguments, bool isPrefixOnly)
 {
-    bool isZink = CombinedSetting(NeroConfig::zink, *this).toBool();
+    bool isZink = initSetting(isPrefixOnly, NeroConfig::zink).toBool();
     if (isZink) {
         arguments.prepend(CliArgs::zinkEnabled);
     }
@@ -506,7 +500,6 @@ void NeroRunner::InsertArgs(bool isPrefixOnly) {
        {NeroConfig::forceIGpu,                 CliArgs::forceIgpu},
        {NeroConfig::nvidiaLibs,                CliArgs::Proton::Nvidia::libs},
        {NeroConfig::localShaderCache,          CliArgs::Proton::localShaderCache},
-       {NeroConfig::noWindowDecoration,        CliArgs::Proton::noWindowDecoration},
        {NeroConfig::noSteamInput,              CliArgs::Proton::noSteamInput},
     };
     for (auto i = properties.begin(), end = properties.end(); i != end; i++) {
