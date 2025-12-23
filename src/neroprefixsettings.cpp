@@ -372,6 +372,11 @@ void NeroPrefixSettingsWindow::LoadSettings()
         SetCheckboxState(neroOption, widget);
     }
 
+    if (!ui->toggleWayland->isChecked()) {
+        ui->toggleWaylandHDR->setEnabled(false);
+        ui->toggleWindowDecorations->setEnabled(false);
+    }
+
     if(currentShortcutHash.isEmpty()) {
         // for prefix general settings, checkboxes are normal two-state
 
@@ -1136,5 +1141,12 @@ void NeroPrefixSettingsWindow::on_openToShortcutPath_clicked()
 void NeroPrefixSettingsWindow::on_logFolderButton_clicked()
 {
     NeroFS::openLogDirectory();
+}
+
+void NeroPrefixSettingsWindow::on_toggleWayland_clicked()
+{
+    bool isChecked = ui->toggleWayland->isChecked();
+    ui->toggleWaylandHDR->setEnabled(isChecked);
+    ui->toggleWindowDecorations->setEnabled(isChecked);
 }
 
