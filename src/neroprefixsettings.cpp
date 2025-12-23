@@ -288,7 +288,7 @@ void NeroPrefixSettingsWindow::LoadSettings()
     if(!settings.value("EnableNVAPI").toString().isEmpty()) {
         ui->toggleNVAPI->setChecked(settings.value("EnableNVAPI").toBool());
     }
-    QMap<QString, QLineEdit*> lineEdits = {
+    QHash<QString, QLineEdit*> lineEdits = {
         // general tab->graphics group
         {"FSRcustomResW",      ui->fsrCustomW},
         {"FSRcustomResH",      ui->fsrCustomH},
@@ -308,7 +308,7 @@ void NeroPrefixSettingsWindow::LoadSettings()
     // could be consolidated into a scrollable field, so lets just hide that fact
     QString up = "ImageReconstructionUpgrade";
     QString ind = "ImageReconstructionIndicator";
-    QMap<QString, QComboBox*> comboBoxes = {
+    QHash<QString, QComboBox*> comboBoxes = {
         // general tab->graphics group
         {"ScalingMode",        ui->setScalingBox},
         {"GamescopeScaler",    ui->gamescopeSetScalerBox},
@@ -342,7 +342,7 @@ void NeroPrefixSettingsWindow::LoadSettings()
         }
     }
 
-    QMap<QString, QCheckBox*> checkboxes = {
+    QHash<QString, QCheckBox*> checkboxes = {
         // TODO: Change These to be the namespace constants
         // general tab->services group
         {"Gamemode",           ui->toggleGamemode},
@@ -368,11 +368,9 @@ void NeroPrefixSettingsWindow::LoadSettings()
         QCheckBox* widget = i.value();
         SetCheckboxState(neroOption, widget);
     }
-
-    if (!ui->toggleWayland->isChecked()) {
-        ui->toggleWaylandHDR->setEnabled(false);
-        ui->toggleWindowDecorations->setEnabled(false);
-    }
+    bool isWayland = settings.value("UseWayland").toBool();
+    ui->toggleWaylandHDR->setEnabled(isWayland);
+    ui->toggleWindowDecorations->setEnabled(isWayland);
 
     if(currentShortcutHash.isEmpty()) {
         // for prefix general settings, checkboxes are normal two-state
