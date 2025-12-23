@@ -118,6 +118,7 @@ public:
     }
 private:
     QStringList SetMangohud(QStringList gamescope, QStringList arguments);
+    void Wayland(bool isPrefixOnly);
     void WineCpuTopology(bool isPrefixOnly);
     void InitImageReconstruction(bool isPrefixOnly);
     void InsertArgs(bool isPrefixOnly);
