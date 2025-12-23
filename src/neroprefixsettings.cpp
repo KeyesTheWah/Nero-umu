@@ -1056,18 +1056,18 @@ void NeroPrefixSettingsWindow::SaveSettings() {
     if (!isShortcut) {
         NeroFS::SetCurrentPrefixCfg("PrefixSettings", "CurrentRunner", ui->prefixRunner->currentText());
     }
-    QStringList enabledCpus;
+    QStringList checkedCpus;
     for (const auto &child : ui->wineTopology->findChildren<QCheckBox*>()) {
         int core = child->property("core").toInt();
         Qt::CheckState state = child->checkState();
         if (state == Qt::Checked) {
-            enabledCpus.append(QString::number(core));
+            checkedCpus.append(QString::number(core));
         }
     }
-    if (enabledCpus.length() > 0) {
-        QString command = QString::number(enabledCpus.length()) % ':' % enabledCpus.join(',');
-        NeroFS::SetCurrentPrefixCfg(cfg, "WineCpuTopology", QVariant(command.trimmed()));
-    }
+    QString command = checkedCpus.length() > 0
+        ? QString::number(checkedCpus.length()) % ':' % checkedCpus.join(',')
+        : QString("");
+    NeroFS::SetCurrentPrefixCfg(cfg, "WineCpuTopology", QVariant(command.trimmed()));
     NeroFS::SetCurrentPrefixCfg(cfg, "CpuTopologyEnabled", ui->wineTopology->isChecked());
     // check if new ico was set.
     if(!newAppIcon.isEmpty() && isShortcut)
