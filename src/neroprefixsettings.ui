@@ -1802,46 +1802,7 @@
           <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
          <layout class="QGridLayout" name="gridLayout_13">
-          <item row="0" column="5">
-           <spacer name="horizontalSpacer_26">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="4">
-           <widget class="QCheckBox" name="toggleWindowDecorations">
-            <property name="text">
-             <string>Disable Window Decorations</string>
-            </property>
-            <property name="isFor" stdset="0">
-             <string>UseNoDecorations</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="2">
-           <widget class="QCheckBox" name="toggleWayland">
-            <property name="whatsThis">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set whether or not to force the native Wayland environment &lt;span style=&quot; font-style:italic;&quot;&gt;for supported Proton versions.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Runners based on &lt;span style=&quot; font-style:italic;&quot;&gt;Proton 10&lt;/span&gt; have added experimental &lt;span style=&quot; font-weight:700;&quot;&gt;native&lt;/span&gt; Wayland support, but will still default to the X11 backend running through XWayland. While enabling this will provide a more cohesive look &amp;amp; feel and potentially provide better performance on a native Wayland desktop, do note that &lt;span style=&quot; font-weight:700;&quot;&gt;there are known issues with mouse focus and native OpenGL/Vulkan applications, &lt;/span&gt;&lt;a href=&quot;https://github.com/GloriousEggroll/proton-ge-custom/releases&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;as noted by GE.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Enabling this will have no effect on X11 desktops.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="accessibleName">
-             <string>Use Experimental Native Wayland Support</string>
-            </property>
-            <property name="text">
-             <string>Enable Native Wayland Support</string>
-            </property>
-            <property name="isFor" stdset="0">
-             <string>UseWayland</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
            <widget class="QCheckBox" name="toggleWaylandHDR">
             <property name="whatsThis">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When Enabled, the experimental &lt;span style=&quot; font-style:italic;&quot;&gt;Native Wayland Backend&lt;/span&gt; will expose and enable use of your display's HDR capabilities.&lt;/p&gt;&lt;p&gt;Because HDR implicitly relies on Wayland to function (as there is no equivalent support in X11), this will only work with &lt;span style=&quot; font-style:italic;&quot;&gt;Native Wayland Support&lt;/span&gt; enabled and &lt;span style=&quot; font-weight:700;&quot;&gt;only in a Wayland session;&lt;/span&gt; this will not take effect on X11 desktops.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -1869,6 +1830,45 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="0" column="5">
+           <widget class="QCheckBox" name="toggleWindowDecorations">
+            <property name="text">
+             <string>Disable Window Decorations</string>
+            </property>
+            <property name="isFor" stdset="0">
+             <string>UseNoDecorations</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6">
+           <spacer name="horizontalSpacer_26">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="toggleWayland">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set whether or not to force the native Wayland environment &lt;span style=&quot; font-style:italic;&quot;&gt;for supported Proton versions.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Runners based on &lt;span style=&quot; font-style:italic;&quot;&gt;Proton 10&lt;/span&gt; have added experimental &lt;span style=&quot; font-weight:700;&quot;&gt;native&lt;/span&gt; Wayland support, but will still default to the X11 backend running through XWayland. While enabling this will provide a more cohesive look &amp;amp; feel and potentially provide better performance on a native Wayland desktop, do note that &lt;span style=&quot; font-weight:700;&quot;&gt;there are known issues with mouse focus and native OpenGL/Vulkan applications, &lt;/span&gt;&lt;a href=&quot;https://github.com/GloriousEggroll/proton-ge-custom/releases&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;as noted by GE.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Enabling this will have no effect on X11 desktops.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>Use Experimental Native Wayland Support</string>
+            </property>
+            <property name="text">
+             <string>Enable Native Wayland Support</string>
+            </property>
+            <property name="isFor" stdset="0">
+             <string>UseWayland</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -2311,7 +2311,6 @@ Zink can cause compatability problems, including severely lowered performance on
   <tabstop>toggleLimitGL</tabstop>
   <tabstop>toggleNoD8VK</tabstop>
   <tabstop>toggleWineD3D</tabstop>
-  <tabstop>toggleWayland</tabstop>
   <tabstop>toggleHidraw</tabstop>
   <tabstop>toggleXalia</tabstop>
   <tabstop>infoScrollArea</tabstop>
