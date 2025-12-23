@@ -2083,7 +2083,7 @@ Zink can cause compatability problems, including severely lowered performance on
        <item row="6" column="0">
         <widget class="QGroupBox" name="wineTopology">
          <property name="title">
-          <string>Wine CPU Toplogy</string>
+          <string>Enable Wine CPU Toplogy</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
