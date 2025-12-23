@@ -55,8 +55,8 @@ public:
                 this->validOptions = universalOptions << emOptions;
                 this->reconstructUpgrades = {"fsr4", "fsr4rdna3"};
             } else if (runner.contains("GE-") || runner.contains("-GE")) {
-                int version = runner.mid(runner.lastIndexOf("GE-Proton"), 2).toInt();
-                int subVersion = runner.mid(runner.lastIndexOf("-"), 2).toInt();
+                int version = runner.mid(runner.lastIndexOf("-") - 2 , 2).toInt();
+                int subVersion = runner.mid(runner.lastIndexOf("-") + 1, 2).toInt();
                 this->isProton10OrLater = version > 10;
                 this->validOptions = universalOptions << geOptions;
                 this->reconstructUpgrades = {"fsr4", "fsr4rdna3"};
