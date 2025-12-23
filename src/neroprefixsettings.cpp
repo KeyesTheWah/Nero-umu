@@ -106,9 +106,9 @@ NeroPrefixSettingsWindow::NeroPrefixSettingsWindow(QWidget *parent, const QStrin
 
 
     // FSR scalers are only implem'd in non-standard proton versions
-    QString customProton = ui->prefixRunner->currentText().split("-")[0];
+    QString customProton = ui->prefixRunner->currentText();
     NeroFS::CustomRunner run(customProton);
-    if (run.isCustomProton) {
+    if (!run.isCustomProton) {
         SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRperformance, false);
         SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRbalanced, false);
         SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRquality, false);
@@ -123,23 +123,24 @@ NeroPrefixSettingsWindow::NeroPrefixSettingsWindow(QWidget *parent, const QStrin
         else SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingGamescopeWindowed, false);
     }
     // Wayland requires base version to be Proton 10+
-    if (run.isCustomProton && run.isProton10OrLater) {
 
-        QList<QWidget*> customOptions {
-            ui->toggleNvidiaLibs,
-            ui->toggleSteamInput,
-            ui->imageReconstructionBox,
-            ui->imageReconstructionIndBox,
-            ui->toggleWayland,
-            ui->toggleWaylandHDR,
-            ui->toggleWindowDecorations,
-        };
-        // this didn't work in an STL-style iterator for some reason.
-        for (int i = 0; i < customOptions.length(); ++i) {
-            QWidget* option = customOptions[i];
-            if (!run.validOptions.contains(option->property("isFor"))) {
-                option->setEnabled(false);
-            }
+    QList<QWidget*> customOptions {
+        ui->toggleNvidiaLibs,
+        ui->toggleSteamInput,
+        ui->imageReconstructionBox,
+        ui->imageReconstructionIndBox,
+        ui->toggleWayland,
+        ui->toggleWaylandHDR,
+        ui->toggleWindowDecorations,
+    };
+    // this didn't work in an STL-style iterator for some reason.
+    for (int i = 0; i < customOptions.length(); ++i) {
+        QWidget* option = customOptions[i];
+        bool hasOption = run.validOptions.contains(option->property("isFor"));
+        if (hasOption && run.isCustomProton && run.isProton10OrLater) {
+            option->setEnabled(true);
+        } else {
+            option->setEnabled(false);
         }
     }
 
