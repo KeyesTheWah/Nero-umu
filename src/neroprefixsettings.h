@@ -101,6 +101,8 @@ private slots:
 
     void on_logFolderButton_clicked();
 
+    void on_toggleWayland_clicked();
+
 private:
     void SaveSettings();
     Ui::NeroPrefixSettingsWindow *ui;
