@@ -57,7 +57,7 @@ public:
             } else if (runner.contains("GE-") || runner.contains("-GE")) {
                 int version = runner.mid(runner.lastIndexOf("-") - 2 , 2).toInt();
                 int subVersion = runner.mid(runner.lastIndexOf("-") + 1, 2).toInt();
-                this->isProton10OrLater = version > 10;
+                this->isProton10OrLater = version >= 10;
                 this->validOptions = universalOptions << geOptions;
                 this->reconstructUpgrades = {"fsr4", "fsr4rdna3"};
                 this->isNtSync = isProton10OrLater && subVersion > 9;
@@ -77,7 +77,7 @@ public:
             "ImageReconstructionUpgrade",
         };
         QStringList geOptions = {
-            "DisableSteamInput",
+            "SteamInputDisabled",
             "NoWindowDecorations",
 
         };
@@ -88,7 +88,7 @@ public:
             "UseNvidiaLibs",
             "ImageReconstructionIndicator",
             "UseLocalShaderCache",
-            "DisableSteamInput",
+            "SteamInputDisabled",
             "NoWindowDecorations",
         };
     };
