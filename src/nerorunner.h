@@ -33,7 +33,6 @@ class NeroRunner : public QObject
     Q_OBJECT
 public:
     NeroRunner() {};
-
     int StartShortcut(const QString &, const bool & = false);
     int StartOnetime(const QString &, const bool & = false, const QStringList & = {});
     QString GetHash() {return hashVal;}
@@ -117,6 +116,7 @@ public:
                    : CombinedSetting(setting, *this);
     }
 private:
+    void SyncExtraEnvVars(bool isPrefixOnly);
     QStringList SetMangohud(QStringList gamescope, QStringList arguments);
     void Wayland(bool isPrefixOnly);
     void WineCpuTopology(bool isPrefixOnly);
@@ -263,7 +263,8 @@ namespace NeroConfig {
     const QString currentRunner = "CurrentRunner";
     const QString runtimeUpdate = "RuntimeUpdateOnLaunch";
     const QString dlssIndicator = "DlssIndicator";
-
+    const QString envVars = "EnvVars";
+    const QString envVarsEnabled = "EnvVarsEnabled";
     const QString path = "Path";
     //OBS
     const QString vkCapture = "VKcapture";
