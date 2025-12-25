@@ -1833,6 +1833,12 @@
           </item>
           <item row="0" column="5">
            <widget class="QCheckBox" name="toggleWindowDecorations">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Requires&lt;/span&gt;: CachyOS Proton&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Summary&lt;/span&gt;:&lt;/p&gt;&lt;p&gt;Enabling this option will disable Wine's window decorations (ie, the border around an application) on wine applications running under Wayland.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Command&lt;/span&gt;: PROTON_NO_WM_DECORATION&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Background&lt;/span&gt;:&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gitlab.winehq.org/wine/wine/-/merge_requests/3909#note_46175&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Wine does not implement support for the libdecor library&lt;/span&gt;&lt;/a&gt;, which means that Wine applications running under Wayland will fallback to the &lt;a href=&quot;https://bugs.winehq.org/attachment.cgi?id=78617&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;default Wine window decorations&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Disable Window Decorations&lt;/span&gt; sets Wine to automatically remove these, which may result in improved user experience for games that have only a windowed mode &amp;amp; some launchers (such as Battle.Net).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>Disable Wine Window Decorations</string>
+            </property>
             <property name="text">
              <string>Disable Window Decorations</string>
             </property>

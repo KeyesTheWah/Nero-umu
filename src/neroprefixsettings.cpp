@@ -52,9 +52,11 @@ NeroPrefixSettingsWindow::NeroPrefixSettingsWindow(QWidget *parent, const QStrin
     // env vars shouldn't be needed (and parsing it is a pita), so hide it for now
     ui->envBox->setVisible(false);
 
+    ui->prefixRunner->blockSignals(true);
     // prefix runner box is used to govern availability of scaling options in both prefix and shortcut settings
     ui->prefixRunner->addItems(*NeroFS::GetAvailableProtons());
     ui->prefixRunner->setCurrentText(NeroFS::GetCurrentRunner());
+    ui->prefixRunner->blockSignals(false);
 
     if(shortcutHash.isEmpty()) {
         settings = NeroFS::GetCurrentPrefixSettings();
@@ -104,45 +106,7 @@ NeroPrefixSettingsWindow::NeroPrefixSettingsWindow(QWidget *parent, const QStrin
             winVersionListBackwards.append(ui->winVerBox->itemText(i-1));
     }
 
-
-    // FSR scalers are only implem'd in non-standard proton versions
-    QString customProton = ui->prefixRunner->currentText();
-    NeroFS::CustomRunner run(customProton);
-    if (!run.isCustomProton) {
-        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRperformance, false);
-        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRbalanced, false);
-        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRquality, false);
-        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRhighquality, false);
-        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRhigherquality, false);
-        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRhighestquality, false);
-        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRcustom, false);
-        // HACK: offset by one when this is a shortcut settings panel and not prefix settings
-        if(ui->setScalingBox->findText("Integer Scaling") == 1) {
-            SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingIntegerScale, false);
-        }
-        else SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingGamescopeWindowed, false);
-    }
-    // Wayland requires base version to be Proton 10+
-
-    QList<QWidget*> customOptions {
-        ui->toggleNvidiaLibs,
-        ui->toggleSteamInput,
-        ui->imageReconstructionBox,
-        ui->imageReconstructionIndBox,
-        ui->toggleWayland,
-        ui->toggleWaylandHDR,
-        ui->toggleWindowDecorations,
-    };
-    // this didn't work in an STL-style iterator for some reason.
-    for (int i = 0; i < customOptions.length(); ++i) {
-        QWidget* option = customOptions[i];
-        bool hasOption = run.validOptions.contains(option->property("isFor"));
-        if (hasOption && run.isCustomProton && run.isProton10OrLater) {
-            option->setEnabled(true);
-        } else {
-            option->setEnabled(false);
-        }
-    }
+    updateRunner();
 
     resValidator = new QIntValidator(0, 32767);
     ui->fsrCustomH->setValidator(resValidator);
@@ -368,9 +332,6 @@ void NeroPrefixSettingsWindow::LoadSettings()
         QCheckBox* widget = i.value();
         SetCheckboxState(neroOption, widget);
     }
-    bool isWayland = settings.value("UseWayland").toBool();
-    ui->toggleWaylandHDR->setEnabled(isWayland);
-    ui->toggleWindowDecorations->setEnabled(isWayland);
 
     if(currentShortcutHash.isEmpty()) {
         // for prefix general settings, checkboxes are normal two-state
@@ -577,7 +538,6 @@ void NeroPrefixSettingsWindow::on_shortcutPathBtn_clicked()
         }
     }
 }
-
 
 void NeroPrefixSettingsWindow::on_setScalingBox_activated(int index)
 {
@@ -1126,6 +1086,60 @@ void NeroPrefixSettingsWindow::deleteShortcut_clicked()
     }
 }
 
+void NeroPrefixSettingsWindow::updateRunner() {
+    // FSR scalers are only implem'd in non-standard proton versions
+    QString customProton = ui->prefixRunner->currentText();
+    NeroFS::CustomRunner run(customProton);
+    if (!run.isCustomProton) {
+        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRperformance, !run.isCustomProton);
+        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRbalanced, !run.isCustomProton);
+        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRquality, !run.isCustomProton);
+        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRhighquality, !run.isCustomProton);
+        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRhigherquality, !run.isCustomProton);
+        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRhighestquality, !run.isCustomProton);
+        SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingFSRcustom, !run.isCustomProton);
+        // HACK: offset by one when this is a shortcut settings panel and not prefix settings
+        if(ui->setScalingBox->findText("Integer Scaling") == 1) {
+            SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingIntegerScale, !run.isCustomProton);
+        }
+        else SetComboBoxItemEnabled(ui->setScalingBox, NeroConstant::ScalingGamescopeWindowed, !run.isCustomProton);
+    }
+
+    // Wayland requires base version to be Proton 10+
+    QList<QWidget*> customOptions {
+        ui->toggleNvidiaLibs,
+        ui->toggleSteamInput,
+        ui->imageReconstructionBox,
+        ui->imageReconstructionIndBox,
+        ui->toggleWayland,
+        ui->toggleWaylandHDR,
+        ui->toggleWindowDecorations,
+    };
+    // this didn't work in an STL-style iterator for some reason.
+    for (int i = 0; i < customOptions.length(); ++i) {
+        QWidget* option = customOptions[i];
+        bool hasOption = run.validOptions.contains(option->property("isFor"));
+        if (hasOption && run.isCustomProton && run.isProton10OrLater) {
+            option->setEnabled(true);
+        } else {
+            option->setEnabled(false);
+        }
+    }
+}
+
+void NeroPrefixSettingsWindow::checkIfCustomSetting(QList<QWidget *> options, NeroFS::CustomRunner r)
+{
+    for (int i = 0; i < options.length(); ++i) {
+        QWidget* option = options[i];
+        bool hasOption = r.validOptions.contains(option->property("isFor"));
+        if (hasOption && r.isCustomProton && r.isProton10OrLater) {
+            option->setEnabled(true);
+        } else {
+            option->setEnabled(false);
+        }
+    }
+}
+
 void NeroPrefixSettingsWindow::on_openToShortcutPath_clicked()
 {
     // in case path begins with a Windows drive letter prefix
@@ -1138,10 +1152,22 @@ void NeroPrefixSettingsWindow::on_logFolderButton_clicked()
     NeroFS::openLogDirectory();
 }
 
-void NeroPrefixSettingsWindow::on_toggleWayland_clicked()
+void NeroPrefixSettingsWindow::on_toggleWayland_checkStateChanged(Qt::CheckState state)
 {
-    bool isChecked = ui->toggleWayland->isChecked();
-    ui->toggleWaylandHDR->setEnabled(isChecked);
-    ui->toggleWindowDecorations->setEnabled(isChecked);
+    if (state == Qt::Unchecked) {
+        ui->toggleWaylandHDR->setEnabled(false);
+        ui->toggleWindowDecorations->setEnabled(false);
+    } else {
+        QList<QWidget*> customOptions {
+            ui->toggleWayland,
+            ui->toggleWaylandHDR,
+            ui->toggleWindowDecorations,
+        };
+    }
+}
+
+void NeroPrefixSettingsWindow::on_prefixRunner_currentTextChanged()
+{
+    updateRunner();
 }
 
