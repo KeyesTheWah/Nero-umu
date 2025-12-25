@@ -1793,6 +1793,95 @@
        <string>Experimental</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_experiment" rowstretch="0,0,0,0,0,0,0">
+       <property name="sizeConstraint">
+        <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+       </property>
+       <item row="3" column="0">
+        <widget class="QGroupBox" name="waylandGroup">
+         <property name="title">
+          <string>Wayland</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_13">
+          <item row="0" column="2">
+           <widget class="QCheckBox" name="toggleWaylandHDR">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When Enabled, the experimental &lt;span style=&quot; font-style:italic;&quot;&gt;Native Wayland Backend&lt;/span&gt; will expose and enable use of your display's HDR capabilities.&lt;/p&gt;&lt;p&gt;Because HDR implicitly relies on Wayland to function (as there is no equivalent support in X11), this will only work with &lt;span style=&quot; font-style:italic;&quot;&gt;Native Wayland Support&lt;/span&gt; enabled and &lt;span style=&quot; font-weight:700;&quot;&gt;only in a Wayland session;&lt;/span&gt; this will not take effect on X11 desktops.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>Use HDR With Experimental Wayland Backend</string>
+            </property>
+            <property name="text">
+             <string>Enable HDR</string>
+            </property>
+            <property name="isFor" stdset="0">
+             <string>UseHDR</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <spacer name="horizontalSpacer_25">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="5">
+           <widget class="QCheckBox" name="toggleWindowDecorations">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Requires&lt;/span&gt;: CachyOS Proton&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Summary&lt;/span&gt;:&lt;/p&gt;&lt;p&gt;Enabling this option will disable Wine's window decorations (ie, the border around an application) on wine applications running under Wayland.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Command&lt;/span&gt;: PROTON_NO_WM_DECORATION&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Background&lt;/span&gt;:&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gitlab.winehq.org/wine/wine/-/merge_requests/3909#note_46175&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Wine does not implement support for the libdecor library&lt;/span&gt;&lt;/a&gt;, which means that Wine applications running under Wayland will fallback to the &lt;a href=&quot;https://bugs.winehq.org/attachment.cgi?id=78617&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;default Wine window decorations&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Disable Window Decorations&lt;/span&gt; sets Wine to automatically remove these, which may result in improved user experience for games that have only a windowed mode &amp;amp; some launchers (such as Battle.Net).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>Disable Wine Window Decorations</string>
+            </property>
+            <property name="text">
+             <string>Disable Window Decorations</string>
+            </property>
+            <property name="isFor" stdset="0">
+             <string>UseNoDecorations</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6">
+           <spacer name="horizontalSpacer_26">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="toggleWayland">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set whether or not to force the native Wayland environment &lt;span style=&quot; font-style:italic;&quot;&gt;for supported Proton versions.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Runners based on &lt;span style=&quot; font-style:italic;&quot;&gt;Proton 10&lt;/span&gt; have added experimental &lt;span style=&quot; font-weight:700;&quot;&gt;native&lt;/span&gt; Wayland support, but will still default to the X11 backend running through XWayland. While enabling this will provide a more cohesive look &amp;amp; feel and potentially provide better performance on a native Wayland desktop, do note that &lt;span style=&quot; font-weight:700;&quot;&gt;there are known issues with mouse focus and native OpenGL/Vulkan applications, &lt;/span&gt;&lt;a href=&quot;https://github.com/GloriousEggroll/proton-ge-custom/releases&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;as noted by GE.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Enabling this will have no effect on X11 desktops.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>Use Experimental Native Wayland Support</string>
+            </property>
+            <property name="text">
+             <string>Enable Native Wayland Support</string>
+            </property>
+            <property name="isFor" stdset="0">
+             <string>UseWayland</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item row="2" column="0">
         <widget class="QGroupBox" name="runnerSpecificGroup">
          <property name="title">
@@ -1920,123 +2009,6 @@
          </layout>
         </widget>
        </item>
-       <item row="6" column="0" alignment="Qt::AlignmentFlag::AlignLeft">
-        <widget class="QGroupBox" name="wineTopology">
-         <property name="title">
-          <string>Enable Wine CPU Toplogy</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-         <property name="isFor" stdset="0">
-          <string>wineCpuTopology</string>
-         </property>
-         <layout class="QGridLayout" name="wineGrid">
-          <item row="0" column="0">
-           <widget class="QListWidget" name="listWidget">
-            <property name="selectionMode">
-             <enum>QAbstractItemView::SelectionMode::NoSelection</enum>
-            </property>
-            <property name="isFor" stdset="0">
-             <string>TopologyList</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QGroupBox" name="waylandGroup">
-         <property name="title">
-          <string>Wayland</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignCenter</set>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_13">
-          <item row="0" column="2">
-           <widget class="QCheckBox" name="toggleWaylandHDR">
-            <property name="whatsThis">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When Enabled, the experimental &lt;span style=&quot; font-style:italic;&quot;&gt;Native Wayland Backend&lt;/span&gt; will expose and enable use of your display's HDR capabilities.&lt;/p&gt;&lt;p&gt;Because HDR implicitly relies on Wayland to function (as there is no equivalent support in X11), this will only work with &lt;span style=&quot; font-style:italic;&quot;&gt;Native Wayland Support&lt;/span&gt; enabled and &lt;span style=&quot; font-weight:700;&quot;&gt;only in a Wayland session;&lt;/span&gt; this will not take effect on X11 desktops.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="accessibleName">
-             <string>Use HDR With Experimental Wayland Backend</string>
-            </property>
-            <property name="text">
-             <string>Enable HDR</string>
-            </property>
-            <property name="isFor" stdset="0">
-             <string>UseHDR</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <spacer name="horizontalSpacer_25">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="5">
-           <widget class="QCheckBox" name="toggleWindowDecorations">
-            <property name="whatsThis">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Requires&lt;/span&gt;: CachyOS Proton&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Summary&lt;/span&gt;:&lt;/p&gt;&lt;p&gt;Enabling this option will disable Wine's window decorations (ie, the border around an application) on wine applications running under Wayland.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Command&lt;/span&gt;: PROTON_NO_WM_DECORATION&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;Background&lt;/span&gt;:&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://gitlab.winehq.org/wine/wine/-/merge_requests/3909#note_46175&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Wine does not implement support for the libdecor library&lt;/span&gt;&lt;/a&gt;, which means that Wine applications running under Wayland will fallback to the &lt;a href=&quot;https://bugs.winehq.org/attachment.cgi?id=78617&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;default Wine window decorations&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Disable Window Decorations&lt;/span&gt; sets Wine to automatically remove these, which may result in improved user experience for games that have only a windowed mode &amp;amp; some launchers (such as Battle.Net).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="accessibleName">
-             <string>Disable Wine Window Decorations</string>
-            </property>
-            <property name="text">
-             <string>Disable Window Decorations</string>
-            </property>
-            <property name="isFor" stdset="0">
-             <string>UseNoDecorations</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="6">
-           <spacer name="horizontalSpacer_26">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="1">
-           <widget class="QCheckBox" name="toggleWayland">
-            <property name="whatsThis">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set whether or not to force the native Wayland environment &lt;span style=&quot; font-style:italic;&quot;&gt;for supported Proton versions.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Runners based on &lt;span style=&quot; font-style:italic;&quot;&gt;Proton 10&lt;/span&gt; have added experimental &lt;span style=&quot; font-weight:700;&quot;&gt;native&lt;/span&gt; Wayland support, but will still default to the X11 backend running through XWayland. While enabling this will provide a more cohesive look &amp;amp; feel and potentially provide better performance on a native Wayland desktop, do note that &lt;span style=&quot; font-weight:700;&quot;&gt;there are known issues with mouse focus and native OpenGL/Vulkan applications, &lt;/span&gt;&lt;a href=&quot;https://github.com/GloriousEggroll/proton-ge-custom/releases&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;as noted by GE.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;Enabling this will have no effect on X11 desktops.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="accessibleName">
-             <string>Use Experimental Native Wayland Support</string>
-            </property>
-            <property name="text">
-             <string>Enable Native Wayland Support</string>
-            </property>
-            <property name="isFor" stdset="0">
-             <string>UseWayland</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
        <item row="4" column="0">
         <widget class="QGroupBox" name="miscellaneous">
          <property name="title">
@@ -2126,8 +2098,8 @@ Zink can cause compatability problems, including severely lowered performance on
           <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
          <layout class="QGridLayout" name="gridLayout_11">
-          <item row="0" column="0">
-           <spacer name="horizontalSpacer_19">
+          <item row="0" column="4">
+           <spacer name="horizontalSpacer_20">
             <property name="orientation">
              <enum>Qt::Orientation::Horizontal</enum>
             </property>
@@ -2139,8 +2111,24 @@ Zink can cause compatability problems, including severely lowered performance on
             </property>
            </spacer>
           </item>
-          <item row="0" column="4">
-           <spacer name="horizontalSpacer_20">
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="toggleHidraw">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This determines whether or not the runner is allowed to directly interact with connected HID devices or not.&lt;/p&gt;&lt;p&gt;Some applications need this to access things like controller firmware or to individually address some devices. However, this has the side effect of certain controllers, such as the &lt;span style=&quot; font-style:italic;&quot;&gt;Sony DualSense,&lt;/span&gt; overriding the SDL interface and will not be recognized as an Xinput-compatible device.&lt;/p&gt;&lt;p&gt;This should only be enabled for applications that &lt;span style=&quot; font-weight:700;&quot;&gt;do not&lt;/span&gt; function properly without this enabled.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>Allow Proton to Access Raw HID Devices</string>
+            </property>
+            <property name="text">
+             <string>Allow HIDRAW Input Devices</string>
+            </property>
+            <property name="isFor" stdset="0">
+             <string>AllowHidraw</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <spacer name="horizontalSpacer_19">
             <property name="orientation">
              <enum>Qt::Orientation::Horizontal</enum>
             </property>
@@ -2168,22 +2156,6 @@ Zink can cause compatability problems, including severely lowered performance on
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QCheckBox" name="toggleHidraw">
-            <property name="whatsThis">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This determines whether or not the runner is allowed to directly interact with connected HID devices or not.&lt;/p&gt;&lt;p&gt;Some applications need this to access things like controller firmware or to individually address some devices. However, this has the side effect of certain controllers, such as the &lt;span style=&quot; font-style:italic;&quot;&gt;Sony DualSense,&lt;/span&gt; overriding the SDL interface and will not be recognized as an Xinput-compatible device.&lt;/p&gt;&lt;p&gt;This should only be enabled for applications that &lt;span style=&quot; font-weight:700;&quot;&gt;do not&lt;/span&gt; function properly without this enabled.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="accessibleName">
-             <string>Allow Proton to Access Raw HID Devices</string>
-            </property>
-            <property name="text">
-             <string>Allow HIDRAW Input Devices</string>
-            </property>
-            <property name="isFor" stdset="0">
-             <string>AllowHidraw</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="3">
            <widget class="QCheckBox" name="toggleSteamInput">
             <property name="whatsThis">
@@ -2201,6 +2173,159 @@ Zink can cause compatability problems, including severely lowered performance on
             <property name="isFor" stdset="0">
              <string>SteamInputDisabled</string>
             </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QGroupBox" name="tempVar">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>Long Lists</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <item>
+           <widget class="QGroupBox" name="envVarBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>2</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LayoutDirection::LeftToRight</enum>
+            </property>
+            <property name="title">
+             <string>Enable Environment Variables</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="isFor" stdset="0">
+             <string>EnvironmentalVariables</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_12" columnstretch="0">
+             <item row="0" column="0">
+              <widget class="QTableWidget" name="envVarTable">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                <enum>Qt::ScrollBarPolicy::ScrollBarAsNeeded</enum>
+               </property>
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="showGrid">
+                <bool>true</bool>
+               </property>
+               <property name="gridStyle">
+                <enum>Qt::PenStyle::SolidLine</enum>
+               </property>
+               <property name="cornerButtonEnabled">
+                <bool>false</bool>
+               </property>
+               <property name="rowCount">
+                <number>20</number>
+               </property>
+               <property name="columnCount">
+                <number>2</number>
+               </property>
+               <attribute name="horizontalHeaderVisible">
+                <bool>true</bool>
+               </attribute>
+               <attribute name="horizontalHeaderStretchLastSection">
+                <bool>true</bool>
+               </attribute>
+               <attribute name="verticalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <column/>
+               <column/>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="wineTopology">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Enable Wine CPU Topology</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="isFor" stdset="0">
+             <string>WineCpuTopology</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_15">
+             <item row="0" column="0">
+              <widget class="QListWidget" name="topologyList">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="isFor" stdset="0">
+                <string>WineCpuTopology</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>
@@ -2372,6 +2497,22 @@ Zink can cause compatability problems, including severely lowered performance on
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>envVarBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>envVarTable</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>134</x>
+     <y>406</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>150</x>
+     <y>490</y>
     </hint>
    </hints>
   </connection>

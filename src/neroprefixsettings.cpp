@@ -33,9 +33,9 @@
 #include <QThread>
 #include <QStringBuilder>
 #include <QWidget>
+#include <QListWidgetItem>
 #include "../lib/quazip/quazip/quazip.h"
 #include "../lib/quazip/quazip/quazipfile.h"
-
 
 NeroPrefixSettingsWindow::NeroPrefixSettingsWindow(QWidget *parent, const QString shortcutHash)
     : QDialog(parent)
@@ -57,6 +57,8 @@ NeroPrefixSettingsWindow::NeroPrefixSettingsWindow(QWidget *parent, const QStrin
     ui->prefixRunner->addItems(*NeroFS::GetAvailableProtons());
     ui->prefixRunner->setCurrentText(NeroFS::GetCurrentRunner());
     ui->prefixRunner->blockSignals(false);
+
+    ui->envVarTable->setHorizontalHeaderLabels({"Variable", "Value"});
 
     if(shortcutHash.isEmpty()) {
         settings = NeroFS::GetCurrentPrefixSettings();
@@ -132,7 +134,7 @@ NeroPrefixSettingsWindow::NeroPrefixSettingsWindow(QWidget *parent, const QStrin
         QString description = "Enables CPU core #" % iStr % " for use when Wine CPU Topology is enabled. This feature is experimental and should only be used if facing issues.";
         box->setWhatsThis(description);
         box->setCheckState(Qt::Unchecked);
-        ui->listWidget->addItem(box);
+        ui->topologyList->addItem(box);
     }
 
     LoadSettings();
@@ -422,21 +424,23 @@ void NeroPrefixSettingsWindow::LoadSettings()
     //WineCpuTopology UI Setup
     QVariant topology = settings.value("WineCpuTopology");
     bool isEnabled = settings.value("CpuTopologyEnabled").toBool();
-    bool hasConfig = !topology.toString().isEmpty();
-    if (isEnabled && hasConfig) {
+    bool isEmptyStr = topology.toString().isEmpty();
+    if (isEnabled && !isEmptyStr) {
         ui->wineTopology->setChecked(true);
     }
     //set this even if its not enabled so that the stored values aren't lost.
-    if (hasConfig) {
+    if (!isEmptyStr) {
         QStringList split = topology.toString().split(":");
         QStringList enabledCores = split[1].split(",");
-        // TODO: there has to be a better way than a double for loop
-        // but its been days and i got nothing
-        for (int i = 0; i < ui->listWidget->count(); ++i) {
-            QListWidgetItem* item = ui->listWidget->item(i);
+        // Iterate through the topology core counts versus enabled ones.
+        // Each time we find a match, remove it so that subsequent iterations
+        // are slightly cheaper
+        for (int i = 0; i < ui->topologyList->count(); ++i) {
+            QListWidgetItem* item = ui->topologyList->item(i);
             for (int j = 0; j < enabledCores.length(); ++j) {
                 int core = enabledCores[j].toInt();
                 if (core == i) {
+                    enabledCores.remove(j);
                     item->setCheckState(Qt::Checked);
                     break;
                 }
@@ -444,6 +448,30 @@ void NeroPrefixSettingsWindow::LoadSettings()
         }
     }
 
+    QStringList envVars = settings.value("EnvVars").toString().split("|>");
+    bool enabledEnv = settings.value("EnvVarsEnabled").toBool();
+    if (enabledEnv && !envVars.isEmpty()) {
+        ui->envVarBox->setChecked(true);
+    }
+    if (!envVars.isEmpty()) {
+        for (int i = 0; i < envVars.size(); i++) {
+            QStringList args = envVars[i].split('=');
+            if (args[0].isEmpty() || args[1] == nullptr)
+                continue;
+            QTableWidgetItem *arg = new QTableWidgetItem(args[0]);
+            arg->setText(args[0]);
+            arg->setCheckState(Qt::Checked);
+            QTableWidgetItem *val = new QTableWidgetItem(args[1]);
+            val->setText(args[1]);
+            ui->envVarTable->setItem(i, 0, arg);
+            ui->envVarTable->setItem(i, 1, val);
+        }
+    }
+    for (int i = envVars.size(); i < ui->envVarTable->rowCount(); i++) {
+        QTableWidgetItem *b = new QTableWidgetItem();
+        b->setCheckState(Qt::Unchecked);
+        ui->envVarTable->setItem(i, 0, b);
+    }
     for(const auto &child : this->findChildren<QCheckBox*>())
         child->setFont(QFont());
 
@@ -777,7 +805,8 @@ void NeroPrefixSettingsWindow::on_prefixInstallDiscordRPC_clicked()
     NeroPrefixSettingsWindow::blockSignals(false);
 }
 
-void NeroPrefixSettingsWindow::displayError(QString error) {
+void NeroPrefixSettingsWindow::displayError(QString error)
+{
     QMessageBox::warning(this,
                          "Error!",
                          error);
@@ -786,7 +815,8 @@ void NeroPrefixSettingsWindow::displayError(QString error) {
     enableWidgets(true);
 }
 
-void NeroPrefixSettingsWindow::enableWidgets(bool isEnabled) {
+void NeroPrefixSettingsWindow::enableWidgets(bool isEnabled)
+{
     ui->tabWidget->setEnabled(isEnabled);
     ui->buttonBox->setEnabled(isEnabled);
     ui->infoBox->setEnabled(isEnabled);
@@ -943,18 +973,22 @@ void NeroPrefixSettingsWindow::OptionSet()
     }
 }
 
-void NeroPrefixSettingsWindow::setFont(QWidget* w) {
-    w->setFont(boldFont);
-}
-
-
 void NeroPrefixSettingsWindow::on_buttonBox_clicked(QAbstractButton *button)
 {
     // cancel button case isn't needed, since we filter by font to find changed values.
-    ui->buttonBox->standardButton(button) == QDialogButtonBox::Reset
-        ? LoadSettings()
-        : SaveSettings();
-
+    // 12-25-25 update: we need one for some specific fields that are harder to save
+    switch (ui->buttonBox->standardButton(button)) {
+    case QDialogButtonBox::Reset:
+        LoadSettings();
+        break;
+    case QDialogButtonBox::Cancel:
+        break;
+    case QDialogButtonBox::Save:
+        SaveSettings();
+        break;
+    default:
+        break;
+    }
 }
 
 void NeroPrefixSettingsWindow::SaveSettings() {
@@ -983,8 +1017,7 @@ void NeroPrefixSettingsWindow::SaveSettings() {
                     ? QString("Shortcuts--" % currentShortcutHash)
                     : "PrefixSettings";
     for(const auto &child : this->findChildren<QCheckBox*>()) {
-        QString prop = child->property("isFor").toString();
-        if(child->font() == boldFont && !prop.contains("UseCore")) {
+        if(child->font() == boldFont) {
             isShortcut && child->checkState() == Qt::PartiallyChecked
                 ? NeroFS::SetCurrentPrefixCfg(cfg, child->property("isFor").toString(), "")
                 : NeroFS::SetCurrentPrefixCfg(cfg, child->property("isFor").toString(), child->isChecked());
@@ -1008,18 +1041,35 @@ void NeroPrefixSettingsWindow::SaveSettings() {
     if (!isShortcut) {
         NeroFS::SetCurrentPrefixCfg("PrefixSettings", "CurrentRunner", ui->prefixRunner->currentText());
     }
+
+    QStringList l;
+    //y iterator as we're mapping by row, not column
+    for (int x = 0; x < ui->envVarTable->rowCount(); x++) {
+        QTableWidgetItem* envVar = ui->envVarTable->item(x, 0);
+        QTableWidgetItem* val = ui->envVarTable->item(x, 1);
+        if (envVar != nullptr && val != nullptr && !envVar->text().isEmpty() && !val->text().isEmpty()) {
+            l << envVar->text() % '=' % val->text();
+        }
+    }
+
+    NeroFS::SetCurrentPrefixCfg(cfg, "EnvVars", l.join("|>"));
+    NeroFS::SetCurrentPrefixCfg(cfg, "EnvVarsEnabled", ui->envVarBox->isChecked());
+
     QStringList checkedCpus;
-    for (const auto &child : ui->wineTopology->findChildren<QCheckBox*>()) {
-        int core = child->property("core").toInt();
-        Qt::CheckState state = child->checkState();
+    for (int i = 0; i < ui->topologyList->count(); ++i) {
+        QListWidgetItem* item = ui->topologyList->item(i);
+        int core = item->text().mid(item->text().lastIndexOf(' ')).toInt();
+        Qt::CheckState state = item->checkState();
         if (state == Qt::Checked) {
             checkedCpus.append(QString::number(core));
         }
     }
-    QString command = checkedCpus.length() > 0
+
+    QString topCommand = checkedCpus.length() > 0
         ? QString::number(checkedCpus.length()) % ':' % checkedCpus.join(',')
         : QString("");
-    NeroFS::SetCurrentPrefixCfg(cfg, "WineCpuTopology", QVariant(command.trimmed()));
+
+    NeroFS::SetCurrentPrefixCfg(cfg, "WineCpuTopology", QVariant(topCommand.trimmed()));
     NeroFS::SetCurrentPrefixCfg(cfg, "CpuTopologyEnabled", ui->wineTopology->isChecked());
     // check if new ico was set.
     if(!newAppIcon.isEmpty() && isShortcut)
@@ -1109,24 +1159,20 @@ void NeroPrefixSettingsWindow::updateRunner() {
         ui->toggleWaylandHDR,
         ui->toggleWindowDecorations,
     };
-    // this didn't work in an STL-style iterator for some reason.
-    for (int i = 0; i < customOptions.length(); ++i) {
-        QWidget* option = customOptions[i];
-        bool hasOption = run.validOptions.contains(option->property("isFor"));
-        if (hasOption && run.isCustomProton && run.isProton10OrLater) {
-            option->setEnabled(true);
-        } else {
-            option->setEnabled(false);
-        }
-    }
+    CheckCustomRunnerConf(customOptions, &run);
 }
 
-void NeroPrefixSettingsWindow::checkIfCustomSetting(QList<QWidget *> options, NeroFS::CustomRunner r)
-{
+void NeroPrefixSettingsWindow::CheckCustomRunnerConf(QList<QWidget *> options, NeroFS::CustomRunner *r = nullptr) {
+    //manual init if not passed one
+    if (r == nullptr) {
+        NeroFS::CustomRunner currProton(NeroFS::CustomRunner(ui->prefixRunner->currentText()));
+        r = &currProton;
+    }
+    // this didn't work in an STL-style iterator for some reason.
     for (int i = 0; i < options.length(); ++i) {
         QWidget* option = options[i];
-        bool hasOption = r.validOptions.contains(option->property("isFor"));
-        if (hasOption && r.isCustomProton && r.isProton10OrLater) {
+        bool hasOption = r->validOptions.contains(option->property("isFor"));
+        if (hasOption && r->isCustomProton && r->isProton10OrLater) {
             option->setEnabled(true);
         } else {
             option->setEnabled(false);
@@ -1152,11 +1198,10 @@ void NeroPrefixSettingsWindow::on_toggleWayland_checkStateChanged(Qt::CheckState
         ui->toggleWaylandHDR->setEnabled(false);
         ui->toggleWindowDecorations->setEnabled(false);
     } else {
-        QList<QWidget*> customOptions {
-            ui->toggleWayland,
+        CheckCustomRunnerConf({
             ui->toggleWaylandHDR,
             ui->toggleWindowDecorations,
-        };
+        });
     }
 }
 

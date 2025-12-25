@@ -115,7 +115,7 @@ private:
     void LoadSettings();
     void AddDLL(const QString, const int);
     void StartUmu(const QString, QStringList = {});
-    void checkIfCustomSetting(QList<QWidget *> options, NeroFS::CustomRunner r);
+    void CheckCustomRunnerConf(QList<QWidget *> options, NeroFS::CustomRunner *r);
     /**
      * The CustomRunner class is used to list the valid
      * options for each popular custom Proton launcher:
@@ -147,7 +147,6 @@ private:
     QList<QPushButton*> dllDelete;
 
     QList<QAction*> dllOptions;
-    void setFont(QWidget* w);
     QFont boldFont;
 
     bool umuRunning = false;

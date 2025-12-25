@@ -142,6 +142,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     CombinedSetting(NeroConfig::Proton::useXalia, *this).hasSettingAndToBool()
             ? env.insert(CliArgs::Proton::useXalia, TRUE)
             : env.insert(CliArgs::Proton::useXalia, FALSE);
+
     Wayland(isPrefixOnly);
     WineCpuTopology(isPrefixOnly);
     InitImageReconstruction(isPrefixOnly);
@@ -187,7 +188,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     
     QStringList gamescopeArgs = SetScalingMode(scalingMode, fpsLimit, false);
     arguments = SetMangohud(gamescopeArgs, arguments);
-
+    SyncExtraEnvVars(isPrefixOnly);
     runner.setProcessEnvironment(env);
     // some apps requires working directory to be in the right location
     // (corrected if path starts with Windows drive letter prefix)
@@ -356,7 +357,7 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
     int fpsLimit = PrefixSetting(NeroConfig::limitFps, *this).toInt();
     QStringList gamescopeArgs = SetScalingMode(scalingMode, fpsLimit, false);
     arguments = SetMangohud(gamescopeArgs, arguments);
-
+    SyncExtraEnvVars(isPrefixOnly);
     runner.setProcessEnvironment(env);
     if(path.startsWith('/') || path.startsWith("~/") || path.startsWith("./")) {
         runner.setWorkingDirectory(path.left(path.lastIndexOf("/")).replace("C:", NeroFS::GetPrefixesPath()->canonicalPath()+'/'+NeroFS::GetCurrentPrefix()+"/drive_c/"));
@@ -382,6 +383,20 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
     WaitLoop(runner, log);
 
     return runner.exitCode();
+}
+
+void NeroRunner::SyncExtraEnvVars(bool isPrefixOnly) {
+    PrefixSetting s = initSetting(isPrefixOnly, NeroConfig::envVars);
+    PrefixSetting e = initSetting(isPrefixOnly, NeroConfig::envVarsEnabled);
+    if (!e.hasSetting() || !e.toBool()) {
+        return;
+    }
+    QStringList l = s.toString().split("|>");
+    for (QString q : std::as_const(l)) {
+        QStringList split = q.split("=");
+        if (!env.contains(split[0]))
+            env.insert(split[0], split[1]);
+    }
 }
 
 QStringList NeroRunner::SetScalingMode(int scalingMode, int fpsLimit, bool isPrefixOnly) {
