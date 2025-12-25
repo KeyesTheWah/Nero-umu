@@ -86,7 +86,6 @@ public:
         QStringList cachyOsOptions = {
             "UseNvidiaLibs",
             "ImageReconstructionIndicator",
-            "UseLocalShaderCache",
             "SteamInputDisabled",
             "NoWindowDecorations",
         };
