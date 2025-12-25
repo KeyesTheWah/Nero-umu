@@ -127,21 +127,12 @@ NeroPrefixSettingsWindow::NeroPrefixSettingsWindow(QWidget *parent, const QStrin
     int currRow = 0;
     for (int i = 0; i < QThread::idealThreadCount(); i++) {
         QString iStr = QString::number(i);
-        QString core = "core" % iStr;
-        QCheckBox* box = new QCheckBox(ui->wineTopology);
-        box->setObjectName(core);
+        QString core = "Core " % iStr;
+        QListWidgetItem *box = new QListWidgetItem(core);
         QString description = "Enables CPU core #" % iStr % " for use when Wine CPU Topology is enabled. This feature is experimental and should only be used if facing issues.";
         box->setWhatsThis(description);
-        box->setAccessibleName("Wine Topology: Enable CPU Core #" % iStr);
-        box->setAccessibleDescription(description);
-        QString prop = "UseCore" % iStr;
-        box->setProperty("core", i);
-        box->setProperty("isFor", prop);
-        box->setText("Core" % iStr);
-        int currCol = i % 6;
-        if (currCol == 0 && i != 0)
-            currRow++;
-        ui->wineGrid->addWidget(box, currRow, currCol);
+        box->setCheckState(Qt::Unchecked);
+        ui->listWidget->addItem(box);
     }
 
     LoadSettings();
@@ -439,11 +430,14 @@ void NeroPrefixSettingsWindow::LoadSettings()
     if (hasConfig) {
         QStringList split = topology.toString().split(":");
         QStringList enabledCores = split[1].split(",");
-        for (const auto &child: ui->wineTopology->findChildren<QCheckBox*>()) {
-            for (int i = 0; i < enabledCores.length(); ++i) {
-                int core = enabledCores[i].toInt();
-                if (core == child->property("core").toInt() ) {
-                    child->setChecked(true);
+        // TODO: there has to be a better way than a double for loop
+        // but its been days and i got nothing
+        for (int i = 0; i < ui->listWidget->count(); ++i) {
+            QListWidgetItem* item = ui->listWidget->item(i);
+            for (int j = 0; j < enabledCores.length(); ++j) {
+                int core = enabledCores[j].toInt();
+                if (core == i) {
+                    item->setCheckState(Qt::Checked);
                     break;
                 }
             }
