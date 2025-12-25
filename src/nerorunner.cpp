@@ -352,8 +352,8 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
             ? !env.value(CliArgs::waylandDisplay).isEmpty()
             : false;
 
-    bool hasWayland = PrefixSetting(NeroConfig::Proton::useWayland, *this).hasSetting();
-    if (isWaylandEnv && hasWayland) {
+    PrefixSetting wayland(NeroConfig::Proton::useWayland, *this);
+    if (isWaylandEnv && wayland.hasSetting() && wayland.toBool()) {
         env.insert(CliArgs::Proton::enableWayland, TRUE);
         bool isHdrEnabled = PrefixSetting(NeroConfig::Proton::useHdr, *this).toBool();
         if (isHdrEnabled) {
