@@ -79,7 +79,6 @@ public:
         QStringList geOptions = {
             "SteamInputDisabled",
             "NoWindowDecorations",
-
         };
         //none atm but just in case?
         QStringList emOptions = {

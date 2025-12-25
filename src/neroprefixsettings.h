@@ -20,6 +20,8 @@
 #ifndef NEROPREFIXSETTINGS_H
 #define NEROPREFIXSETTINGS_H
 
+#include "nerofs.h"
+
 #include <QDialog>
 #include <QLabel>
 #include <QMap>
@@ -101,14 +103,19 @@ private slots:
 
     void on_logFolderButton_clicked();
 
-    void on_toggleWayland_clicked();
+    void on_prefixRunner_currentTextChanged();
+
+    void on_toggleWayland_checkStateChanged(Qt::CheckState);
 
 private:
+    void updateRunner();
     void SaveSettings();
+    void checkWayland();
     Ui::NeroPrefixSettingsWindow *ui;
     void LoadSettings();
     void AddDLL(const QString, const int);
     void StartUmu(const QString, QStringList = {});
+    void checkIfCustomSetting(QList<QWidget *> options, NeroFS::CustomRunner r);
     /**
      * The CustomRunner class is used to list the valid
      * options for each popular custom Proton launcher:
