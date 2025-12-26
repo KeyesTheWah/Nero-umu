@@ -1346,19 +1346,117 @@
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
-         <layout class="QGridLayout" name="gridLayout_6" columnstretch="1,0,2,1">
-          <item row="1" column="3">
-           <spacer name="horizontalSpacer_8">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
+         <layout class="QGridLayout" name="gridLayout_6" columnstretch="1,0,0,0,0,0,0,0">
+          <item row="1" column="2">
+           <widget class="QComboBox" name="debugBox">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the desired level of debug output Nero should print when running an application in this prefix.&lt;/p&gt;&lt;p&gt;This can be useful if you are debugging a troublesome application and need to know the output.&lt;/p&gt;&lt;p&gt;Any debug output will be printed to standard output (i.e. the terminal application Nero is launched from).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>20</height>
-             </size>
+            <property name="accessibleName">
+             <string>Set Proton/UMU Debug Output</string>
             </property>
-           </spacer>
+            <property name="isFor" stdset="0">
+             <string>DebugOutput</string>
+            </property>
+            <item>
+             <property name="text">
+              <string>No Debug Output</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Show Loaded DLLs</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Full Debug Output</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Debug Output:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="8">
+           <widget class="QGroupBox" name="envBox">
+            <property name="title">
+             <string/>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,2,0">
+             <item>
+              <spacer name="horizontalSpacer_17">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="prefixEnvVars">
+               <property name="whatsThis">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter any desired Environment Variables that you might need for this prefix.&lt;/p&gt;&lt;p&gt;Environment Variables must be entered in &lt;span style=&quot; font-weight:700;&quot;&gt;KEY=&amp;quot;values&amp;quot; &lt;/span&gt;format.&lt;/p&gt;&lt;p&gt;Any Environment Variables added here will be prepended to the main runner environment for this prefix when an application starts.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="accessibleName">
+                <string>Custom Prefix Environment Variables</string>
+               </property>
+               <property name="placeholderText">
+                <string>Enter Custom Environment Variables...</string>
+               </property>
+               <property name="clearButtonEnabled">
+                <bool>true</bool>
+               </property>
+               <property name="isFor" stdset="0">
+                <string>CustomEnvVars</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_29">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QPushButton" name="logFolderButton">
+            <property name="whatsThis">
+             <string>Opens the Log Directory for this prefix.</string>
+            </property>
+            <property name="accessibleName">
+             <string>Open Log Folder</string>
+            </property>
+            <property name="accessibleDescription">
+             <string>Opens the Log Directory for this prefix.</string>
+            </property>
+            <property name="text">
+             <string>Open Log Folder</string>
+            </property>
+            <property name="icon">
+             <iconset theme="QIcon::ThemeIcon::DocumentOpen"/>
+            </property>
+           </widget>
           </item>
           <item row="1" column="0">
            <spacer name="horizontalSpacer_7">
@@ -1373,7 +1471,20 @@
             </property>
            </spacer>
           </item>
-          <item row="3" column="0" colspan="4">
+          <item row="1" column="7">
+           <spacer name="horizontalSpacer_8">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="3" column="0" colspan="8">
            <widget class="QGroupBox" name="prefixServices">
             <property name="title">
              <string notr="true"/>
@@ -1515,116 +1626,28 @@
             </layout>
            </widget>
           </item>
-          <item row="0" column="0" colspan="4">
-           <widget class="QGroupBox" name="envBox">
-            <property name="title">
-             <string/>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,2,1">
-             <item>
-              <spacer name="horizontalSpacer_17">
-               <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="prefixEnvVars">
-               <property name="whatsThis">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter any desired Environment Variables that you might need for this prefix.&lt;/p&gt;&lt;p&gt;Environment Variables must be entered in &lt;span style=&quot; font-weight:700;&quot;&gt;KEY=&amp;quot;values&amp;quot; &lt;/span&gt;format.&lt;/p&gt;&lt;p&gt;Any Environment Variables added here will be prepended to the main runner environment for this prefix when an application starts.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="accessibleName">
-                <string>Custom Prefix Environment Variables</string>
-               </property>
-               <property name="placeholderText">
-                <string>Enter Custom Environment Variables...</string>
-               </property>
-               <property name="clearButtonEnabled">
-                <bool>true</bool>
-               </property>
-               <property name="isFor" stdset="0">
-                <string>CustomEnvVars</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="logFolderButton">
-               <property name="whatsThis">
-                <string>Opens the Log Directory for this prefix.</string>
-               </property>
-               <property name="accessibleName">
-                <string>Open Log Folder</string>
-               </property>
-               <property name="accessibleDescription">
-                <string>Opens the Log Directory for this prefix.</string>
-               </property>
-               <property name="text">
-                <string>Open Log Folder</string>
-               </property>
-               <property name="icon">
-                <iconset theme="QIcon::ThemeIcon::DocumentOpen"/>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_29">
-               <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="label_4">
+          <item row="1" column="5">
+           <widget class="QPushButton" name="logFileButton">
             <property name="text">
-             <string>Debug Output:</string>
+             <string>Open Shortcut Log</string>
+            </property>
+            <property name="icon">
+             <iconset theme="edit-paste"/>
             </property>
            </widget>
           </item>
-          <item row="1" column="2">
-           <widget class="QComboBox" name="debugBox">
-            <property name="whatsThis">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the desired level of debug output Nero should print when running an application in this prefix.&lt;/p&gt;&lt;p&gt;This can be useful if you are debugging a troublesome application and need to know the output.&lt;/p&gt;&lt;p&gt;Any debug output will be printed to standard output (i.e. the terminal application Nero is launched from).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <item row="1" column="6">
+           <spacer name="horizontalSpacer_18">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
             </property>
-            <property name="accessibleName">
-             <string>Set Proton/UMU Debug Output</string>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
             </property>
-            <property name="isFor" stdset="0">
-             <string>DebugOutput</string>
-            </property>
-            <item>
-             <property name="text">
-              <string>No Debug Output</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Show Loaded DLLs</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Full Debug Output</string>
-             </property>
-            </item>
-           </widget>
+           </spacer>
           </item>
          </layout>
         </widget>
@@ -1983,7 +2006,6 @@
   <tabstop>postRunClearBtn</tabstop>
   <tabstop>postRunButton</tabstop>
   <tabstop>prefixEnvVars</tabstop>
-  <tabstop>debugBox</tabstop>
   <tabstop>prefixInstallDiscordRPC</tabstop>
   <tabstop>prefixDrivesBtn</tabstop>
   <tabstop>prefixRegeditBtn</tabstop>

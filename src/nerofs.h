@@ -57,7 +57,7 @@ public:
     static QMap<QString, QString> GetCurrentShortcutsMap();
     static QMap<QString, QVariant> GetShortcutSettings(const QString &);
     static QSettings* GetManagerCfg() { return &managerCfg; }
-    static void openLogDirectory();
+    static void openLogDirectory(QString arg);
     static void CreateUserLinks(const QString &);
     static void AddNewPrefix(const QString &, const QString &);
     static void AddNewShortcut(const QString &, const QString &, const QString &);

@@ -97,6 +97,8 @@ private slots:
 
     void on_logFolderButton_clicked();
 
+    void on_logFileButton_clicked();
+
 private:
     Ui::NeroPrefixSettingsWindow *ui;
 

@@ -56,7 +56,7 @@ NeroPrefixSettingsWindow::NeroPrefixSettingsWindow(QWidget *parent, const QStrin
 
     if(shortcutHash.isEmpty()) {
         settings = NeroFS::GetCurrentPrefixSettings();
-
+        ui->logFileButton->setVisible(false);
         ui->shortcutSettings->setVisible(false);
         ui->toggleShortcutPrefixOverride->setVisible(false);
         ui->windowsVerSection->setVisible(false);
@@ -664,7 +664,7 @@ void NeroPrefixSettingsWindow::on_prefixInstallDiscordRPC_clicked()
         ui->infoBox->setTitle("");
         ui->infoText->setText(QString("Bridge extraction exited with the error: %1").arg(exeToExtract.errorString()));
     }
-    
+
     enableWidgets(true);
     umuRunning = false;
     NeroPrefixSettingsWindow::blockSignals(false);
@@ -969,6 +969,12 @@ void NeroPrefixSettingsWindow::on_openToShortcutPath_clicked()
 
 void NeroPrefixSettingsWindow::on_logFolderButton_clicked()
 {
-    NeroFS::openLogDirectory();
+    NeroFS::openLogDirectory("");
+}
+
+void NeroPrefixSettingsWindow::on_logFileButton_clicked() {
+    if (!currentShortcutHash.isEmpty()) {
+        NeroFS::openLogDirectory(ui->shortcutName->text() % '-' % currentShortcutHash % ".txt");
+    }
 }
 

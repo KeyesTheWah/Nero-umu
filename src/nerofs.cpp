@@ -463,12 +463,15 @@ void NeroFS::DeleteShortcut(const QString &shortcutHash)
     }
 }
 
-void NeroFS::openLogDirectory() {
+void NeroFS::openLogDirectory(QString file) {
     if(GetCurrentPrefixCfg() == nullptr) {
             printf("THIS SHOULDN'T HAVE HAPPENED: GetCurrentPrefixCfg returned null in openLogDirectory which EXPECTS a real pointer!\n");
         return;
     }
-    QString path = prefixesPath.path() % '/' % currentPrefix % "/" % ".logs";
+    QString path = file.isEmpty()
+                ? prefixesPath.path() % '/' % currentPrefix % "/" % ".logs"
+                //i... think this works?? it considers them different types without the plus at the end, stringbuilder quirk ig
+                : prefixesPath.path() % '/' % currentPrefix % "/" % ".logs" + '/' + file;
     QUrl url = QUrl::fromLocalFile(path);
     QDesktopServices::openUrl(url);
 }
