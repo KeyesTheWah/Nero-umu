@@ -65,9 +65,12 @@ public:
                 this->validOptions = universalOptions << cachyOsOptions;
                 this->reconstructUpgrades = {"dlss", "xess", "fsr4", "fsr4rdna3"};
             } else {
-                this->isProton10OrLater = false;
-                this->isCustomProton = false;
-                this->isNtSync = false;
+                // TODO: change to default to false before merging and remove non bool ones.
+                this->isProton10OrLater = true;
+                this->isCustomProton = true;
+                this->isNtSync = true;
+                this->validOptions = universalOptions << cachyOsOptions;
+                this->reconstructUpgrades = {"dlss", "xess", "fsr4", "fsr4rdna3"};
             }
         }
     private:
