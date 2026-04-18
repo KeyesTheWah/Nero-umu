@@ -1176,11 +1176,9 @@ void NeroPrefixSettingsWindow::CheckCustomRunnerConf(QList<QWidget *> options, N
     for (int i = 0; i < options.length(); ++i) {
         QWidget* option = options[i];
         bool hasOption = r->validOptions.contains(option->property("isFor"));
-        if (hasOption && r->isCustomProton && r->isProton10OrLater) {
-            option->setEnabled(true);
-        } else {
-            option->setEnabled(false);
-        }
+        hasOption && r->isCustomProton && r->isProton10OrLater
+            ? option->setEnabled(true)
+            : option->setEnabled(false);
     }
 }
 
