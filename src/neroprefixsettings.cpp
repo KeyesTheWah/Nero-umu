@@ -1196,15 +1196,18 @@ void NeroPrefixSettingsWindow::on_logFolderButton_clicked()
 
 void NeroPrefixSettingsWindow::on_toggleWayland_checkStateChanged(Qt::CheckState state)
 {
-    if (state == Qt::Unchecked) {
-        ui->toggleWaylandHDR->setEnabled(false);
-        ui->toggleWindowDecorations->setEnabled(false);
-    } else {
-        CheckCustomRunnerConf({
-            ui->toggleWaylandHDR,
-            ui->toggleWindowDecorations,
-        });
-    }
+        ui->toggleWaylandHDR->setEnabled(true);
+        ui->toggleWindowDecorations->setEnabled(true);
+    // TODO: Fix this logic.
+    // if (state == Qt::Unchecked) {
+    //     ui->toggleWaylandHDR->setEnabled(false);
+    //     ui->toggleWindowDecorations->setEnabled(false);
+    // } else {
+    //     CheckCustomRunnerConf({
+    //         ui->toggleWaylandHDR,
+    //         ui->toggleWindowDecorations,
+    //     });
+    // }
 }
 
 void NeroPrefixSettingsWindow::on_prefixRunner_currentTextChanged()
