@@ -46,16 +46,19 @@ public:
         QStringList validOptions;
         QStringList reconstructUpgrades;
         bool isCustomProton = true;
+        int version = 0;
         bool isProton10OrLater = true;
+        bool isProton11OrLater = true;
         bool isNtSync = true;
         CustomRunner(QString runner) {
             if (runner.contains("EM-")) {
-                int version = runner.mid(runner.lastIndexOf("EM-"), 2).toInt();
-                this->isProton10OrLater = version > 10;
+                version = runner.mid(runner.lastIndexOf("EM-"), 2).toInt();
+                this->isProton10OrLater = version >= 10;
+                this->isProton11OrLater = version >= 11;
                 this->validOptions = universalOptions << emOptions;
                 this->reconstructUpgrades = {"fsr4", "fsr4rdna3"};
-            } else if (runner.contains("GE-") || runner.contains("-GE")) {
-                int version = runner.mid(runner.lastIndexOf("-") - 2 , 2).toInt();
+            } else if (runner.contains("GE")) {
+                version = runner.mid(runner.lastIndexOf("-") - 2 , 2).toInt();
                 int subVersion = runner.mid(runner.lastIndexOf("-") + 1, 2).toInt();
                 this->isProton10OrLater = version >= 10;
                 this->validOptions = universalOptions << geOptions;
@@ -66,9 +69,6 @@ public:
                 this->reconstructUpgrades = {"dlss", "xess", "fsr4", "fsr4rdna3"};
             } else {
                 // TODO: change to default to false before merging and remove non bool ones.
-                this->isProton10OrLater = true;
-                this->isCustomProton = true;
-                this->isNtSync = true;
                 this->validOptions = universalOptions << cachyOsOptions;
                 this->reconstructUpgrades = {"dlss", "xess", "fsr4", "fsr4rdna3"};
             }
