@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>666</width>
-    <height>846</height>
+    <width>816</width>
+    <height>899</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -971,8 +971,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>606</width>
-               <height>423</height>
+               <width>750</width>
+               <height>528</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -2031,7 +2031,40 @@
             </property>
            </spacer>
           </item>
-          <item row="0" column="2">
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="toggleZink">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://docs.mesa3d.org/drivers/zink.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Zink&lt;/span&gt;&lt;/a&gt; is a translation layer that converts OpenGL applications into Vulkan applications, enabling support for functionality like &lt;a href=&quot;https://github.com/PancakeTAS/lsfg-vk&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Lossless Framegen VK&lt;/span&gt;&lt;/a&gt; or allowing OpenGL games to be streamed through obs-vkcapture.&lt;/p&gt;&lt;p&gt;Zink can cause compatability problems, including severely lowered performance on some machines.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>Enable Zink</string>
+            </property>
+            <property name="accessibleDescription">
+             <string>Zink is a translation layer that converts OpenGL applications into Vulkan applications, enabling support for functionality like Lossless Framegen VK or allowing OpenGL games to be streamed through obs-vkcapture.
+Zink can cause compatability problems, including severely lowered performance on some machines.</string>
+            </property>
+            <property name="text">
+             <string>Enable Zink</string>
+            </property>
+            <property name="isFor" stdset="0">
+             <string>UseZink</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <spacer name="horizontalSpacer_24">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="3">
            <widget class="QCheckBox" name="toggleNvidiaLibs">
             <property name="whatsThis">
              <string>Enable Nvidia Library support for PhysX &amp; CUDA functionality in games. Requires CachyOS Proton.</string>
@@ -2053,36 +2086,10 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="3">
-           <spacer name="horizontalSpacer_24">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="1">
-           <widget class="QCheckBox" name="toggleZink">
-            <property name="whatsThis">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://docs.mesa3d.org/drivers/zink.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Zink&lt;/span&gt;&lt;/a&gt; is a translation layer that converts OpenGL applications into Vulkan applications, enabling support for functionality like &lt;a href=&quot;https://github.com/PancakeTAS/lsfg-vk&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Lossless Framegen VK&lt;/span&gt;&lt;/a&gt; or allowing OpenGL games to be streamed through obs-vkcapture.&lt;/p&gt;&lt;p&gt;Zink can cause compatability problems, including severely lowered performance on some machines.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="accessibleName">
-             <string>Enable Zink</string>
-            </property>
-            <property name="accessibleDescription">
-             <string>Zink is a translation layer that converts OpenGL applications into Vulkan applications, enabling support for functionality like Lossless Framegen VK or allowing OpenGL games to be streamed through obs-vkcapture.
-Zink can cause compatability problems, including severely lowered performance on some machines.</string>
-            </property>
+          <item row="0" column="2">
+           <widget class="QCheckBox" name="checkBox">
             <property name="text">
-             <string>Enable Zink</string>
-            </property>
-            <property name="isFor" stdset="0">
-             <string>UseZink</string>
+             <string>Enable Optiscaler</string>
             </property>
            </widget>
           </item>
@@ -2368,8 +2375,8 @@ Zink can cause compatability problems, including severely lowered performance on
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>628</width>
-           <height>137</height>
+           <width>774</width>
+           <height>68</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
