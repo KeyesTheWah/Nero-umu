@@ -486,9 +486,9 @@ void NeroRunner::Wayland(bool isPrefixOnly)
     PrefixSetting wayland = initSetting(isPrefixOnly, NeroConfig::Proton::useWayland);
     if (isWaylandEnv && wayland.hasSetting() && wayland.toBool()) {
         env.insert(CliArgs::Proton::enableWayland, TRUE);
-        bool isHdrEnabled = initSetting(isPrefixOnly, NeroConfig::Proton::useHdr).toBool();
-        if (isHdrEnabled) {
-            env.insert(CliArgs::Proton::useHdr, TRUE);
+        bool isHdrDisabled = initSetting(isPrefixOnly, NeroConfig::Proton::disableHdr).toBool();
+        if (isHdrDisabled) {
+            env.insert(CliArgs::Proton::dxvkDisableHdr, TRUE);
         }
         bool decorationsDisabled = initSetting(isPrefixOnly,  NeroConfig::noWindowDecoration).toBool();
         if (decorationsDisabled) {
@@ -523,6 +523,8 @@ void NeroRunner::InsertArgs(bool isPrefixOnly) {
        {NeroConfig::nvidiaLibs,                CliArgs::Proton::Nvidia::libs},
        {NeroConfig::localShaderCache,          CliArgs::Proton::localShaderCache},
        {NeroConfig::noSteamInput,              CliArgs::Proton::noSteamInput},
+       {NeroConfig::Proton::useOptiscaler,     CliArgs::Proton::optiscaler},
+       {NeroConfig::lowLatency,                CliArgs::Proton::Amd::lowLatency},
     };
     for (auto i = properties.begin(), end = properties.end(); i != end; i++) {
         QString neroOption = i.key();

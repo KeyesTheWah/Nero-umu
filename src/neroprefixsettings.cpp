@@ -316,12 +316,14 @@ void NeroPrefixSettingsWindow::LoadSettings()
         //experimental
         {"UseZink",            ui->toggleZink},
         {"UseWayland",         ui->toggleWayland},
-        {"UseHDR",             ui->toggleWaylandHDR},
+        {"DisableHdr",         ui->toggleDisableHdr},
         {"AllowHidraw",        ui->toggleHidraw},
         {"UseXalia",           ui->toggleXalia},
         {"UseNvidiaLibs",      ui->toggleNvidiaLibs},
         {"SteamInputDisabled", ui->toggleSteamInput},
         {"UseNoDecorations",   ui->toggleWindowDecorations},
+        {"UseOptiscaler",      ui->toggleOptiscaler},
+        {"UseLowLatency",      ui->toggleLowLatency},
     };
     for (auto i = checkboxes.begin(), end = checkboxes.end(); i != end; i++) {
         QString neroOption = i.key();
@@ -877,6 +879,7 @@ void NeroPrefixSettingsWindow::StartUmu(const QString command, QStringList args)
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
 
         env.insert("WINEPREFIX", QString("%1/%2").arg(NeroFS::GetPrefixesPath()->path(), NeroFS::GetCurrentPrefix()));
+
         env.insert("GAMEID", "0");
         env.insert("PROTONPATH", QString("%1/%2").arg(NeroFS::GetProtonsPath()->path(), NeroFS::GetCurrentRunner()));
         env.insert("PROTON_USE_XALIA", "0");
@@ -925,7 +928,7 @@ void NeroPrefixSettingsWindow::OptionSet()
 {
     // declaring here means that we dont have to iterate
     // through settings map every time, plus avoids declaring
-    // in every flow
+    // in every flow and having extra braces.
     QString val = sender()->property("isFor").toString();
     QVariant cfg = settings.value(val);
     // is there like a way to inline declarations in cpp? id love to just have these be declared
@@ -991,8 +994,6 @@ void NeroPrefixSettingsWindow::OptionSet()
 
 void NeroPrefixSettingsWindow::on_buttonBox_clicked(QAbstractButton *button)
 {
-    // cancel button case isn't needed, since we filter by font to find changed values.
-    // 12-25-25 update: we need one for some specific fields that are harder to save
     switch (ui->buttonBox->standardButton(button)) {
     case QDialogButtonBox::Reset:
         LoadSettings();
@@ -1185,7 +1186,7 @@ void NeroPrefixSettingsWindow::updateRunner() {
         ui->imageReconstructionBox,
         ui->imageReconstructionIndBox,
         ui->toggleWayland,
-        ui->toggleWaylandHDR,
+        ui->toggleDisableHdr,
         ui->toggleWindowDecorations,
     };
     CheckCustomRunnerConf(customOptions, &run);
@@ -1221,18 +1222,13 @@ void NeroPrefixSettingsWindow::on_logFolderButton_clicked()
 
 void NeroPrefixSettingsWindow::on_toggleWayland_checkStateChanged(Qt::CheckState state)
 {
-        ui->toggleWaylandHDR->setEnabled(true);
+    if (state == Qt::Unchecked) {
+        ui->toggleDisableHdr->setEnabled(false);
+        ui->toggleWindowDecorations->setEnabled(false);
+    } else {
+        ui->toggleDisableHdr->setEnabled(true);
         ui->toggleWindowDecorations->setEnabled(true);
-    // TODO: Fix this logic.
-    // if (state == Qt::Unchecked) {
-    //     ui->toggleWaylandHDR->setEnabled(false);
-    //     ui->toggleWindowDecorations->setEnabled(false);
-    // } else {
-    //     CheckCustomRunnerConf({
-    //         ui->toggleWaylandHDR,
-    //         ui->toggleWindowDecorations,
-    //     });
-    // }
+    }
 }
 
 void NeroPrefixSettingsWindow::on_prefixRunner_currentTextChanged()

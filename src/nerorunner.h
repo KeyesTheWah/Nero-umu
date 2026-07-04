@@ -169,8 +169,9 @@ namespace CliArgs {
 
         //Wayland/HDR
         const QString enableWayland = "PROTON_ENABLE_WAYLAND";
-        const QString useHdr = "PROTON_ENABLE_HDR";
+        const QString dxvkDisableHdr = "DXVK_NO_HDR";
         const QString noWindowDecoration = "PROTON_NO_WM_DECORATION"; //(Disable window decorations, good for Wayland) (GE, cachyos)
+        const QString optiscaler = "PROTON_USE_OPTISCALER";
         const QString preferSdl = "PROTON_PREFER_SDL";
         const QString hiDraw = "PROTON_ENABLE_HIDRAW";
         const QString useXalia = "PROTON_USE_XALIA";
@@ -188,7 +189,7 @@ namespace CliArgs {
             const QString dlssIndicator = "PROTON_DLSS_INDICATOR"; //Show watermark when DLSS is working) (cachyos)
         }
         namespace Amd {
-            //AMD Launch Arguments
+        const QString lowLatency = "LOW_LATENCY_LAYER";
                 const QString fsr4Upgrade = "PROTON_FSR4_UPGRADE"; //(Enable FSR4 for RDNA4 cards) (GE, cachyos, EM)
                 const QString fsr4Indicator = "PROTON_FSR4_INDICATOR"; //(Show watermark when FSR4 is working) (cachyos, EM)
         }
@@ -273,12 +274,13 @@ namespace NeroConfig {
 
     const QString zink = "UseZink";
     namespace Proton {
+        const QString useOptiscaler = "UseOptiscaler";
         const QString forceWineD3D = "ForceWineD3D";
         const QString allowHidraw = "AllowHidraw";
         const QString useXalia = "UseXalia";
         const QString noD8VK = "NoD8VK";
         const QString useWayland = "UseWayland";
-        const QString useHdr = "UseHDR";
+        const QString disableHdr = "DisableHdr";
         const QString limitGlExtensions = "LimitGLextensions";
     }
 
@@ -308,6 +310,7 @@ namespace NeroConfig {
 
     //TBD
     const QString cpuTopologyEnabled = "CpuTopologyEnabled";
+    const QString lowLatency = "UseLowLatency";
     const QString nvidiaLibs = "UseNvidiaLibs";
     const QString noWindowDecoration = "UseNoDecorations";
     const QString noSteamInput = "SteamInputDisabled";
