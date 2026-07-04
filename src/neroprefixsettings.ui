@@ -1350,7 +1350,7 @@
             </property>
             <item>
              <property name="text">
-              <string>Use default fastest sync (NTsync/Fsync)</string>
+              <string>Use fastest sync (NTsync with WoW64/Fsync)</string>
              </property>
             </item>
             <item>
