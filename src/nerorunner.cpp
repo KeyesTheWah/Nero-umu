@@ -443,9 +443,6 @@ void NeroRunner::InitImageReconstruction(bool isPrefixOnly)
     case ImageReconstruct::Upgrade::Fsr4:
         env.insert(CliArgs::Proton::Amd::fsr4Upgrade, TRUE);
         break;
-    case ImageReconstruct::Upgrade::Fsr4Rdna3:
-        env.insert(CliArgs::Proton::Amd::fsr4Rdna3, TRUE);
-        break;
     case ImageReconstruct::Upgrade::Dlss:
         env.insert(CliArgs::Proton::Nvidia::dlssUpgrade, TRUE);
         break;

@@ -1991,11 +1991,6 @@
             </item>
             <item>
              <property name="text">
-              <string>FSR4 (RDNA 3)</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
               <string>DLSS</string>
              </property>
             </item>
@@ -2257,7 +2252,7 @@ Zink can cause compatability problems, including severely lowered performance on
                 <bool>false</bool>
                </property>
                <property name="rowCount">
-                <number>20</number>
+                <number>40</number>
                </property>
                <property name="columnCount">
                 <number>2</number>
@@ -2271,6 +2266,26 @@ Zink can cause compatability problems, including severely lowered performance on
                <attribute name="verticalHeaderVisible">
                 <bool>false</bool>
                </attribute>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
                <row/>
                <row/>
                <row/>

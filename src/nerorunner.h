@@ -191,7 +191,6 @@ namespace CliArgs {
         namespace Amd {
             //AMD Launch Arguments
                 const QString fsr4Upgrade = "PROTON_FSR4_UPGRADE"; //(Enable FSR4 for RDNA4 cards) (GE, cachyos, EM)
-                const QString fsr4Rdna3 = "PROTON_FSR4_RDNA3_UPGRADE"; //(Enable FSR4 for RDNA3 cards) (GE, cachyos, EM)
                 const QString fsr4Indicator = "PROTON_FSR4_INDICATOR"; //(Show watermark when FSR4 is working) (cachyos, EM)
         }
         namespace Intel {
@@ -322,7 +321,6 @@ namespace ImageReconstruct {
     enum class Upgrade {
         None = 0,
         Fsr4,
-        Fsr4Rdna3,
         Dlss,
         Xess,
     };
