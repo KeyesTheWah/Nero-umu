@@ -41,6 +41,7 @@ private:
     static QStringList availableProtons;
 
 public:
+    static inline const QString PATH_SEPERATOR = QString("|>");
     NeroFS();
     struct CustomRunner {
         QStringList validOptions;
@@ -128,5 +129,6 @@ public:
         SetCurrentPrefixCfg(QString("Shortcuts--%1").arg(shortcutHash), key, value);
     }
 };
+
 
 #endif // NEROFS_H

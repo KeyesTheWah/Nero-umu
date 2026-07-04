@@ -266,7 +266,8 @@ void NeroPrefixSettingsWindow::LoadSettings()
     }
 
     // there was no good name for these once I realized all options
-    // could be consolidated into a scrollable field, so lets just hide that fact
+    // could be consolidated into a scrollable field,
+    // so lets just hide that fact so this can look a bit pretty
     QString up = "ImageReconstructionUpgrade";
     QString ind = "ImageReconstructionIndicator";
     QHash<QString, QComboBox*> comboBoxes = {
@@ -424,7 +425,6 @@ void NeroPrefixSettingsWindow::LoadSettings()
             widget->setVisible(isWindowed);
         }
     } else ui->gamescopeSection->setVisible(false);
-    // currentShortcutHash.isEmpty()
     //WineCpuTopology UI Setup
     QVariant topology = settings.value("WineCpuTopology");
     bool isEnabled = settings.value("CpuTopologyEnabled").toBool();
@@ -437,8 +437,8 @@ void NeroPrefixSettingsWindow::LoadSettings()
         QStringList split = topology.toString().split(":");
         QStringList enabledCores = split[1].split(",");
         // Iterate through the topology core counts versus enabled ones.
-        // Each time we find a match, remove it so that subsequent iterations
-        // are slightly cheaper
+        // Each time we find a match, remove it so that subsequent
+        // worst case iterations are slightly cheaper
         for (int i = 0; i < ui->topologyList->count(); ++i) {
             QListWidgetItem* item = ui->topologyList->item(i);
             for (int j = 0; j < enabledCores.length(); ++j) {
@@ -452,7 +452,7 @@ void NeroPrefixSettingsWindow::LoadSettings()
         }
     }
 
-    QStringList envVars = settings.value("EnvVars").toString().split("|>");
+    QStringList envVars = settings.value("EnvVars").toString().split(NeroFS::PATH_SEPERATOR);
     bool enabledEnv = settings.value("EnvVarsEnabled").toBool();
     if (enabledEnv && !envVars.isEmpty()) {
         ui->envVarBox->setChecked(true);
@@ -462,12 +462,22 @@ void NeroPrefixSettingsWindow::LoadSettings()
             QStringList args = envVars[i].split('=');
             if (args[0].isEmpty() || args[1] == nullptr)
                 continue;
-            QTableWidgetItem *arg = new QTableWidgetItem(args[0]);
-            arg->setText(args[0]);
-            arg->setCheckState(Qt::Checked);
+            QTableWidgetItem *variable = new QTableWidgetItem(args[0]);
+            auto trimIndex = args[0].lastIndexOf("[E]");
+            if (trimIndex > -1) {
+                // int
+                variable->setCheckState(Qt::Checked);
+                //get all but the first 3 characters, which is the enabled flag
+                int charsToTrim = args[0].length() - (trimIndex + 3);
+                auto var = args[0].last(charsToTrim);
+                variable->setText(var);
+            } else {
+                variable->setCheckState(Qt::Unchecked);
+                variable->setText(args[0]);
+            }
             QTableWidgetItem *val = new QTableWidgetItem(args[1]);
             val->setText(args[1]);
-            ui->envVarTable->setItem(i, 0, arg);
+            ui->envVarTable->setItem(i, 0, variable);
             ui->envVarTable->setItem(i, 1, val);
         }
     }
@@ -1016,6 +1026,8 @@ void NeroPrefixSettingsWindow::SaveSettings() {
             break;
         }
     }
+    // iterate through each bolded (modified) field, and add that change to the config file.
+    // For checkboxes, we check if its a shortcut or prefix entry and set it accordingly.
     bool isShortcut = !currentShortcutHash.isEmpty();
     QString cfg = isShortcut
                     ? QString("Shortcuts--" % currentShortcutHash)
@@ -1037,26 +1049,37 @@ void NeroPrefixSettingsWindow::SaveSettings() {
 
     for(const auto &child : this->findChildren<QComboBox*>()) {
         if(child->font() == boldFont) {
-            isShortcut && child->currentIndex() < 1
-                ? NeroFS::SetCurrentPrefixCfg(cfg, child->property("isFor").toString(), "")
-                : NeroFS::SetCurrentPrefixCfg(cfg, child->property("isFor").toString(), child->currentIndex()-1);
+            int childIndex = isShortcut
+                                ? child->currentIndex() - 1
+                                : child->currentIndex();
+            QString propertyToSave = child->property("isFor").toString();
+            // if childIndex < 0, clear the value if its a shortcut.
+            if (isShortcut && childIndex < 0) {
+                NeroFS::SetCurrentPrefixCfg(cfg, propertyToSave, "");
+            } else {
+                NeroFS::SetCurrentPrefixCfg(cfg, propertyToSave, childIndex);
+            }
         }
     }
     if (!isShortcut) {
         NeroFS::SetCurrentPrefixCfg("PrefixSettings", "CurrentRunner", ui->prefixRunner->currentText());
     }
-
-    QStringList l;
-    //y iterator as we're mapping by row, not column
+    // Funky Experimental Options
+    QStringList envVars;
+    //we're iterating by row here
     for (int x = 0; x < ui->envVarTable->rowCount(); x++) {
         QTableWidgetItem* envVar = ui->envVarTable->item(x, 0);
         QTableWidgetItem* val = ui->envVarTable->item(x, 1);
+        // not considering if its checked or not as we want to save all values
         if (envVar != nullptr && val != nullptr && !envVar->text().isEmpty() && !val->text().isEmpty()) {
-            l << envVar->text() % '=' % val->text();
+            QString enabled = envVar->checkState() == Qt::Checked ? "[E]" : QString();
+            envVars << enabled % envVar->text() % '=' % val->text();
         }
     }
 
-    NeroFS::SetCurrentPrefixCfg(cfg, "EnvVars", l.join("|>"));
+    // |> was the only thing i could think of that couldn't possibly show up in a path
+    // without a very good reason for it being there.
+    NeroFS::SetCurrentPrefixCfg(cfg, "EnvVars", envVars.join(NeroFS::PATH_SEPERATOR));
     NeroFS::SetCurrentPrefixCfg(cfg, "EnvVarsEnabled", ui->envVarBox->isChecked());
 
     QStringList checkedCpus;
