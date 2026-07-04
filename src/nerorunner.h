@@ -134,7 +134,6 @@ private:
     const QString cDrive = "C:/";
     const QString drive_c = "drive_c/";
 
-    const QString ge109 = "GE-Proton10-9";
     void InitDebugProperties(int value);
     QString hashVal;
 
@@ -267,6 +266,7 @@ namespace NeroConfig {
     const QString path = "Path";
     //OBS
     const QString vkCapture = "VKcapture";
+    const QString umuId = "UmuId";
 
     //Force Integrated GPU
     const QString forceIGpu = "ForceiGPU";

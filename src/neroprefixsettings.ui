@@ -20,7 +20,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <property name="isFor" stdset="0">
       <string>UseZink</string>
@@ -32,279 +32,7 @@
       <attribute name="title">
        <string>General</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,1" columnstretch="1,0">
-       <item row="2" column="1" alignment="Qt::AlignmentFlag::AlignTop">
-        <widget class="QGroupBox" name="servicesGroup">
-         <property name="title">
-          <string>System Services</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignCenter</set>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <widget class="QCheckBox" name="toggleGamemode">
-            <property name="whatsThis">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When enabled, Proton will be run with Feral Interactive's &lt;a href=&quot;https://github.com/FeralInteractive/gamemode?tab=readme-ov-file#gamemode&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Gamemode&lt;/span&gt;&lt;/a&gt; daemon, which can provide useful optimizations for games.&lt;/p&gt;&lt;p&gt;If unsure, enable if your system has &lt;span style=&quot; font-style:italic;&quot;&gt;gamemode&lt;/span&gt; installed. Disable if a game has issues starting with &lt;span style=&quot; font-style:italic;&quot;&gt;gamemode&lt;/span&gt; enabled.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="accessibleName">
-             <string>Enable Feral Gamemode</string>
-            </property>
-            <property name="text">
-             <string>Enable Feral Gamemode</string>
-            </property>
-            <property name="isFor" stdset="0">
-             <string>Gamemode</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="toggleMangohud">
-            <property name="whatsThis">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When enabled, Proton will run with the &lt;a href=&quot;https://github.com/flightlessmango/MangoHud?tab=readme-ov-file#mangohud&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Mangohud&lt;/span&gt;&lt;/a&gt; overlay enabled, which can provide useful monitoring of your system and any 3D application's performance and/or rendering metrics. Mangohud can either be used on its own, or as part of a configuration utility, such as &lt;a href=&quot;https://github.com/benjamimgois/goverlay?tab=readme-ov-file#goverlay&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;GOverlay.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;If unsure, enable if you want to monitor a game's performance.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="accessibleName">
-             <string>Enable Mangohud Overlay</string>
-            </property>
-            <property name="text">
-             <string>Enable Mangohud Overlay</string>
-            </property>
-            <property name="isFor" stdset="0">
-             <string>Mangohud</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="toggleVKcap">
-            <property name="whatsThis">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When enabled, this will allow any apps using Vulkan (including DX8-11 titles w/ DXVK, or DX12 titles w/ VKD3D) to be captured in OBS Studio using the &lt;a href=&quot;https://github.com/nowrep/obs-vkcapture&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Game Capture source.&lt;/span&gt;&lt;/a&gt; This is usually provided in a user package such as &lt;span style=&quot; font-style:italic;&quot;&gt;obs-vkcapture-git&lt;/span&gt; and &lt;span style=&quot; font-style:italic;&quot;&gt;lib32-obs-vkcapture-git.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="accessibleName">
-             <string>Enable OBS Studio Vulkan Capture</string>
-            </property>
-            <property name="text">
-             <string>Enable OBS Vulkan Capture</string>
-            </property>
-            <property name="isFor" stdset="0">
-             <string>VKcapture</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <widget class="QGroupBox" name="shortcutSettings">
-         <property name="title">
-          <string>Shortcut</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignCenter</set>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0,3,1">
-          <item>
-           <spacer name="horizontalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="shortcutIco">
-            <property name="whatsThis">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to set the icon for this shortcut.&lt;/p&gt;&lt;p&gt;Acceptable formats are &lt;span style=&quot; font-style:italic;&quot;&gt;PNG, EXE, ICO,&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;DLL&lt;/span&gt; - the latter three will be extracted with &lt;span style=&quot; font-style:italic;&quot;&gt;icoextract&lt;/span&gt; and &lt;span style=&quot; font-style:italic;&quot;&gt;icoutils,&lt;/span&gt; if found on the system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="accessibleName">
-             <string>Shortcut Icon</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset theme="application-x-executable"/>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>64</width>
-              <height>64</height>
-             </size>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QGridLayout" name="shortcutFields">
-            <item row="1" column="0" colspan="3">
-             <widget class="QLabel" name="nameMatchWarning">
-              <property name="font">
-               <font>
-                <pointsize>9</pointsize>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">color: red</string>
-              </property>
-              <property name="text">
-               <string>Another shortcut with this name already exists!</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="2">
-             <widget class="QPushButton" name="openToShortcutPath">
-              <property name="whatsThis">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to open the folder linked to this shortcut in the system's file explorer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="accessibleName">
-               <string>Open folder in file explorer</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset theme="folder-visiting"/>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
-              <property name="flat">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0" colspan="3">
-             <widget class="QLineEdit" name="shortcutArgs">
-              <property name="whatsThis">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter any arguments that gets passed to the executable for this shortcut. These usually allow for enabling hidden or undocumented features of an app, such as borderless windowed modes or fullscreen on launch. Refer to your app's documentation for information on what arguments can be used with it.&lt;/p&gt;&lt;p&gt;If unsure, leave this field blank.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="accessibleName">
-               <string>Shortcut Arguments</string>
-              </property>
-              <property name="placeholderText">
-               <string>Shortcut Arguments (-fullscreen, --borderless, etc.)</string>
-              </property>
-              <property name="clearButtonEnabled">
-               <bool>true</bool>
-              </property>
-              <property name="isFor" stdset="0">
-               <string>Args</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLineEdit" name="shortcutPath">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="whatsThis">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The current path for this shortcut.&lt;/p&gt;&lt;p&gt;If the path is within the prefix's &lt;span style=&quot; font-style:italic;&quot;&gt;drive_c&lt;/span&gt; folder (or in other words, within the virtual Windows' &lt;span style=&quot; font-style:italic;&quot;&gt;C:/&lt;/span&gt; drive), this shortcut will always be run relative to the path of this current prefix - so if the current prefix changes name or location, but not the application itself, then this shortcut will still work until the application path itself changes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="accessibleName">
-               <string>Executable Path</string>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">color: gray</string>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-              <property name="placeholderText">
-               <string>Path</string>
-              </property>
-              <property name="isFor" stdset="0">
-               <string>Path</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0" colspan="3">
-             <widget class="QLineEdit" name="shortcutName">
-              <property name="whatsThis">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter the name of this shortcut as it appears in the shortcuts list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="accessibleName">
-               <string>Shortcut Name</string>
-              </property>
-              <property name="placeholderText">
-               <string>Shortcut Name</string>
-              </property>
-              <property name="isFor" stdset="0">
-               <string>Name</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QPushButton" name="shortcutPathBtn">
-              <property name="whatsThis">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to select a new executable for this shortcut.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-              <property name="accessibleName">
-               <string>Select an Executable</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset theme="document-open"/>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>16</width>
-                <height>16</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0" colspan="3">
-             <widget class="QLabel" name="pathNoExistWarning">
-              <property name="font">
-               <font>
-                <pointsize>9</pointsize>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">color: red</string>
-              </property>
-              <property name="text">
-               <string>File does not exist! Please update the path.</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
+      <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0" columnstretch="1,0">
        <item row="1" column="0" colspan="2">
         <widget class="QGroupBox" name="prefixSettings">
          <property name="title">
@@ -851,6 +579,310 @@
              </widget>
             </item>
            </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="1" alignment="Qt::AlignmentFlag::AlignTop">
+        <widget class="QGroupBox" name="servicesGroup">
+         <property name="title">
+          <string>System Services</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QCheckBox" name="toggleGamemode">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When enabled, Proton will be run with Feral Interactive's &lt;a href=&quot;https://github.com/FeralInteractive/gamemode?tab=readme-ov-file#gamemode&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Gamemode&lt;/span&gt;&lt;/a&gt; daemon, which can provide useful optimizations for games.&lt;/p&gt;&lt;p&gt;If unsure, enable if your system has &lt;span style=&quot; font-style:italic;&quot;&gt;gamemode&lt;/span&gt; installed. Disable if a game has issues starting with &lt;span style=&quot; font-style:italic;&quot;&gt;gamemode&lt;/span&gt; enabled.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>Enable Feral Gamemode</string>
+            </property>
+            <property name="text">
+             <string>Enable Feral Gamemode</string>
+            </property>
+            <property name="isFor" stdset="0">
+             <string>Gamemode</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="toggleMangohud">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When enabled, Proton will run with the &lt;a href=&quot;https://github.com/flightlessmango/MangoHud?tab=readme-ov-file#mangohud&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Mangohud&lt;/span&gt;&lt;/a&gt; overlay enabled, which can provide useful monitoring of your system and any 3D application's performance and/or rendering metrics. Mangohud can either be used on its own, or as part of a configuration utility, such as &lt;a href=&quot;https://github.com/benjamimgois/goverlay?tab=readme-ov-file#goverlay&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;GOverlay.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;If unsure, enable if you want to monitor a game's performance.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>Enable Mangohud Overlay</string>
+            </property>
+            <property name="text">
+             <string>Enable Mangohud Overlay</string>
+            </property>
+            <property name="isFor" stdset="0">
+             <string>Mangohud</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="toggleVKcap">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When enabled, this will allow any apps using Vulkan (including DX8-11 titles w/ DXVK, or DX12 titles w/ VKD3D) to be captured in OBS Studio using the &lt;a href=&quot;https://github.com/nowrep/obs-vkcapture&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Game Capture source.&lt;/span&gt;&lt;/a&gt; This is usually provided in a user package such as &lt;span style=&quot; font-style:italic;&quot;&gt;obs-vkcapture-git&lt;/span&gt; and &lt;span style=&quot; font-style:italic;&quot;&gt;lib32-obs-vkcapture-git.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>Enable OBS Studio Vulkan Capture</string>
+            </property>
+            <property name="text">
+             <string>Enable OBS Vulkan Capture</string>
+            </property>
+            <property name="isFor" stdset="0">
+             <string>VKcapture</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>UmU ID</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="umuId">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>0</string>
+            </property>
+            <property name="frame">
+             <bool>false</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+            </property>
+            <property name="isFor" stdset="0">
+             <string>UmuId</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <widget class="QGroupBox" name="shortcutSettings">
+         <property name="title">
+          <string>Shortcut</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,0,3,1">
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="shortcutIco">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to set the icon for this shortcut.&lt;/p&gt;&lt;p&gt;Acceptable formats are &lt;span style=&quot; font-style:italic;&quot;&gt;PNG, EXE, ICO,&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;DLL&lt;/span&gt; - the latter three will be extracted with &lt;span style=&quot; font-style:italic;&quot;&gt;icoextract&lt;/span&gt; and &lt;span style=&quot; font-style:italic;&quot;&gt;icoutils,&lt;/span&gt; if found on the system.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>Shortcut Icon</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset theme="application-x-executable"/>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>64</width>
+              <height>64</height>
+             </size>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QGridLayout" name="shortcutFields">
+            <item row="1" column="0" colspan="3">
+             <widget class="QLabel" name="nameMatchWarning">
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: red</string>
+              </property>
+              <property name="text">
+               <string>Another shortcut with this name already exists!</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2">
+             <widget class="QPushButton" name="openToShortcutPath">
+              <property name="whatsThis">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to open the folder linked to this shortcut in the system's file explorer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="accessibleName">
+               <string>Open folder in file explorer</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset theme="folder-visiting"/>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0" colspan="3">
+             <widget class="QLineEdit" name="shortcutArgs">
+              <property name="whatsThis">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter any arguments that gets passed to the executable for this shortcut. These usually allow for enabling hidden or undocumented features of an app, such as borderless windowed modes or fullscreen on launch. Refer to your app's documentation for information on what arguments can be used with it.&lt;/p&gt;&lt;p&gt;If unsure, leave this field blank.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="accessibleName">
+               <string>Shortcut Arguments</string>
+              </property>
+              <property name="placeholderText">
+               <string>Shortcut Arguments (-fullscreen, --borderless, etc.)</string>
+              </property>
+              <property name="clearButtonEnabled">
+               <bool>true</bool>
+              </property>
+              <property name="isFor" stdset="0">
+               <string>Args</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLineEdit" name="shortcutPath">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+              <property name="whatsThis">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The current path for this shortcut.&lt;/p&gt;&lt;p&gt;If the path is within the prefix's &lt;span style=&quot; font-style:italic;&quot;&gt;drive_c&lt;/span&gt; folder (or in other words, within the virtual Windows' &lt;span style=&quot; font-style:italic;&quot;&gt;C:/&lt;/span&gt; drive), this shortcut will always be run relative to the path of this current prefix - so if the current prefix changes name or location, but not the application itself, then this shortcut will still work until the application path itself changes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="accessibleName">
+               <string>Executable Path</string>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: gray</string>
+              </property>
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+              <property name="placeholderText">
+               <string>Path</string>
+              </property>
+              <property name="isFor" stdset="0">
+               <string>Path</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" colspan="3">
+             <widget class="QLineEdit" name="shortcutName">
+              <property name="whatsThis">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter the name of this shortcut as it appears in the shortcuts list.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="accessibleName">
+               <string>Shortcut Name</string>
+              </property>
+              <property name="placeholderText">
+               <string>Shortcut Name</string>
+              </property>
+              <property name="isFor" stdset="0">
+               <string>Name</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QPushButton" name="shortcutPathBtn">
+              <property name="whatsThis">
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to select a new executable for this shortcut.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              </property>
+              <property name="accessibleName">
+               <string>Select an Executable</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset theme="document-open"/>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0" colspan="3">
+             <widget class="QLabel" name="pathNoExistWarning">
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">color: red</string>
+              </property>
+              <property name="text">
+               <string>File does not exist! Please update the path.</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
          </layout>
         </widget>

@@ -108,8 +108,6 @@ NeroPrefixSettingsWindow::NeroPrefixSettingsWindow(QWidget *parent, const QStrin
             winVersionListBackwards.append(ui->winVerBox->itemText(i-1));
     }
 
-    updateRunner();
-
     resValidator = new QIntValidator(0, 32767);
     ui->fsrCustomH->setValidator(resValidator);
     ui->fsrCustomW->setValidator(resValidator);
@@ -355,6 +353,7 @@ void NeroPrefixSettingsWindow::LoadSettings()
         ui->shortcutArgs->setText(settings["Args"].toStringList().join(' '));
         ui->preRunScriptPath->setText(settings.value("PreRunScript").toString());
         ui->postRunScriptPath->setText(settings.value("PostRunScript").toString());
+        ui->umuId->setText(settings.value("UmuId").toString());
         if(ui->preRunScriptPath->text().isEmpty())  ui->preRunClearBtn->setVisible(false);
         if(ui->postRunScriptPath->text().isEmpty()) ui->postRunClearBtn->setVisible(false);
 
@@ -451,8 +450,9 @@ void NeroPrefixSettingsWindow::LoadSettings()
             }
         }
     }
-
-    QStringList envVars = settings.value("EnvVars").toString().split(NeroFS::PATH_SEPERATOR);
+    auto prefixSettings = NeroFS::GetCurrentPrefixSettings();
+    // always map to prefix settings
+    QStringList envVars = prefixSettings.value("EnvVars").toString().split(NeroFS::PATH_SEPERATOR);
     bool enabledEnv = settings.value("EnvVarsEnabled").toBool();
     if (enabledEnv && !envVars.isEmpty()) {
         ui->envVarBox->setChecked(true);
@@ -481,11 +481,13 @@ void NeroPrefixSettingsWindow::LoadSettings()
             ui->envVarTable->setItem(i, 1, val);
         }
     }
+    //add blank rows
     for (int i = envVars.size(); i < ui->envVarTable->rowCount(); i++) {
         QTableWidgetItem *b = new QTableWidgetItem();
         b->setCheckState(Qt::Unchecked);
         ui->envVarTable->setItem(i, 0, b);
     }
+
     for(const auto &child : this->findChildren<QCheckBox*>())
         child->setFont(QFont());
 

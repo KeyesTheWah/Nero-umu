@@ -70,7 +70,13 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     // Only explicit set GAMEID when not already declared by user
     // See SeongGino/Nero-umu#66 for more info
     if(!env.contains(CliArgs::gameId)) {
-        env.insert(CliArgs::gameId, "0");
+        auto gameId = PrefixSetting(NeroConfig::umuId, *this).toString();
+        if (gameId.isEmpty()) {
+            //This isn't a true false value, so dont use FALSE
+            env.insert(CliArgs::gameId, "0");
+        } else {
+            env.insert(CliArgs::gameId, gameId);
+        }
     }
     QString protonRunner = CombinedSetting(NeroConfig::currentRunner, *this).toString();
     QString runnerPath = NeroFS::GetProtonsPath()->path() % '/' % protonRunner;
@@ -261,7 +267,6 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
     // meaning stdout is virtually unused.
     runner.setProcessChannelMode(QProcess::ForwardedOutputChannel);
     runner.setReadChannel(QProcess::StandardError);
-
     env = QProcessEnvironment::systemEnvironment();
     QString prefixPath = NeroFS::GetPrefixesPath()->path() % '/' % NeroFS::GetCurrentPrefix();
     env.insert(CliArgs::Wine::prefix, prefixPath);
@@ -269,8 +274,13 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
     // Only explicit set GAMEID when not already declared by user
     // See SeongGino/Nero-umu#66 for more info
     if(!env.contains(CliArgs::gameId)) {
-        //This isn't a true false value, so dont use FALSE
-        env.insert(CliArgs::gameId, "0");
+        auto gameId = PrefixSetting(NeroConfig::umuId, *this).toString();
+        if (gameId.isEmpty()) {
+            //This isn't a true false value, so dont use FALSE
+            env.insert(CliArgs::gameId, "0");
+        } else {
+            env.insert(CliArgs::gameId, gameId);
+        }
     }
     QString protonRunner = PrefixSetting(NeroConfig::currentRunner, *this).toString();
     QString runnerPath = NeroFS::GetProtonsPath()->path()% '/' % protonRunner;
