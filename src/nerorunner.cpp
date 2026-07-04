@@ -669,11 +669,8 @@ void NeroRunner::SetSyncMode(QString protonRunner, int syncType)
         // (and currently, WOW64 seems problematic for some fringe cases, like TeknoParrot's BudgieLoader not spawning a window)
     switch(syncType) {
     case NeroConstant::NTsync: {
-        NeroFS::CustomRunner run(protonRunner);
-        if(run.isNtSync) {
             env.insert(CliArgs::Proton::Sync::ntSync, TRUE);
             env.insert(CliArgs::useWow64, TRUE);
-        }
         break;
     }
     case NeroConstant::Fsync:

@@ -43,62 +43,6 @@ private:
 public:
     static inline const QString PATH_SEPERATOR = QString("|>");
     NeroFS();
-    struct CustomRunner {
-        QStringList validOptions;
-        QStringList reconstructUpgrades;
-        bool isCustomProton = true;
-        int version = 0;
-        bool isProton10OrLater = true;
-        bool isProton11OrLater = true;
-        bool isNtSync = true;
-        CustomRunner(QString runner) {
-            if (runner.contains("Latest")) {
-                //ProtonPlus flow
-                this->isProton11OrLater = true;
-                this->isProton10OrLater = true;
-            }
-            if (runner.contains("EM-")) {
-                version = runner.mid(runner.lastIndexOf("EM-"), 2).toInt();
-                this->isProton10OrLater = version >= 10;
-                this->isProton11OrLater = version >= 11;
-                this->validOptions = universalOptions << emOptions;
-                this->reconstructUpgrades = {"fsr4"};
-            } else if (runner.contains("GE")) {
-                version = runner.mid(runner.lastIndexOf("-") - 2 , 2).toInt();
-                int subVersion = runner.mid(runner.lastIndexOf("-") + 1, 2).toInt();
-                this->isProton10OrLater = version >= 10;
-                this->validOptions = universalOptions << geOptions;
-                this->reconstructUpgrades = {"fsr4"};
-                this->isNtSync = isProton10OrLater && subVersion > 9;
-            } else if (runner.contains("Cachy")) {
-                this->validOptions = universalOptions << cachyOsOptions;
-                this->reconstructUpgrades = {"dlss", "xess", "fsr4"};
-            } else {
-                // TODO: change to default to false before merging and remove non bool ones.
-                this->validOptions = universalOptions << cachyOsOptions;
-                this->reconstructUpgrades = {"dlss", "xess", "fsr4"};
-            }
-        }
-    private:
-        QStringList universalOptions = {
-            "UseWayland",
-            "UseWaylandHdr",
-            "ImageReconstructionUpgrade",
-        };
-        QStringList geOptions = {
-            "SteamInputDisabled",
-            "NoWindowDecorations",
-        };
-        //none atm but just in case?
-        QStringList emOptions = {
-        };
-        QStringList cachyOsOptions = {
-            "UseNvidiaLibs",
-            "ImageReconstructionIndicator",
-            "SteamInputDisabled",
-            "NoWindowDecorations",
-        };
-    };
 
     // METHODS
     static bool InitPaths();
