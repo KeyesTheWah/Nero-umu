@@ -69,6 +69,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
 
     // Only explicit set GAMEID when not already declared by user
     // See SeongGino/Nero-umu#66 for more info
+
     if(!env.contains(CliArgs::gameId)) {
         auto gameId = PrefixSetting(NeroConfig::umuId, *this).toString();
         if (gameId.isEmpty()) {
@@ -194,7 +195,7 @@ int NeroRunner::StartShortcut(const QString &hash, const bool &prefixAlreadyRunn
     
     QStringList gamescopeArgs = SetScalingMode(scalingMode, fpsLimit, false);
     arguments = SetMangohud(gamescopeArgs, arguments);
-    SyncExtraEnvVars(isPrefixOnly);
+    SyncExtraEnvironmentVariables(isPrefixOnly, prefixPath, pathSetting.toString());
     runner.setProcessEnvironment(env);
     // some apps requires working directory to be in the right location
     // (corrected if path starts with Windows drive letter prefix)
@@ -367,7 +368,7 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
     int fpsLimit = PrefixSetting(NeroConfig::limitFps, *this).toInt();
     QStringList gamescopeArgs = SetScalingMode(scalingMode, fpsLimit, false);
     arguments = SetMangohud(gamescopeArgs, arguments);
-    SyncExtraEnvVars(isPrefixOnly);
+    SyncExtraEnvironmentVariables(isPrefixOnly, prefixPath, path);
     runner.setProcessEnvironment(env);
     if(path.startsWith('/') || path.startsWith("~/") || path.startsWith("./")) {
         runner.setWorkingDirectory(path.left(path.lastIndexOf("/")).replace("C:", NeroFS::GetPrefixesPath()->canonicalPath()+'/'+NeroFS::GetCurrentPrefix()+"/drive_c/"));
@@ -388,6 +389,8 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
         log.write(Logs::runningCommand.toLocal8Bit() % command.toLocal8Bit() % ' ' % arguments.join(' ').toLocal8Bit() % Logs::newLine.toLocal8Bit());
         log.write(Logs::blankLine.toLocal8Bit());
     }
+    qWarning("Command: %s", command.toLocal8Bit().data());
+    qWarning("Arguments: %s", arguments.join(",").toLocal8Bit().data());
     runner.start(command, arguments);
     runner.waitForStarted(-1);
     WaitLoop(runner, log);
@@ -395,17 +398,41 @@ int NeroRunner::StartOnetime(const QString &path, const bool &prefixAlreadyRunni
     return runner.exitCode();
 }
 
-void NeroRunner::SyncExtraEnvVars(bool isPrefixOnly) {
+void NeroRunner::SyncExtraEnvironmentVariables(bool isPrefixOnly, QString& prefixPath, QString path) {
     PrefixSetting s = initSetting(isPrefixOnly, NeroConfig::envVars);
     PrefixSetting e = initSetting(isPrefixOnly, NeroConfig::envVarsEnabled);
     if (!e.hasSetting() || !e.toBool()) {
         return;
     }
-    QStringList l = s.toString().split("|>");
+    QString parsed = s.toString();
+    QStringList l = parsed.split("|>");
+    QDir logsDir(prefixPath);
+    if(!logsDir.exists(Logs::logDirName))
+        logsDir.mkdir(Logs::logDirName);
+    logsDir.cd(Logs::logDirName);
+    QFile log = QFile(logsDir.path() % '/' % path.mid(path.lastIndexOf('/')+1) % "_envVar" % ".txt");
+    if(loggingEnabled) {
+        log.open(QIODevice::WriteOnly);
+        log.resize(0);
+    }
     for (QString q : std::as_const(l)) {
         QStringList split = q.split("=");
-        if (!env.contains(split[0]))
-            env.insert(split[0], split[1]);
+        auto trimIndex = split[0].lastIndexOf("[E]");
+        if (trimIndex > -1) {
+            //get all but the first 3 characters, which is the enabled flag
+            int charsToTrim = split[0].length() - (trimIndex + 3);
+            auto var = split[0].last(charsToTrim);
+            if (!env.contains(var)) {
+                env.insert(var, split[1]);
+                if (loggingEnabled) {
+                    log.write((var % "=" % split[1] % "\n").toLocal8Bit());
+                }
+            }
+        } else {
+            if (loggingEnabled) {
+                log.write(("Skipped: " % split[0] % "=" % split[1] % "\n").toLocal8Bit());
+            }
+        }
     }
 }
 

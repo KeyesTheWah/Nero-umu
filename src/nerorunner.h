@@ -116,7 +116,7 @@ public:
                    : CombinedSetting(setting, *this);
     }
 private:
-    void SyncExtraEnvVars(bool isPrefixOnly);
+    void SyncExtraEnvironmentVariables(bool isPrefixOnly, QString& prefixPath, QString path);
     QStringList SetMangohud(QStringList gamescope, QStringList arguments);
     void Wayland(bool isPrefixOnly);
     void WineCpuTopology(bool isPrefixOnly);
@@ -208,7 +208,6 @@ namespace CliArgs {
     const QString gamemoderun = "gamemoderun";
     const QString gameId = "GAMEID";
     const QString useWow64 = "PROTON_USE_WOW64";
-
     const QString verb = "PROTON_VERB";
     const QString run = "run";
     const QString waitForExitRun = "waitforexitandrun";
@@ -320,6 +319,7 @@ namespace NeroConfig {
     const QString postRunScript = "PostRunScript";
     const QString mangohud = "Mangohud";
 }
+
 namespace ImageReconstruct {
     enum class Upgrade {
         None = 0,
