@@ -490,7 +490,14 @@ void NeroPrefixSettingsWindow::LoadSettings()
         b->setCheckState(Qt::Unchecked);
         ui->envVarTable->setItem(i, 0, b);
     }
-
+    // disable env vars entirely for shortcuts, as
+    // getting these to stay synced is a nightmare. We could
+    // alternatively handle this by having them be completely desynced,
+    // but that gets handled by just disabling on the prefix level I feel.
+    if (!currentShortcutHash.isEmpty()) {
+        ui->envVarBox->setChecked(false);
+        ui->envVarBox->setEnabled(false);
+    }
     for(const auto &child : this->findChildren<QCheckBox*>())
         child->setFont(QFont());
 
