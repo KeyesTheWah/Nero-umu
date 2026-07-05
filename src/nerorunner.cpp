@@ -417,11 +417,10 @@ void NeroRunner::SyncExtraEnvironmentVariables(bool isPrefixOnly, QString& prefi
     }
     for (QString q : std::as_const(l)) {
         QStringList split = q.split("=");
-        auto trimIndex = split[0].lastIndexOf("[E]");
-        if (trimIndex > -1) {
+        if (split[0].startsWith("[E]")) {
             //get all but the first 3 characters, which is the enabled flag
-            int charsToTrim = split[0].length() - (trimIndex + 3);
-            auto var = split[0].last(charsToTrim);
+            int charsToTrim = split[0].length() - 3;
+            auto var = split[0].right(charsToTrim);
             if (!env.contains(var)) {
                 env.insert(var, split[1]);
                 if (loggingEnabled) {

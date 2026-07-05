@@ -466,13 +466,12 @@ void NeroPrefixSettingsWindow::LoadSettings()
             if (args[0].isEmpty() || args[1] == nullptr)
                 continue;
             QTableWidgetItem *variable = new QTableWidgetItem(args[0]);
-            auto trimIndex = args[0].lastIndexOf("[E]");
-            if (trimIndex > -1) {
+            if (args[0].startsWith("[E]") > -1) {
                 // int
                 variable->setCheckState(Qt::Checked);
                 //get all but the first 3 characters, which is the enabled flag
-                int charsToTrim = args[0].length() - (trimIndex + 3);
-                auto var = args[0].last(charsToTrim);
+                int charsToTrim = args[0].length() - 3;
+                auto var = args[0].right(charsToTrim);
                 variable->setText(var);
             } else {
                 variable->setCheckState(Qt::Unchecked);
