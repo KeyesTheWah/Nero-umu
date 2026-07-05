@@ -25,6 +25,7 @@
 #include <QFileDialog>
 #include <QStandardPaths>
 #include <QProcess>
+#include <QStringBuilder>
 
 // this needs to be re-generated each time the caller needs to reference current prefixCfg.
 QSettings *prefixCfg;

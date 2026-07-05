@@ -34,6 +34,7 @@
 #include <QStringBuilder>
 #include <QWidget>
 #include <QListWidgetItem>
+#include <QStringBuilder>
 #include "../lib/quazip/quazip/quazip.h"
 #include "../lib/quazip/quazip/quazipfile.h"
 
@@ -152,7 +153,7 @@ NeroPrefixSettingsWindow::NeroPrefixSettingsWindow(QWidget *parent, const QStrin
         if(!child->property("isFor").isNull())
             connect(
                 child,
-                &QCheckBox::checkStateChanged,
+                &QCheckBox::stateChanged,
                 this,
                 &NeroPrefixSettingsWindow::OptionSet
             );
@@ -446,7 +447,7 @@ void NeroPrefixSettingsWindow::LoadSettings()
             for (int j = 0; j < enabledCores.length(); ++j) {
                 int core = enabledCores[j].toInt();
                 if (core == i) {
-                    enabledCores.remove(j);
+                    enabledCores.removeAt(j);
                     item->setCheckState(Qt::Checked);
                     break;
                 }

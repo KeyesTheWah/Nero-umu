@@ -2098,8 +2098,7 @@
              <string>Enable Zink</string>
             </property>
             <property name="accessibleDescription">
-             <string>Zink is a translation layer that converts OpenGL applications into Vulkan applications, enabling support for functionality like Lossless Framegen VK or allowing OpenGL games to be streamed through obs-vkcapture.
-Zink can cause compatability problems, including severely lowered performance on some machines.</string>
+             <string/>
             </property>
             <property name="text">
              <string>Enable Zink</string>
@@ -2132,12 +2131,6 @@ Zink can cause compatability problems, including severely lowered performance on
             </property>
             <property name="accessibleName">
              <string>Enable Nvidia Libraries</string>
-            </property>
-            <property name="accessibleDescription">
-             <string>Enable Nvidia Library support for PhysX &amp; CUDA functionality in games. Requires CachyOS Proton.</string>
-            </property>
-            <property name="accessibleIdentifier">
-             <string>toggleNvidiaLibs</string>
             </property>
             <property name="text">
              <string>Enable Nvidia Libraries</string>
