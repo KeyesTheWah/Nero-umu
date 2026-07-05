@@ -658,6 +658,12 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://umu.openwinecomponents.org/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;UMU Game ID&lt;/span&gt;&lt;/a&gt; that corresponds to this prefix or exectuable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>UMU Launcher ID</string>
+            </property>
             <property name="text">
              <string>0</string>
             </property>
@@ -1840,10 +1846,10 @@
           <item row="0" column="2">
            <widget class="QCheckBox" name="toggleDisableHdr">
             <property name="whatsThis">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When Enabled, the experimental &lt;span style=&quot; font-style:italic;&quot;&gt;Native Wayland Backend&lt;/span&gt; will expose and enable use of your display's HDR capabilities.&lt;/p&gt;&lt;p&gt;Because HDR implicitly relies on Wayland to function (as there is no equivalent support in X11), this will only work with &lt;span style=&quot; font-style:italic;&quot;&gt;Native Wayland Support&lt;/span&gt; enabled and &lt;span style=&quot; font-weight:700;&quot;&gt;only in a Wayland session;&lt;/span&gt; this will not take effect on X11 desktops.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;CachyOS Proton now automatically enables usage of HDR when using the experimental &lt;span style=&quot; font-style:italic;&quot;&gt;Native Wayland Backend.&lt;/span&gt; This setting will force HDR to be disabled in a wayland session.&lt;/p&gt;&lt;p&gt;Because HDR implicitly relies on Wayland to function (as there is no equivalent support in X11), this will only work with &lt;span style=&quot; font-style:italic;&quot;&gt;Native Wayland Support&lt;/span&gt; enabled and &lt;span style=&quot; font-weight:700;&quot;&gt;only in a Wayland session;&lt;/span&gt; this will not take effect on X11 desktops.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="accessibleName">
-             <string>Use HDR With Experimental Wayland Backend</string>
+             <string>Disable HDR for Experimental Wayland Backend</string>
             </property>
             <property name="text">
              <string>Disable HDR</string>
@@ -1938,6 +1944,12 @@
           </item>
           <item row="2" column="2">
            <widget class="QComboBox" name="imageReconstructionIndBox">
+            <property name="whatsThis">
+             <string>Shows a watermark for the given image reconstruction type when it is active</string>
+            </property>
+            <property name="accessibleName">
+             <string>Image Reconstruction Indicator</string>
+            </property>
             <property name="editable">
              <bool>false</bool>
             </property>
@@ -2002,6 +2014,12 @@
           </item>
           <item row="1" column="2">
            <widget class="QComboBox" name="imageReconstructionBox">
+            <property name="whatsThis">
+             <string>Automatically updates the given image reconstruction option with the latest version.</string>
+            </property>
+            <property name="accessibleName">
+             <string>Image Reconstruction Upgrade</string>
+            </property>
             <property name="editable">
              <bool>false</bool>
             </property>
@@ -2093,6 +2111,12 @@ Zink can cause compatability problems, including severely lowered performance on
           </item>
           <item row="0" column="2">
            <widget class="QCheckBox" name="toggleOptiscaler">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This setting &lt;span style=&quot; font-weight:700;&quot;&gt;requires &lt;/span&gt;CachyOS Proton.&lt;/p&gt;&lt;p&gt;Enables auto setup and injection of &lt;a href=&quot;https://github.com/optiscaler/OptiScaler&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Optiscaler&lt;/span&gt;&lt;/a&gt;, an image reconstruction framework which allows for injecting FSR, XESS, or later versions of DLSS into games that already support one form of image reconstruction.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>Enable Optiscaler</string>
+            </property>
             <property name="text">
              <string>Enable Optiscaler</string>
             </property>
@@ -2125,9 +2149,14 @@ Zink can cause compatability problems, including severely lowered performance on
           </item>
           <item row="0" column="3">
            <widget class="QCheckBox" name="toggleLowLatency">
+            <property name="whatsThis">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enables the &lt;a href=&quot;https://github.com/Korthos-Software/low_latency_layer&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#8ab4f8;&quot;&gt;Low Latency Layer&lt;/span&gt;&lt;/a&gt; project for Windows applications to use.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="accessibleName">
+             <string>Enable Low Latency Layer Support</string>
+            </property>
             <property name="text">
-             <string>Enable AMD 
-Low Latency Layer</string>
+             <string>Enable Low Latency Layer</string>
             </property>
             <property name="isFor" stdset="0">
              <string>UseLowLatency</string>
@@ -2255,6 +2284,12 @@ Low Latency Layer</string>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="whatsThis">
+             <string/>
+            </property>
+            <property name="accessibleName">
+             <string>Environment Variables</string>
+            </property>
             <property name="layoutDirection">
              <enum>Qt::LayoutDirection::LeftToRight</enum>
             </property>
@@ -2275,6 +2310,9 @@ Low Latency Layer</string>
               <widget class="QTableWidget" name="envVarTable">
                <property name="enabled">
                 <bool>false</bool>
+               </property>
+               <property name="whatsThis">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Manual listing of environment variables, in key=value fashion.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;These are encoded in properties to the (extremely cursed) format of:&lt;/p&gt;&lt;p&gt;[E]key=value|&amp;gt;key=value|&amp;gt;[E]key=value &lt;/p&gt;&lt;p&gt;[E]: denotes whether it's enabled or not. Not being present is considered disabled. &lt;/p&gt;&lt;p&gt;key=value: the actual variable mappings &lt;/p&gt;&lt;p&gt;|&amp;gt;: pipe operator to show a new entry is beginning.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="autoFillBackground">
                 <bool>false</bool>
@@ -2367,6 +2405,9 @@ Low Latency Layer</string>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="whatsThis">
+             <string/>
+            </property>
             <property name="title">
              <string>Enable Wine CPU Topology</string>
             </property>
@@ -2387,6 +2428,9 @@ Low Latency Layer</string>
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="whatsThis">
+                <string>Enables setting wine CPU topology, allowing the user to restrict some of their CPU cores from being used by an application.</string>
                </property>
                <property name="isFor" stdset="0">
                 <string>WineCpuTopology</string>
