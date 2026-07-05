@@ -499,7 +499,8 @@ void NeroPrefixSettingsWindow::LoadSettings()
 
     for(const auto &child : this->findChildren<QComboBox*>())
         child->setFont(QFont());
-
+    // manually call this to make sure it refreshes its state
+    on_toggleWayland_checkStateChanged(ui->toggleWayland->checkState());
     NeroPrefixSettingsWindow::blockSignals(false);
 }
 
@@ -1074,7 +1075,7 @@ void NeroPrefixSettingsWindow::SaveSettings() {
     for (int x = 0; x < ui->envVarTable->rowCount(); x++) {
         QTableWidgetItem* envVar = ui->envVarTable->item(x, 0);
         QTableWidgetItem* val = ui->envVarTable->item(x, 1);
-        // not considering if its checked or not as we want to save all values
+        // not considering if the row is currently checked or not as we want to save all values
         if (envVar != nullptr && val != nullptr && !envVar->text().isEmpty() && !val->text().isEmpty()) {
             QString enabled = envVar->checkState() == Qt::Checked ? "[E]" : QString();
             envVars << enabled % envVar->text() % '=' % val->text();
