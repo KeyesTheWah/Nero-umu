@@ -461,7 +461,8 @@ void NeroPrefixSettingsWindow::LoadSettings()
     if (enabledEnv && !envVars.isEmpty()) {
         ui->envVarBox->setChecked(true);
     }
-    if (!envVars.isEmpty()) {
+    auto noEntries = envVars.size() == 1 && envVars[0].isEmpty();
+    if (!noEntries) {
         for (int i = 0; i < envVars.size(); i++) {
             QStringList args = envVars[i].split('=');
             if (args[0].isEmpty() || args[1] == nullptr)
@@ -485,7 +486,7 @@ void NeroPrefixSettingsWindow::LoadSettings()
         }
     }
     //add blank rows
-    for (int i = envVars.size(); i < ui->envVarTable->rowCount(); i++) {
+    for (int i = noEntries ? 0 : envVars.size(); i < ui->envVarTable->rowCount(); i++) {
         QTableWidgetItem *b = new QTableWidgetItem();
         b->setCheckState(Qt::Unchecked);
         ui->envVarTable->setItem(i, 0, b);
