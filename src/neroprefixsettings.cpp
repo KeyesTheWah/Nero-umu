@@ -467,7 +467,7 @@ void NeroPrefixSettingsWindow::LoadSettings()
             if (args[0].isEmpty() || args[1] == nullptr)
                 continue;
             QTableWidgetItem *variable = new QTableWidgetItem(args[0]);
-            if (args[0].startsWith("[E]") > -1) {
+            if (args[0].startsWith("[E]")) {
                 // int
                 variable->setCheckState(Qt::Checked);
                 //get all but the first 3 characters, which is the enabled flag
