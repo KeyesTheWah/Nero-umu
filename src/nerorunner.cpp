@@ -473,16 +473,16 @@ QStringList NeroRunner::SetScalingMode(int scalingMode, int fpsLimit, bool isPre
 void NeroRunner::InitImageReconstruction(bool isPrefixOnly)
 {
     int upgVal = isPrefixOnly
-        ? PrefixSetting(ImageReconstruct::Properties::upgrade, *this).toInt()
-        : CombinedSetting(ImageReconstruct::Properties::upgrade, *this).toInt();
-    switch (ImageReconstruct::Upgrade(upgVal)) {
-    case ImageReconstruct::Upgrade::Fsr4:
+        ? PrefixSetting(NeroConfig::ImageReconstruct::Properties::upgrade, *this).toInt()
+        : CombinedSetting(NeroConfig::ImageReconstruct::Properties::upgrade, *this).toInt();
+    switch (NeroConfig::ImageReconstruct::Upgrade(upgVal)) {
+    case NeroConfig::ImageReconstruct::Upgrade::Fsr4:
         env.insert(CliArgs::Proton::Amd::fsr4Upgrade, TRUE);
         break;
-    case ImageReconstruct::Upgrade::Dlss:
+    case NeroConfig::ImageReconstruct::Upgrade::Dlss:
         env.insert(CliArgs::Proton::Nvidia::dlssUpgrade, TRUE);
         break;
-    case ImageReconstruct::Upgrade::Xess:
+    case NeroConfig::ImageReconstruct::Upgrade::Xess:
         env.insert(CliArgs::Proton::Intel::xessUpgrade, TRUE);
         break;
     default:
@@ -490,13 +490,13 @@ void NeroRunner::InitImageReconstruction(bool isPrefixOnly)
     }
 
     int ind = isPrefixOnly
-        ? PrefixSetting(ImageReconstruct::Properties::indicator, *this).toInt()
-        : CombinedSetting(ImageReconstruct::Properties::indicator, *this).toInt();
-    switch (ImageReconstruct::Indicator(ind)) {
-    case ImageReconstruct::Indicator::Fsr:
+        ? PrefixSetting(NeroConfig::ImageReconstruct::Properties::indicator, *this).toInt()
+        : CombinedSetting(NeroConfig::ImageReconstruct::Properties::indicator, *this).toInt();
+    switch (NeroConfig::ImageReconstruct::Indicator(ind)) {
+    case NeroConfig::ImageReconstruct::Indicator::Fsr:
         env.insert(CliArgs::Proton::Amd::fsr4Indicator, TRUE);
         break;
-    case ImageReconstruct::Indicator::Dlss:
+    case NeroConfig::ImageReconstruct::Indicator::Dlss:
         env.insert(CliArgs::Proton::Nvidia::dlssIndicator, TRUE);
         break;
     default:

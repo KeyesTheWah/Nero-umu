@@ -189,9 +189,9 @@ namespace CliArgs {
             const QString dlssIndicator = "PROTON_DLSS_INDICATOR"; //Show watermark when DLSS is working) (cachyos)
         }
         namespace Amd {
-        const QString lowLatency = "LOW_LATENCY_LAYER";
-                const QString fsr4Upgrade = "PROTON_FSR4_UPGRADE"; //(Enable FSR4 for RDNA4 cards) (GE, cachyos, EM)
-                const QString fsr4Indicator = "PROTON_FSR4_INDICATOR"; //(Show watermark when FSR4 is working) (cachyos, EM)
+            const QString lowLatency = "LOW_LATENCY_LAYER";
+            const QString fsr4Upgrade = "PROTON_FSR4_UPGRADE"; //(Enable FSR4 for RDNA4 cards) (GE, cachyos, EM)
+            const QString fsr4Indicator = "PROTON_FSR4_INDICATOR"; //(Show watermark when FSR4 is working) (cachyos, EM)
         }
         namespace Intel {
             //XESS Launch Arguments
@@ -318,23 +318,23 @@ namespace NeroConfig {
     const QString prerunScript = "PreRunScript";
     const QString postRunScript = "PostRunScript";
     const QString mangohud = "Mangohud";
-}
 
-namespace ImageReconstruct {
-    enum class Upgrade {
-        None = 0,
-        Fsr4,
-        Dlss,
-        Xess,
-    };
-    enum class Indicator {
-        None = 0,
-        Fsr,
-        Dlss,
-    };
-    namespace Properties {
+    namespace ImageReconstruct {
+        enum class Upgrade {
+            None = 0,
+            Fsr4,
+            Dlss,
+            Xess,
+        };
+        enum class Indicator {
+            None = 0,
+            Fsr,
+            Dlss,
+        };
+        namespace Properties {
         const QString upgrade = "ImageReconstructionUpgrade";
         const QString indicator = "ImageReconstructionIndicator";
+        }
     }
 }
 #endif // NERORUNNER_H
