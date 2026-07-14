@@ -3,8 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
-
     quazip-src = {
       url = "github:stachenov/quazip";
       flake = false;
@@ -15,27 +13,32 @@
     {
       self,
       nixpkgs,
-      flake-utils,
       quazip-src,
     }:
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = import nixpkgs { inherit system; };
+    let
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
 
+      forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
+    in
+    {
+      packages = forAllSystems (pkgs: rec {
         nero-umu = pkgs.callPackage ./default.nix { inherit quazip-src; };
-      in
-      {
-        packages.default = nero-umu;
-        packages.nero-umu = nero-umu;
+        default = nero-umu;
+      });
 
-        devShells.default = pkgs.mkShell {
-          inputsFrom = [ nero-umu ];
+      devShells = forAllSystems (pkgs: {
+        default = pkgs.mkShell {
+          inputsFrom = [ self.packages.${pkgs.stdenv.hostPlatform.system}.nero-umu ];
           packages = with pkgs; [
             gdb
             ninja
           ];
         };
-      }
-    );
+      });
+
+      formatter = forAllSystems (pkgs: pkgs.nixfmt-rfc-style);
+    };
 }
