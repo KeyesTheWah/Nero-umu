@@ -43,7 +43,7 @@ pkgs.stdenv.mkDerivation (finalAttrs: {
 
   meta = {
     description = "Umu-launcher manager and launcher";
-    homepage = "https://github.com/KeyesTheWah/Nero-umu";
+    homepage = "https://github.com/SeongGino/Nero-umu";
     license = lib.licenses.gpl3Only;
     platforms = lib.platforms.linux;
     mainProgram = "nero-umu";
